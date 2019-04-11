@@ -19,6 +19,8 @@ public:
 
 private:
     Ui::Widget *ui;
+    QString u = QChar(0x00B3);
+    const QString &title = "HuTemp Life Cycle – H" + u + " Product";
     void setWidgetGeometries(Ui::Widget *ui);
     void setTabWidgetGeometries(Ui::Widget *ui, int widgetWidth, int widgetHeight);
     void setLoginTabGeometries(Ui::Widget *ui);

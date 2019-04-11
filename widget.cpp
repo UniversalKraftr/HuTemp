@@ -21,7 +21,7 @@ Widget::~Widget()
 
 void Widget::setWidgetGeometries(Ui::Widget *ui)
 {
-
+    setWindowTitle(title);
     QRect rect = QGuiApplication::primaryScreen()->geometry();
     int screenHeight = rect.height();
     int screenWidth = rect.width();
@@ -83,29 +83,30 @@ void Widget::setUACTabGeometries(Ui::Widget *ui)
     int UACTabWidth = ui->UACTab->width();
     int UACTabHeight = ui->UACTab->height();
     ui->UACScreenViewsStack->setFixedSize(qCeil(UACTabWidth*.99), qCeil(UACTabHeight*.98));
-
+    ui->adminViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+    ui->userViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
 }
 
 void Widget::setDevicesTabGeometries(Ui::Widget *ui)
 {
-
+    ui->devicesTabNestedWidget->setFixedSize(ui->devicesTab->width(), ui->devicesTab->height());
 }
 
 void Widget::setReportsTabGeometries(Ui::Widget *ui)
 {
-
+    ui->reportsTabNestedWidget->setFixedSize(ui->reportsTab->width(), ui->reportsTab->height());
 }
 
 void Widget::setSettingsTabGeometries(Ui::Widget *ui)
 {
-
+    ui->settingsTabNestedWidget->setFixedSize(ui->settingsTab->width(), ui->settingsTab->height());
 }
 
 void Widget::setDefaults(Ui::Widget *ui)
 {
     //set default view of application upon open
     ui->mainTabsWidget->setCurrentIndex(0);
-    ui->loginScreenViewsStack->setCurrentIndex(1);
+    ui->loginScreenViewsStack->setCurrentIndex(0);
 //    ui->tabWidget->setTabEnabled(1, false);
 //    ui->tabWidget->setTabEnabled(2, false);
 //    ui->tabWidget->setTabEnabled(3, false);
