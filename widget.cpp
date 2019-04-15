@@ -31,6 +31,7 @@ void Widget::setWidgetGeometries(Ui::Widget *ui)
     int widgetWidth = qCeil(screenWidth*.80);
     setFixedSize(widgetWidth, widgetHeight);
 
+
     //set tab widget and tabs geometries
     setTabWidgetGeometries(ui, widgetWidth, widgetHeight);
 
@@ -83,13 +84,33 @@ void Widget::setUACTabGeometries(Ui::Widget *ui)
     int UACTabWidth = ui->UACTab->width();
     int UACTabHeight = ui->UACTab->height();
     ui->UACScreenViewsStack->setFixedSize(qCeil(UACTabWidth*.99), qCeil(UACTabHeight*.98));
-    ui->adminViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
-    ui->userViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+    ui->UACadminViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+    ui->UACuserViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+    for(int i = 0; i < ui->UACTableWidget->columnCount(); i++){
+        ui->UACTableWidget->setColumnWidth(i, 120);
+    }
 }
 
 void Widget::setDevicesTabGeometries(Ui::Widget *ui)
 {
     ui->devicesTabNestedWidget->setFixedSize(ui->devicesTab->width(), ui->devicesTab->height());
+    for(int i = 0; i < ui->devicesTabTableWidget->columnCount(); i++){
+//        qDebug() << "column width = " << ui->devicesTabTableWidget->columnWidth(i);
+        ui->devicesTabTableWidget->setColumnWidth(i, 120);
+    }
+    ui->devicesTabTableWidget->horizontalHeaderItem(0)->setText("Zone\nID");
+    ui->devicesTabTableWidget->horizontalHeaderItem(1)->setText("Device\nID");
+    ui->devicesTabTableWidget->horizontalHeaderItem(2)->setText("Connectivity\nStatus");
+    ui->devicesTabTableWidget->horizontalHeaderItem(3)->setText("Active\nStatus");
+    ui->devicesTabTableWidget->horizontalHeaderItem(4)->setText("Reading\nInterval");
+    ui->devicesTabTableWidget->horizontalHeaderItem(5)->setText("Date/\nTime");
+    ui->devicesTabTableWidget->horizontalHeaderItem(6)->setText("Temperature\n(°F)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(7)->setText("Humidity\n(%)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(8)->setText("Low\nTemperature\n(°F)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(9)->setText("High\nTemperature\n(°F)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(10)->setText("Low\nHumidity\n(%)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(11)->setText("High\nHumidity\n(%)");
+    ui->devicesTabTableWidget->horizontalHeaderItem(12)->setText("Power");
 }
 
 void Widget::setReportsTabGeometries(Ui::Widget *ui)
