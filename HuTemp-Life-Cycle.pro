@@ -26,13 +26,28 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        widget.cpp
+        widget.cpp \
+    quickviewsdialogbox.cpp \
+    zonesdialogbox.cpp \
+    devicesdialogbox.cpp \
+    readingsdialogbox.cpp \
+    periodsdialogbox.cpp
 
 HEADERS += \
-        widget.h
+        widget.h \
+    quickviewsdialogbox.h \
+    zonesdialogbox.h \
+    devicesdialogbox.h \
+    readingsdialogbox.h \
+    periodsdialogbox.h
 
 FORMS += \
-        widget.ui
+        widget.ui \
+    quickviewsdialogbox.ui \
+    zonesdialogbox.ui \
+    devicesdialogbox.ui \
+    readingsdialogbox.ui \
+    periodsdialogbox.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -23,7 +23,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
@@ -39,7 +39,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="loginScreenPage">
         <widget class="QWidget" name="loginScreenPageNestedWidget" native="true">
@@ -745,19 +745,24 @@
               </font>
              </property>
             </column>
+            <column>
+             <property name="text">
+              <string>Reset Password</string>
+             </property>
+            </column>
            </widget>
           </item>
           <item row="1" column="4">
            <widget class="QPushButton" name="UACPreviousUsersButton">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>225</width>
               <height>40</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>225</width>
               <height>40</height>
              </size>
             </property>
@@ -792,7 +797,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="UACUserPermissionsLabel">
             <property name="font">
              <font>
               <pointsize>24</pointsize>
@@ -813,13 +818,13 @@
            <widget class="QPushButton" name="UACAddAUserButton">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>200</width>
               <height>40</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>200</width>
               <height>40</height>
              </size>
             </property>
@@ -845,7 +850,7 @@
            </spacer>
           </item>
           <item row="1" column="5">
-           <spacer name="horizontalSpacer_2">
+           <spacer name="UACPreviousUsersHelpButtonsSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -861,7 +866,7 @@
            </spacer>
           </item>
           <item row="1" column="1">
-           <spacer name="horizontalSpacer_4">
+           <spacer name="UACAddUserButtonUserPermLabelSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -937,7 +942,7 @@
            </layout>
           </item>
           <item row="9" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetEmailConfigHLayout">
             <item>
              <widget class="QLabel" name="UACuserViewScreenPageNestedWidgetEmailLabel">
               <property name="sizePolicy">
@@ -964,7 +969,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="line_6">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetEmailGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -977,7 +982,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_6">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetEmailCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -986,7 +991,7 @@
            </layout>
           </item>
           <item row="10" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetSettingsConfigHLayout">
             <item>
              <widget class="QLabel" name="UACuserViewScreenPageNestedWidgetSettingsLabel">
               <property name="sizePolicy">
@@ -1013,7 +1018,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="line_7">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetSettingsGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1026,7 +1031,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_7">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetSettingsCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -1035,7 +1040,7 @@
            </layout>
           </item>
           <item row="8" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetReportsConfigHLayout">
             <item>
              <widget class="QLabel" name="UACuserViewScreenPageNestedWidgetReportsLabel">
               <property name="sizePolicy">
@@ -1062,7 +1067,7 @@
              </widget>
             </item>
             <item>
-             <widget class="Line" name="line_5">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetReportsGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1075,7 +1080,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_5">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetReportsCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -1084,7 +1089,7 @@
            </layout>
           </item>
           <item row="7" column="1">
-           <spacer name="horizontalSpacer_3">
+           <spacer name="UACuserViewScreenPageNestedWidgetUserProfileCenterSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -1097,7 +1102,7 @@
            </spacer>
           </item>
           <item row="9" column="2">
-           <widget class="QLineEdit" name="lineEdit_2">
+           <widget class="QLineEdit" name="UACuserViewScreenPageNestedWidgetUserEmailLineEdit">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1113,7 +1118,7 @@
            </widget>
           </item>
           <item row="6" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetRemoveConfigHLayout">
             <item>
              <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetRemoveHLayout">
               <item>
@@ -1163,7 +1168,7 @@
              </layout>
             </item>
             <item>
-             <widget class="Line" name="line_4">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetRemoveGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1176,7 +1181,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_4">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetRemoveCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -1257,7 +1262,7 @@
            </layout>
           </item>
           <item row="0" column="1">
-           <widget class="QLabel" name="label_3">
+           <widget class="QLabel" name="UACuserViewScreenPageNestedWidgetUserProfileLabel">
             <property name="font">
              <font>
               <pointsize>24</pointsize>
@@ -1275,7 +1280,7 @@
            </widget>
           </item>
           <item row="13" column="0" colspan="3">
-           <spacer name="verticalSpacer">
+           <spacer name="UACuserViewScreenPageNestedWidgetBottomMarginSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
@@ -1291,7 +1296,7 @@
            </spacer>
           </item>
           <item row="12" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetNetworkConfigHLayout">
             <item>
              <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetNetworkHLayout">
               <item>
@@ -1341,7 +1346,7 @@
              </layout>
             </item>
             <item>
-             <widget class="Line" name="line_9">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetNetworkGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1354,7 +1359,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_9">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetNetworkCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -1363,7 +1368,7 @@
            </layout>
           </item>
           <item row="1" column="2">
-           <widget class="QLabel" name="label">
+           <widget class="QLabel" name="UACuserViewScreenPageNestedWidgetUserFirstLastNameLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -1413,7 +1418,7 @@
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QLineEdit" name="lineEdit">
+           <widget class="QLineEdit" name="UACuserViewScreenPageNestedWidgetUserPhoneNumberLineEdit">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1429,9 +1434,9 @@
            </widget>
           </item>
           <item row="10" column="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetUpdateButtonHLayout">
             <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="UACuserViewScreenPageNestedWidgetLeftSideUpdateButtonSpacer">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1444,7 +1449,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="UACuserViewScreenPageNestedWidgetUpdateButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1471,7 +1476,7 @@
            </layout>
           </item>
           <item row="1" column="4">
-           <spacer name="horizontalSpacer_5">
+           <spacer name="UACuserViewScreenPageNestedWidgetHelpButtonGridColumnSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -1559,7 +1564,7 @@
            </layout>
           </item>
           <item row="11" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetNotificationsConfigHLayout">
             <item>
              <layout class="QHBoxLayout" name="UACuserViewScreenPageNestedWidgetNotificationsHLayout">
               <item>
@@ -1609,7 +1614,7 @@
              </layout>
             </item>
             <item>
-             <widget class="Line" name="line_8">
+             <widget class="Line" name="UACuserViewScreenPageNestedWidgetNotificationsGuideLine">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1622,7 +1627,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_8">
+             <widget class="QCheckBox" name="UACuserViewScreenPageNestedWidgetNotificationsCheckBox">
               <property name="text">
                <string/>
               </property>
@@ -1631,7 +1636,7 @@
            </layout>
           </item>
           <item row="1" column="5">
-           <spacer name="horizontalSpacer_6">
+           <spacer name="UACuserViewScreenPageNestedWidgetRightMarginSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -2693,6 +2698,81 @@
                 <verstretch>1</verstretch>
                </sizepolicy>
               </property>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>150</number>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Zone</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Device</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Interval</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Date/Time</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Temperature</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Humidity</string>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Consolas</family>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+              </column>
              </widget>
             </item>
             <item>
@@ -2716,18 +2796,27 @@
               <item>
                <layout class="QVBoxLayout" name="reportsTabNestedWidgetComboBoxesVLayout">
                 <item>
-                 <widget class="QComboBox" name="reportsTabNestedWidgetQuickViewsCombobox">
+                 <widget class="QPushButton" name="reportsTabNestedWidgetQuickViewsPushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="text">
+                   <string>Quick Views</string>
                   </property>
                  </widget>
                 </item>
@@ -2748,18 +2837,27 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="reportsTabNestedWidgetZonesComboBox">
+                 <widget class="QPushButton" name="reportsTabNestedWidgetZonesPushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="text">
+                   <string>Zones</string>
                   </property>
                  </widget>
                 </item>
@@ -2780,18 +2878,27 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="reportsTabNestedWidgetDevicesComboBox">
+                 <widget class="QPushButton" name="reportsTabNestedWidgetDevicesPushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="text">
+                   <string>Devices</string>
                   </property>
                  </widget>
                 </item>
@@ -2812,18 +2919,27 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="reportsTabNestedWidgetReadingsComboBox">
+                 <widget class="QPushButton" name="reportsTabNestedWidgetReadingsPushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="text">
+                   <string>Readings</string>
                   </property>
                  </widget>
                 </item>
@@ -2844,18 +2960,27 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="reportsTabNestedWidgetPeriodsComboBox">
+                 <widget class="QPushButton" name="reportsTabNestedWidgetPeriodsPushButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>200</width>
-                    <height>40</height>
+                    <height>16777215</height>
                    </size>
+                  </property>
+                  <property name="text">
+                   <string>Periods</string>
                   </property>
                  </widget>
                 </item>
@@ -3093,7 +3218,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <spacer name="settingsTabTopMarginSpacer">
+         <spacer name="settingsTabNestedWidgetTopMarginSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -3106,9 +3231,9 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="allButtonswSideMarginsHLayout">
+         <layout class="QHBoxLayout" name="settingsTabNestedWidgetallButtonswSideMarginsHLayout">
           <item>
-           <spacer name="settingsTabLeftMarginSpacer">
+           <spacer name="settingsTabNestedWidgetLeftMarginSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -3121,11 +3246,11 @@
            </spacer>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="allButtonsVLayout">
+           <layout class="QVBoxLayout" name="settingsTabNestedWidgetallButtonsVLayout">
             <item>
-             <layout class="QHBoxLayout" name="notificationsNetworkButtonsHLayout">
+             <layout class="QHBoxLayout" name="settingsTabNestedWidgetnotificationsNetworkButtonsHLayout">
               <item>
-               <widget class="QPushButton" name="notificationsPushButton">
+               <widget class="QPushButton" name="settingsTabNestedWidgetnotificationsPushButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -3148,7 +3273,7 @@ other changes</string>
                </widget>
               </item>
               <item>
-               <spacer name="networkNotificationsPushButtonsSpacers">
+               <spacer name="settingsTabNestedWidgetnetworkNotificationsPushButtonsSpacers">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -3161,7 +3286,7 @@ other changes</string>
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="networkPushButton">
+               <widget class="QPushButton" name="settingsTabNestedWidgetnetworkPushButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -3186,7 +3311,7 @@ Internet Settings</string>
              </layout>
             </item>
             <item>
-             <spacer name="topButtonsBottomButtonVSpacer">
+             <spacer name="settingsTabNestedWidgettopButtonsBottomButtonVSpacer">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -3202,9 +3327,9 @@ Internet Settings</string>
              </spacer>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="helpPushButtonRowHLayout">
+             <layout class="QHBoxLayout" name="settingsTabNestedWidgethelpPushButtonRowHLayout">
               <item>
-               <spacer name="helpPushButtonLeftSideSpacer">
+               <spacer name="settingsTabNestedWidgethelpPushButtonLeftSideSpacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -3220,7 +3345,7 @@ Internet Settings</string>
                </spacer>
               </item>
               <item>
-               <widget class="QPushButton" name="helpPushButton">
+               <widget class="QPushButton" name="settingsTabNestedWidgethelpPushButton">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -3242,7 +3367,7 @@ Contact Support</string>
                </widget>
               </item>
               <item>
-               <spacer name="helpPushButtonrRightSideSpacer">
+               <spacer name="settingsTabNestedWidgethelpPushButtonrRightSideSpacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -3262,7 +3387,7 @@ Contact Support</string>
            </layout>
           </item>
           <item>
-           <spacer name="settingsTabRightMarginSpacer">
+           <spacer name="settingsTabNestedWidgetRightMarginSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -3277,7 +3402,7 @@ Contact Support</string>
          </layout>
         </item>
         <item>
-         <spacer name="settingsTabBottomMarginSpacer">
+         <spacer name="settingsTabNestedWidgetBottomMarginSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>

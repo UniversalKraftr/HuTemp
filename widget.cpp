@@ -2,6 +2,12 @@
 #include "ui_widget.h"
 #include <QtMath>
 #include <QDebug>
+#include "devicesdialogbox.h"
+#include "periodsdialogbox.h"
+#include "quickviewsdialogbox.h"
+#include "readingsdialogbox.h"
+#include "zonesdialogbox.h"
+
 
 
 
@@ -10,7 +16,7 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    setWidgetGeometries(ui);
+    setWidgetConfigs(ui);
 
 }
 
@@ -19,7 +25,7 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::setWidgetGeometries(Ui::Widget *ui)
+void Widget::setWidgetConfigs(Ui::Widget *ui)
 {
     setWindowTitle(title);
     QRect rect = QGuiApplication::primaryScreen()->geometry();
@@ -33,28 +39,28 @@ void Widget::setWidgetGeometries(Ui::Widget *ui)
 
 
     //set tab widget and tabs geometries
-    setTabWidgetGeometries(ui, widgetWidth, widgetHeight);
+    setTabWidgetConfigs(ui, widgetWidth, widgetHeight);
 
     //set login tab geometries
-    setLoginTabGeometries(ui);
+    setLoginTabConfigs(ui);
 
     //set UAC tab geometries
-    setUACTabGeometries(ui);
+    setUACTabConfigs(ui);
 
     //set devices tab geometries
-    setDevicesTabGeometries(ui);
+    setDevicesTabConfigs(ui);
 
     //set reports tab geometries
-    setReportsTabGeometries(ui);
+    setReportsTabConfigs(ui);
 
     //set settings tab geometries
-    setSettingsTabGeometries(ui);
+    setSettingsTabConfigs(ui);
 
     //set default program upon opening
     setDefaults(ui);
 }
 
-void Widget::setTabWidgetGeometries(Ui::Widget *ui, int widgetWidth, int widgetHeight)
+void Widget::setTabWidgetConfigs(Ui::Widget *ui, int widgetWidth, int widgetHeight)
 {
     //set tab widgets and tabs to width(99%) and height(98%) of widget size
     ui->mainTabsWidget->setFixedSize(qCeil(widgetWidth*.99), qCeil(widgetHeight*.98));
@@ -67,7 +73,7 @@ void Widget::setTabWidgetGeometries(Ui::Widget *ui, int widgetWidth, int widgetH
 
 }
 
-void Widget::setLoginTabGeometries(Ui::Widget *ui)
+void Widget::setLoginTabConfigs(Ui::Widget *ui)
 {
     //set loginScreenViewsStack to loginTab size
     int loginTabWidth = ui->loginTab->width();
@@ -78,7 +84,7 @@ void Widget::setLoginTabGeometries(Ui::Widget *ui)
 
 }
 
-void Widget::setUACTabGeometries(Ui::Widget *ui)
+void Widget::setUACTabConfigs(Ui::Widget *ui)
 {
     //set UACScreenViewsStack to UACTab size
     int UACTabWidth = ui->UACTab->width();
@@ -91,7 +97,7 @@ void Widget::setUACTabGeometries(Ui::Widget *ui)
     }
 }
 
-void Widget::setDevicesTabGeometries(Ui::Widget *ui)
+void Widget::setDevicesTabConfigs(Ui::Widget *ui)
 {
     ui->devicesTabNestedWidget->setFixedSize(ui->devicesTab->width(), ui->devicesTab->height());
     for(int i = 0; i < ui->devicesTabTableWidget->columnCount(); i++){
@@ -113,12 +119,19 @@ void Widget::setDevicesTabGeometries(Ui::Widget *ui)
     ui->devicesTabTableWidget->horizontalHeaderItem(12)->setText("Power");
 }
 
-void Widget::setReportsTabGeometries(Ui::Widget *ui)
+void Widget::setReportsTabConfigs(Ui::Widget *ui)
 {
     ui->reportsTabNestedWidget->setFixedSize(ui->reportsTab->width(), ui->reportsTab->height());
+    connect(ui->reportsTabNestedWidgetQuickViewsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked);
+    connect(ui->reportsTabNestedWidgetZonesPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetZonesPushButton_clicked);
+    connect(ui->reportsTabNestedWidgetDevicesPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked);
+    connect(ui->reportsTabNestedWidgetReadingsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetReadingsPushButton_clicked);
+    connect(ui->reportsTabNestedWidgetPeriodsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked);
+
+
 }
 
-void Widget::setSettingsTabGeometries(Ui::Widget *ui)
+void Widget::setSettingsTabConfigs(Ui::Widget *ui)
 {
     ui->settingsTabNestedWidget->setFixedSize(ui->settingsTab->width(), ui->settingsTab->height());
 }
@@ -132,4 +145,35 @@ void Widget::setDefaults(Ui::Widget *ui)
 //    ui->tabWidget->setTabEnabled(2, false);
 //    ui->tabWidget->setTabEnabled(3, false);
 //    ui->tabWidget->setTabEnabled(4, false);
+}
+
+
+void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
+{
+    quickViewsDialogBox *quickViews = new quickViewsDialogBox(this);
+    quickViews->exec();
+}
+
+void Widget::on_reportsTabNestedWidgetZonesPushButton_clicked()
+{
+    ZonesDialogBox *zones = new ZonesDialogBox(this);
+    zones->exec();
+}
+
+void Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked()
+{
+    DevicesDialogBox *devices = new DevicesDialogBox(this);
+    devices->exec();
+}
+
+void Widget::on_reportsTabNestedWidgetReadingsPushButton_clicked()
+{
+    ReadingsDialogBox *readings = new ReadingsDialogBox(this);
+    readings->exec();
+}
+
+void Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked()
+{
+    PeriodsDialogBox *periods = new PeriodsDialogBox(this);
+    periods->exec();
 }
