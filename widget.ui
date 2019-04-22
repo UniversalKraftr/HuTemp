@@ -23,7 +23,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
@@ -2711,7 +2711,7 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
                </property>
                <property name="textAlignment">
@@ -2725,8 +2725,11 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
                </property>
               </column>
               <column>
@@ -2736,8 +2739,11 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
                </property>
               </column>
               <column>
@@ -2747,8 +2753,11 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
                </property>
               </column>
               <column>
@@ -2758,8 +2767,11 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
                </property>
               </column>
               <column>
@@ -2769,8 +2781,11 @@
                <property name="font">
                 <font>
                  <family>Consolas</family>
-                 <pointsize>14</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
+               </property>
+               <property name="textAlignment">
+                <set>AlignCenter</set>
                </property>
               </column>
              </widget>

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -31,7 +31,13 @@ SOURCES += \
     zonesdialogbox.cpp \
     devicesdialogbox.cpp \
     readingsdialogbox.cpp \
-    periodsdialogbox.cpp
+    periodsdialogbox.cpp \
+    newpasswordpostresetdialog.cpp \
+    additionalsettingsnotificationsdialog.cpp \
+    additionaladminsettingsdialog.cpp \
+    helpdialog.cpp \
+    contactsupportdialog.cpp \
+    addauserdialog.cpp
 
 HEADERS += \
         widget.h \
@@ -39,7 +45,13 @@ HEADERS += \
     zonesdialogbox.h \
     devicesdialogbox.h \
     readingsdialogbox.h \
-    periodsdialogbox.h
+    periodsdialogbox.h \
+    newpasswordpostresetdialog.h \
+    additionalsettingsnotificationsdialog.h \
+    additionaladminsettingsdialog.h \
+    helpdialog.h \
+    contactsupportdialog.h \
+    addauserdialog.h
 
 FORMS += \
         widget.ui \
@@ -47,7 +59,13 @@ FORMS += \
     zonesdialogbox.ui \
     devicesdialogbox.ui \
     readingsdialogbox.ui \
-    periodsdialogbox.ui
+    periodsdialogbox.ui \
+    newpasswordpostresetdialog.ui \
+    additionalsettingsnotificationsdialog.ui \
+    additionaladminsettingsdialog.ui \
+    helpdialog.ui \
+    contactsupportdialog.ui \
+    addauserdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

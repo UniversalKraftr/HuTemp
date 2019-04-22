@@ -7,6 +7,9 @@
 #include "quickviewsdialogbox.h"
 #include "readingsdialogbox.h"
 #include "zonesdialogbox.h"
+#include "helpdialog.h"
+#include <addauserdialog.h>
+#include <QProcess>
 
 
 
@@ -17,13 +20,13 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     setWidgetConfigs(ui);
-
 }
 
 Widget::~Widget()
 {
     delete ui;
 }
+
 
 void Widget::setWidgetConfigs(Ui::Widget *ui)
 {
@@ -122,11 +125,6 @@ void Widget::setDevicesTabConfigs(Ui::Widget *ui)
 void Widget::setReportsTabConfigs(Ui::Widget *ui)
 {
     ui->reportsTabNestedWidget->setFixedSize(ui->reportsTab->width(), ui->reportsTab->height());
-    connect(ui->reportsTabNestedWidgetQuickViewsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked);
-    connect(ui->reportsTabNestedWidgetZonesPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetZonesPushButton_clicked);
-    connect(ui->reportsTabNestedWidgetDevicesPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked);
-    connect(ui->reportsTabNestedWidgetReadingsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetReadingsPushButton_clicked);
-    connect(ui->reportsTabNestedWidgetPeriodsPushButton, &QPushButton::clicked, this, &Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked);
 
 
 }
@@ -146,7 +144,6 @@ void Widget::setDefaults(Ui::Widget *ui)
 //    ui->tabWidget->setTabEnabled(3, false);
 //    ui->tabWidget->setTabEnabled(4, false);
 }
-
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
 {
@@ -176,4 +173,17 @@ void Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked()
 {
     PeriodsDialogBox *periods = new PeriodsDialogBox(this);
     periods->exec();
+}
+
+
+void Widget::on_settingsTabNestedWidgethelpPushButton_clicked()
+{
+    HelpDialog *helpScreen = new HelpDialog(this);
+    helpScreen->exec();
+}
+
+void Widget::on_UACAddAUserButton_clicked()
+{
+    AddAUserDialog *addUser = new AddAUserDialog(this);
+    addUser->exec();
 }

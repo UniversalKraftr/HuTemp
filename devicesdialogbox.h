@@ -16,8 +16,12 @@ public:
     explicit DevicesDialogBox(QWidget *parent = nullptr);
     ~DevicesDialogBox();
 
+
 private slots:
     void on_DevicesDialogBoxButtons_clicked(QAbstractButton *button);
+
+
+    void on_DevicesDialogBoxAllDataLoggersCheckBox_toggled(bool checked);
 
 private:
     Ui::DevicesDialogBox *ui;

@@ -28,10 +28,14 @@ private slots:
 
     void on_reportsTabNestedWidgetPeriodsPushButton_clicked();
 
+    void on_settingsTabNestedWidgethelpPushButton_clicked();
+
+    void on_UACAddAUserButton_clicked();
+
 private:
     Ui::Widget *ui;
     QString u = QChar(0x00B3);
-    const QString &title = "HuTemp Life Cycle – H" + u + " Product";
+    const QString title = "HuTemp Life Cycle – H" + u + " Product";
     void setWidgetConfigs(Ui::Widget *ui);
     void setTabWidgetConfigs(Ui::Widget *ui, int widgetWidth, int widgetHeight);
     void setLoginTabConfigs(Ui::Widget *ui);
