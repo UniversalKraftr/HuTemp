@@ -7,6 +7,9 @@ AdditionalSettingsNotificationsDialog::AdditionalSettingsNotificationsDialog(QWi
     ui(new Ui::AdditionalSettingsNotificationsDialog)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Additional Settings & Notifications");
+    adjustSize();
 }
 
 AdditionalSettingsNotificationsDialog::~AdditionalSettingsNotificationsDialog()

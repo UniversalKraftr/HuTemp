@@ -8,8 +8,9 @@
 #include "readingsdialogbox.h"
 #include "zonesdialogbox.h"
 #include "helpdialog.h"
-#include <addauserdialog.h>
+#include "previoususersdialog.h"
 #include <QProcess>
+#include <QMessageBox>
 
 
 
@@ -98,6 +99,7 @@ void Widget::setUACTabConfigs(Ui::Widget *ui)
     for(int i = 0; i < ui->UACTableWidget->columnCount(); i++){
         ui->UACTableWidget->setColumnWidth(i, 120);
     }
+    ui->UACTableWidget->setAlternatingRowColors(true);
 }
 
 void Widget::setDevicesTabConfigs(Ui::Widget *ui)
@@ -125,8 +127,12 @@ void Widget::setDevicesTabConfigs(Ui::Widget *ui)
 void Widget::setReportsTabConfigs(Ui::Widget *ui)
 {
     ui->reportsTabNestedWidget->setFixedSize(ui->reportsTab->width(), ui->reportsTab->height());
-
-
+    QPixmap pix(":/icons/calendar.png");
+    QIcon icon(pix);
+    ui->reportsTabNestedWidgetStartDateButton->setIcon(icon);
+    ui->reportsTabNestedWidgetStartDateButton->setIconSize(QSize(ui->reportsTabNestedWidgetStartDateButton->width()-10, ui->reportsTabNestedWidgetStartDateButton->height()-10));
+    ui->reportsTabNestedWidgetEndDateButton->setIcon(icon);
+    ui->reportsTabNestedWidgetEndDateButton->setIconSize(QSize(ui->reportsTabNestedWidgetEndDateButton->width()-10, ui->reportsTabNestedWidgetEndDateButton->height()-10));
 }
 
 void Widget::setSettingsTabConfigs(Ui::Widget *ui)
@@ -138,11 +144,72 @@ void Widget::setDefaults(Ui::Widget *ui)
 {
     //set default view of application upon open
     ui->mainTabsWidget->setCurrentIndex(0);
-    ui->loginScreenViewsStack->setCurrentIndex(0);
+    ui->loginScreenViewsStack->setCurrentIndex(1);
 //    ui->tabWidget->setTabEnabled(1, false);
 //    ui->tabWidget->setTabEnabled(2, false);
 //    ui->tabWidget->setTabEnabled(3, false);
-//    ui->tabWidget->setTabEnabled(4, false);
+    //    ui->tabWidget->setTabEnabled(4, false);
+}
+
+void Widget::addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user)
+{
+    ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
+
+
+    QStringList usersInfo = user->getUserInfo();
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1 ,0, new QTableWidgetItem(usersInfo[0] + " " + usersInfo[1]));
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, new QTableWidgetItem(usersInfo[3]));
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, new QTableWidgetItem(usersInfo[2]));
+
+
+    QList<bool> permissions {};
+    permissions.append(user->getDataLoggerPermission());//0
+    permissions.append(user->getAddDevicePermission());//1
+    permissions.append(user->getModifyDevicePermission());//2
+    permissions.append(user->getRemoveDevicePermission());//3
+    permissions.append(user->getUserAdminPermission());//4
+    permissions.append(user->getReportsPermission());//5
+    permissions.append(user->getSettingsPermission());//6
+    permissions.append(user->getNotificationsPermission());//7
+    permissions.append(user->getNetworksPermission());//8
+    permissions.append(user->getEmailPermission());//9
+    for (int i = 0; i < permissions.length(); i++){
+        QWidget *checkBoxWidget = new QWidget();
+        QCheckBox *checkBox = new QCheckBox();
+        QHBoxLayout *layout = new QHBoxLayout(checkBoxWidget);
+        if (permissions[i] == true){
+            checkBox->setCheckState(Qt::Checked);
+        } else {
+            checkBox->setCheckState(Qt::Unchecked);
+        }
+        layout->addWidget(checkBox);
+        layout->setAlignment(Qt::AlignCenter);
+        layout->setContentsMargins(0,0,0,0);
+        checkBoxWidget->setLayout(layout);
+        ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
+    }
+
+    QWidget *resetButtonWidget = new QWidget();
+    QPushButton *resetButton = new QPushButton();
+    resetButton->setText("Reset Password");
+    QHBoxLayout *resetButtonlayout = new QHBoxLayout(resetButtonWidget);
+    resetButtonlayout->addWidget(resetButton);
+    resetButtonlayout->setAlignment(Qt::AlignCenter);
+    resetButtonlayout->setContentsMargins(0,0,0,0);
+    resetButtonWidget->setLayout(resetButtonlayout);
+    ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 13, resetButtonWidget);
+
+
+
+    QWidget *deleteButtonWidget = new QWidget();
+    QPushButton *deleteButton = new QPushButton();
+    deleteButton->setText("Delete");
+    QHBoxLayout *deleteButtonlayout = new QHBoxLayout(deleteButtonWidget);
+    deleteButtonlayout->addWidget(deleteButton);
+    deleteButtonlayout->setAlignment(Qt::AlignCenter);
+    deleteButtonlayout->setContentsMargins(0,0,0,0);
+    deleteButtonWidget->setLayout(deleteButtonlayout);
+    ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, deleteButtonWidget);
 }
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
@@ -182,8 +249,24 @@ void Widget::on_settingsTabNestedWidgethelpPushButton_clicked()
     helpScreen->exec();
 }
 
+
 void Widget::on_UACAddAUserButton_clicked()
 {
     AddAUserDialog *addUser = new AddAUserDialog(this);
-    addUser->exec();
+    connect(addUser, &AddAUserDialog::accepted, [=](){
+        addUserRowToTableWidget(ui, addUser);
+    });
+
+    addUser->show();
+}
+
+void Widget::on_logoutScreenPageClearNotificationsButton_clicked()
+{
+    ui->logoutScreenPageNotificationsListWidget->clear();
+}
+
+void Widget::on_UACPreviousUsersButton_clicked()
+{
+    PreviousUsersDialog *previousUsers = new PreviousUsersDialog(this);
+    previousUsers->exec();
 }

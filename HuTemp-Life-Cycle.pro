@@ -26,6 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
+    previoususersdialog.cpp \
         widget.cpp \
     quickviewsdialogbox.cpp \
     zonesdialogbox.cpp \
@@ -40,6 +41,7 @@ SOURCES += \
     addauserdialog.cpp
 
 HEADERS += \
+    previoususersdialog.h \
         widget.h \
     quickviewsdialogbox.h \
     zonesdialogbox.h \
@@ -54,6 +56,7 @@ HEADERS += \
     addauserdialog.h
 
 FORMS += \
+    previoususersdialog.ui \
         widget.ui \
     quickviewsdialogbox.ui \
     zonesdialogbox.ui \
@@ -71,3 +74,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    images.qrc

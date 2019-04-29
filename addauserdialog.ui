@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>342</height>
+    <width>1152</width>
+    <height>386</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -647,7 +647,17 @@
        </layout>
       </item>
       <item row="0" column="6">
-       <widget class="QLineEdit" name="AddAUserDialogPhoneNumberLineEdit"/>
+       <widget class="QLineEdit" name="AddAUserDialogPhoneNumberLineEdit">
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>10</number>
+        </property>
+       </widget>
       </item>
       <item row="5" column="4">
        <layout class="QHBoxLayout" name="AddAUserDialogNetworkHLayout">

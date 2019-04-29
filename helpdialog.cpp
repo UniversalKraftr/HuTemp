@@ -11,6 +11,9 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui(new Ui::HelpDialog)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Help");
+    adjustSize();
 }
 
 HelpDialog::~HelpDialog()

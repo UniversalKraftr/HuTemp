@@ -6,6 +6,9 @@ AdditionalAdminSettingsDialog::AdditionalAdminSettingsDialog(QWidget *parent) :
     ui(new Ui::AdditionalAdminSettingsDialog)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Additional Administrator Settings");
+    adjustSize();
 }
 
 AdditionalAdminSettingsDialog::~AdditionalAdminSettingsDialog()

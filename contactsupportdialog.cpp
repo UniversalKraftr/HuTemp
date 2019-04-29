@@ -2,18 +2,21 @@
 #include "ui_contactsupportdialog.h"
 #include <QFileDialog>
 #include <QDialogButtonBox>
-#include <QPdfWriter>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
 #include <QPrinter>
 #include <QMessageBox>
+#include <fileapi.h>
 
 ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ContactSupportDialog)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Contact Support");
+    adjustSize();
 }
 
 ContactSupportDialog::~ContactSupportDialog()
@@ -24,11 +27,10 @@ ContactSupportDialog::~ContactSupportDialog()
 
 void ContactSupportDialog::writeToPDF(Ui::ContactSupportDialog *ui)
 {
-    QMessageBox::information(this, tr("Folder Selection"), "Select the folder you want to create your PDF Folder");
-    QString directoryA = QFileDialog::getExistingDirectory();
-    QString createdDirectory = directoryA + "/ContactSupportLogs";
+    QString createdDirectory = QCoreApplication::applicationDirPath() + "/ContactSupportLogs";
     QDir dir;
     dir.mkdir(createdDirectory);
+    SetFileAttributesA(createdDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
 
     QString fileName = createdDirectory + "Test.txt";
     QFile file(fileName);

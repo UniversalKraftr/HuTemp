@@ -6,6 +6,7 @@ ZonesDialogBox::ZonesDialogBox(QWidget *parent) :
     ui(new Ui::ZonesDialogBox)
 {
     ui->setupUi(this);
+
     setWindowTitle("Zones");
     adjustSize();
 }

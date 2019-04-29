@@ -6,6 +6,9 @@ NewPasswordPostResetDialog::NewPasswordPostResetDialog(QWidget *parent) :
     ui(new Ui::NewPasswordPostResetDialog)
 {
     ui->setupUi(this);
+
+    setWindowTitle("Password Reset");
+    adjustSize();
 }
 
 NewPasswordPostResetDialog::~NewPasswordPostResetDialog()

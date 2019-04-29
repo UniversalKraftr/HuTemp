@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QDesktopWidget>
 #include <QScreen>
+#include "addauserdialog.h"
+
 
 namespace Ui {
 class Widget;
@@ -16,6 +18,8 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
+
+
 
 private slots:
     void on_reportsTabNestedWidgetQuickViewsPushButton_clicked();
@@ -32,6 +36,10 @@ private slots:
 
     void on_UACAddAUserButton_clicked();
 
+    void on_logoutScreenPageClearNotificationsButton_clicked();
+
+    void on_UACPreviousUsersButton_clicked();
+
 private:
     Ui::Widget *ui;
     QString u = QChar(0x00B3);
@@ -45,6 +53,7 @@ private:
     void setSettingsTabConfigs(Ui::Widget *ui);
     void setDefaults(Ui::Widget *ui);
 
+    void addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user);
 };
 
 #endif // WIDGET_H
