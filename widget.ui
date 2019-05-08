@@ -29,7 +29,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
@@ -45,7 +45,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="loginScreenPage">
         <widget class="QWidget" name="loginScreenPageNestedWidget" native="true">
@@ -729,6 +729,15 @@
           </item>
           <item row="3" column="0" colspan="7">
            <widget class="QTableWidget" name="UACTableWidget">
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
             <column>
              <property name="text">
               <string>Name</string>

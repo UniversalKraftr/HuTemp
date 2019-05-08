@@ -11,6 +11,7 @@
 #include "previoususersdialog.h"
 #include <QProcess>
 #include <QMessageBox>
+#include <c++/cstdlib>
 
 
 
@@ -27,6 +28,8 @@ Widget::~Widget()
 {
     delete ui;
 }
+
+
 
 
 void Widget::setWidgetConfigs(Ui::Widget *ui)
@@ -155,11 +158,16 @@ void Widget::addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user)
 {
     ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
 
-
     QStringList usersInfo = user->getUserInfo();
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1 ,0, new QTableWidgetItem(usersInfo[0] + " " + usersInfo[1]));
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, new QTableWidgetItem(usersInfo[3]));
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, new QTableWidgetItem(usersInfo[2]));
+    QTableWidgetItem *userName = new QTableWidgetItem(usersInfo[0] + " " + usersInfo[1]);
+    QTableWidgetItem *userEmail = new QTableWidgetItem(usersInfo[3]);
+    QTableWidgetItem *userNumber = new QTableWidgetItem(usersInfo[2]);
+    userName->setFlags(Qt::NoItemFlags);
+    userEmail->setFlags(Qt::NoItemFlags);
+    userNumber->setFlags(Qt::NoItemFlags);
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1 ,0, userName);
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmail);
+    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
 
 
     QList<bool> permissions {};
@@ -182,12 +190,14 @@ void Widget::addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user)
         } else {
             checkBox->setCheckState(Qt::Unchecked);
         }
+        checkBox->setEnabled(false);
         layout->addWidget(checkBox);
         layout->setAlignment(Qt::AlignCenter);
         layout->setContentsMargins(0,0,0,0);
         checkBoxWidget->setLayout(layout);
         ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
     }
+
 
     QWidget *resetButtonWidget = new QWidget();
     QPushButton *resetButton = new QPushButton();
@@ -197,6 +207,7 @@ void Widget::addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user)
     resetButtonlayout->setAlignment(Qt::AlignCenter);
     resetButtonlayout->setContentsMargins(0,0,0,0);
     resetButtonWidget->setLayout(resetButtonlayout);
+    resetButtonWidget->setEnabled(false);
     ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 13, resetButtonWidget);
 
 
@@ -209,7 +220,113 @@ void Widget::addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user)
     deleteButtonlayout->setAlignment(Qt::AlignCenter);
     deleteButtonlayout->setContentsMargins(0,0,0,0);
     deleteButtonWidget->setLayout(deleteButtonlayout);
+    deleteButtonWidget->setEnabled(false);
     ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, deleteButtonWidget);
+
+    qDebug() << "user added";
+
+}
+
+void Widget::monitorAdminStatus()
+{
+    qDebug() << "in monitorAdminStatus";
+    monitorAdminIndex = ui->UACTableWidget->currentIndex();
+    qDebug() << "current index is: " << monitorAdminIndex.row();
+
+    QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndex.row(), 5);
+    monitorAdminCheckBox = widget->findChild<QCheckBox *>();
+
+    connect(monitorAdminCheckBox, &QCheckBox::toggled, this, &Widget::checkAdminBox, Qt::UniqueConnection);
+
+}
+
+void Widget::checkAdminBox()
+{
+    qDebug() << "in checkAdminBox";
+    if (monitorAdminCheckBox->isChecked()){
+        qDebug() << "admin box is checked";
+        for (int j = 1; j < 11; j++){
+            QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndex.row(), j);
+            QCheckBox *checkBox = widget->findChild<QCheckBox *>();
+            checkBox->setCheckState(Qt::Checked);
+        }
+    } else if (!monitorAdminCheckBox->isChecked()){
+        qDebug() << "admin box is unchecked";
+        for (int j = 1; j < 11; j++){
+            QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndex.row(), j);
+            QCheckBox *checkBox = widget->findChild<QCheckBox *>();
+            checkBox->setCheckState(Qt::Unchecked);
+        }
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Restore Default"), "Do you wish to restore to default settings?", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes){
+            setDefaultPermissions(monitorAdminIndex.row());
+            QMessageBox::information(this, tr("Restore Default"), "Default Permissions are restored");
+        } else if (reply == QMessageBox::No){
+            QMessageBox::information(this, tr("Restore Default"), "No Permissions are set.");
+        }
+    }
+}
+
+
+void Widget::monitorDeleteUsers()
+{
+    for (int i = 0; i < ui->UACTableWidget->rowCount(); i++){
+        QWidget *widget = ui->UACTableWidget->cellWidget(i, 14);
+        QPushButton *button = widget->findChild<QPushButton *>();
+        connect(button, &QPushButton::clicked, [=](){
+            archiveUser(i);
+        });
+    }
+}
+
+void Widget::archiveUser(int i)
+{
+
+}
+
+void Widget::setDefaultPermissions(int i)
+{
+    qDebug() << "in setDefaultPermissions";
+    QWidget *widget = ui->UACTableWidget->cellWidget(i, 1);
+    QCheckBox *checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 2);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 3);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 4);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(false);
+
+    widget = ui->UACTableWidget->cellWidget(i, 5);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(false);
+
+    widget = ui->UACTableWidget->cellWidget(i, 6);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 7);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 8);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
+
+    widget = ui->UACTableWidget->cellWidget(i, 9);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(false);
+
+    widget = ui->UACTableWidget->cellWidget(i, 10);
+    checkBox = widget->findChild<QCheckBox *>();
+    checkBox->setChecked(true);
 }
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
@@ -269,4 +386,9 @@ void Widget::on_UACPreviousUsersButton_clicked()
 {
     PreviousUsersDialog *previousUsers = new PreviousUsersDialog(this);
     previousUsers->exec();
+}
+
+void Widget::on_UACTableWidget_itemClicked(QTableWidgetItem *item)
+{
+    monitorAdminStatus();
 }

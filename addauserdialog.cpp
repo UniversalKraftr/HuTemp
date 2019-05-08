@@ -37,9 +37,19 @@ bool AddAUserDialog::getUserAdminPermission() const
     return ui->AddAUserDialogAdminCheckBox->isChecked();
 }
 
+void AddAUserDialog::setUserAdminPermission(bool truth)
+{
+    ui->AddAUserDialogAdminCheckBox->setChecked(truth);
+}
+
 bool AddAUserDialog::getDataLoggerPermission() const
 {
     return ui->AddAUserDialogDataLoggersCheckBox->isChecked();
+}
+
+void AddAUserDialog::setDataLoggerPermission(bool truth)
+{
+    ui->AddAUserDialogDataLoggersCheckBox->setChecked(truth);
 }
 
 bool AddAUserDialog::getAddDevicePermission() const
@@ -47,9 +57,19 @@ bool AddAUserDialog::getAddDevicePermission() const
     return ui->AddAUserDialogAddCheckBox->isChecked();
 }
 
+void AddAUserDialog::setAddDevicePermission(bool truth)
+{
+    ui->AddAUserDialogAddCheckBox->setChecked(truth);
+}
+
 bool AddAUserDialog::getModifyDevicePermission() const
 {
     return ui->AddAUserDialogModifyCheckBox->isChecked();
+}
+
+void AddAUserDialog::setModifyDevicePermission(bool truth)
+{
+    ui->AddAUserDialogModifyCheckBox->setChecked(truth);
 }
 
 bool AddAUserDialog::getRemoveDevicePermission() const
@@ -57,9 +77,19 @@ bool AddAUserDialog::getRemoveDevicePermission() const
     return ui->AddAUserDialogRemoveCheckBox->isChecked();
 }
 
+void AddAUserDialog::setRemoveDevicePermission(bool truth)
+{
+    ui->AddAUserDialogRemoveCheckBox->setChecked(truth);
+}
+
 bool AddAUserDialog::getSettingsPermission() const
 {
     return ui->AddAUserDialogSettingsCheckBox->isChecked();
+}
+
+void AddAUserDialog::setSettingsPermission(bool truth)
+{
+    ui->AddAUserDialogSettingsCheckBox->setChecked(truth);
 }
 
 bool AddAUserDialog::getNotificationsPermission() const
@@ -67,9 +97,19 @@ bool AddAUserDialog::getNotificationsPermission() const
     return ui->AddAUserDialogNotificationsCheckBox->isChecked();
 }
 
+void AddAUserDialog::setNotificationsPermission(bool truth)
+{
+    ui->AddAUserDialogNotificationsCheckBox->setChecked(truth);
+}
+
 bool AddAUserDialog::getNetworksPermission() const
 {
     return ui->AddAUserDialogNetworkCheckBox->isChecked();
+}
+
+void AddAUserDialog::setNetworksPermission(bool truth)
+{
+    ui->AddAUserDialogNetworkCheckBox->setChecked(truth);
 }
 
 bool AddAUserDialog::getReportsPermission() const
@@ -77,9 +117,19 @@ bool AddAUserDialog::getReportsPermission() const
     return ui->AddAUserDialogReportsCheckBox->isChecked();
 }
 
+void AddAUserDialog::setReportsPermission(bool truth)
+{
+    ui->AddAUserDialogReportsCheckBox->setChecked(truth);
+}
+
 bool AddAUserDialog::getEmailPermission() const
 {
     return ui->AddAUserDialogEmailCheckBox->isChecked();
+}
+
+void AddAUserDialog::setEmailPermission(bool truth)
+{
+    ui->AddAUserDialogEmailCheckBox->setChecked(truth);
 }
 
 QStringList AddAUserDialog::getUserInfo() const
@@ -99,7 +149,11 @@ void AddAUserDialog::on_AddAUserDialogButtonBox_clicked(QAbstractButton *button)
     QDialogButtonBox::StandardButton addUserStdButton = ui->AddAUserDialogButtonBox->standardButton(button);
 
     if (addUserStdButton == QDialogButtonBox::Ok){
-        accept();
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, tr("Confirmation"), "Is all the information you entered correct?", QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes){
+            accept();
+        }
     }
     if (addUserStdButton == QDialogButtonBox::Cancel){
         QMessageBox::StandardButton reply;
@@ -123,6 +177,12 @@ void AddAUserDialog::setUserInfoRequirements(Ui::AddAUserDialog *ui)
     setTabOrder(ui->AddAUserDialogFirstNameLineEdit, ui->AddAUserDialogLastNameLineEdit);
     setTabOrder(ui->AddAUserDialogLastNameLineEdit, ui->AddAUserDialogPhoneNumberLineEdit);
     setTabOrder(ui->AddAUserDialogPhoneNumberLineEdit, ui->AddAUserDialogEmailLineEdit);
+    ui->AddAUserDialogAddCheckBox->setCheckable(false);
+    ui->AddAUserDialogModifyCheckBox->setCheckable(false);
+    ui->AddAUserDialogRemoveCheckBox->setCheckable(false);
+    ui->AddAUserDialogNotificationsCheckBox->setCheckable(false);
+    ui->AddAUserDialogNetworkCheckBox->setCheckable(false);
+    ui->AddAUserDialogFirstNameLineEdit->setFocus();
 }
 
 void AddAUserDialog::checkUserInfoInput(Ui::AddAUserDialog *ui)
@@ -159,6 +219,50 @@ QString AddAUserDialog::customQuestionMessageBox(QString title, QString message)
     }
 }
 
+void AddAUserDialog::checkAllBoxes(Ui::AddAUserDialog *ui)
+{
+    if (ui->AddAUserDialogAdminCheckBox->isChecked()){
+        captureCheckBoxStates(ui);
+        setDataLoggerPermission(true);
+        setAddDevicePermission(true);
+        setModifyDevicePermission(true);
+        setRemoveDevicePermission(true);
+        setSettingsPermission(true);
+        setNotificationsPermission(true);
+        setNetworksPermission(true);
+        setReportsPermission(true);
+        setEmailPermission(true);
+    } else if(!ui->AddAUserDialogAdminCheckBox->isChecked()){
+        setDataLoggerPermission(checkBoxStates["Data Loggers"]);
+        setAddDevicePermission(checkBoxStates["Add"]);
+        setModifyDevicePermission(checkBoxStates["Modify"]);
+        setRemoveDevicePermission(checkBoxStates["Remove"]);
+        setSettingsPermission(checkBoxStates["Settings"]);
+        setNotificationsPermission(checkBoxStates["Notifications"]);
+        setNetworksPermission(checkBoxStates["Network"]);
+        setReportsPermission(checkBoxStates["Reports"]);
+        setEmailPermission(checkBoxStates["Email"]);
+    }
+}
+
+void AddAUserDialog::captureCheckBoxStates(Ui::AddAUserDialog *ui)
+{
+    if (!checkBoxStates.isEmpty()){
+        checkBoxStates.clear();
+    }
+    checkBoxStates.insert("Admin",ui->AddAUserDialogAdminCheckBox->checkState());
+    checkBoxStates.insert("Data Loggers",ui->AddAUserDialogDataLoggersCheckBox->checkState());
+    checkBoxStates.insert("Add",ui->AddAUserDialogAddCheckBox->checkState());
+    checkBoxStates.insert("Modify",ui->AddAUserDialogModifyCheckBox->checkState());
+    checkBoxStates.insert("Remove",ui->AddAUserDialogRemoveCheckBox->checkState());
+    checkBoxStates.insert("Settings",ui->AddAUserDialogSettingsCheckBox->checkState());
+    checkBoxStates.insert("Notifications",ui->AddAUserDialogNotificationsCheckBox->checkState());
+    checkBoxStates.insert("Network",ui->AddAUserDialogNetworkCheckBox->checkState());
+    checkBoxStates.insert("Email",ui->AddAUserDialogEmailCheckBox->checkState());
+    checkBoxStates.insert("Reports",ui->AddAUserDialogReportsCheckBox->checkState());
+}
+
+
 void AddAUserDialog::setUserAdminPermissions(Ui::AddAUserDialog *ui, bool truth)
 {
     ui->AddAUserDialogAdminCheckBox->setChecked(truth);
@@ -175,93 +279,93 @@ void AddAUserDialog::setUserAdminPermissions(Ui::AddAUserDialog *ui, bool truth)
 
 void AddAUserDialog::setDefaultPermissions(Ui::AddAUserDialog *ui)
 {
-    ui->AddAUserDialogAdminCheckBox->setChecked(false);
-    ui->AddAUserDialogDataLoggersCheckBox->setChecked(true);
-    ui->AddAUserDialogAddCheckBox->setChecked(true);
-    ui->AddAUserDialogModifyCheckBox->setChecked(true);
-    ui->AddAUserDialogRemoveCheckBox->setChecked(false);
-    ui->AddAUserDialogSettingsCheckBox->setChecked(true);
-    ui->AddAUserDialogNotificationsCheckBox->setChecked(true);
-    ui->AddAUserDialogNetworkCheckBox->setChecked(false);
-    ui->AddAUserDialogEmailCheckBox->setChecked(true);
-    ui->AddAUserDialogReportsCheckBox->setChecked(true);
+    setUserAdminPermission(false);
+    setDataLoggerPermission(true);
+    setAddDevicePermission(true);
+    setModifyDevicePermission(true);
+    setRemoveDevicePermission(false);
+    setSettingsPermission(true);
+    setNotificationsPermission(true);
+    setNetworksPermission(false);
+    setEmailPermission(true);
+    setReportsPermission(true);
 }
 
 void AddAUserDialog::setCustomPermissions(Ui::AddAUserDialog *ui)
 {
     QStringList replies {"", "", "", "", "", "", "", "", ""};
-    ui->AddAUserDialogAdminCheckBox->setChecked(false);
+    setUserAdminPermission(false);
 
     replies[0] = customQuestionMessageBox("Data Logger", "Do you want to give the user access to the devices?");
     if (replies[0] == "Yes"){
-        ui->AddAUserDialogDataLoggersCheckBox->setChecked(true);
+        setDataLoggerPermission(true);
 
         replies[1] = customQuestionMessageBox("Add A Device", "Do you want to let this user add devices?");
         if (replies[1] == "Yes"){
-            ui->AddAUserDialogAddCheckBox->setChecked(true);
+            setAddDevicePermission(true);
         }else {
-            ui->AddAUserDialogAddCheckBox->setChecked(false);
+            setAddDevicePermission(false);
         }
 
         replies[2] = customQuestionMessageBox("Modify A Device", "Do you want to let this user modify device information?");
         if (replies[2] == "Yes"){
-            ui->AddAUserDialogModifyCheckBox->setChecked(true);
+            setModifyDevicePermission(true);
         }else {
-            ui->AddAUserDialogModifyCheckBox->setChecked(false);
+            setModifyDevicePermission(false);
         }
 
         replies[3] = customQuestionMessageBox("Remove A Device", "Do you want to let this user remove devices?");
         if (replies[3] == "Yes"){
-            ui->AddAUserDialogRemoveCheckBox->setChecked(true);
+            setRemoveDevicePermission(true);
         }else {
-            ui->AddAUserDialogRemoveCheckBox->setChecked(false);
+            setRemoveDevicePermission(false);
         }
 
     }else {
-        ui->AddAUserDialogDataLoggersCheckBox->setChecked(false);
-        ui->AddAUserDialogAddCheckBox->setChecked(false);
-        ui->AddAUserDialogModifyCheckBox->setChecked(false);
-        ui->AddAUserDialogRemoveCheckBox->setChecked(false);
+        setDataLoggerPermission(false);
+        setAddDevicePermission(false);
+        setModifyDevicePermission(false);
+        setRemoveDevicePermission(false);
     }
 
 
     replies[4] = customQuestionMessageBox("Settings", "Do you want to let this user adjust their settings?");
     if (replies[4] == "Yes"){
-        ui->AddAUserDialogSettingsCheckBox->setChecked(true);
+        setSettingsPermission(true);
 
         replies[5] = customQuestionMessageBox("Notifications", "Do you want to let this user adjust their notifications?");
         if (replies[5] == "Yes"){
-            ui->AddAUserDialogNotificationsCheckBox->setChecked(true);
+            setNotificationsPermission(true);
         }else {
-            ui->AddAUserDialogNotificationsCheckBox->setChecked(false);
+            setNotificationsPermission(false);
         }
 
         replies[6] = customQuestionMessageBox("Network", "Do you want to let this user access the network connections?");
         if (replies[6] == "Yes"){
-            ui->AddAUserDialogNetworkCheckBox->setChecked(true);
+            setNetworksPermission(true);
         }else {
-            ui->AddAUserDialogNetworkCheckBox->setChecked(false);
+            setNetworksPermission(false);
         }
 
     }else {
-        ui->AddAUserDialogSettingsCheckBox->setChecked(false);
-        ui->AddAUserDialogNotificationsCheckBox->setChecked(false);
-        ui->AddAUserDialogNetworkCheckBox->setChecked(false);
+        setSettingsPermission(false);
+        setNotificationsPermission(false);
+        setNetworksPermission(false);
     }
 
 
     replies[7] = customQuestionMessageBox("Email", "Do you want to let this user receive emails?");
     if (replies[7] == "Yes"){
-        ui->AddAUserDialogEmailCheckBox->setChecked(true);
+        setEmailPermission(true);
     }else {
-        ui->AddAUserDialogEmailCheckBox->setChecked(false);
+        setEmailPermission(false);
     }
 
     replies[8] = customQuestionMessageBox("Reports", "Do you want to let this user handle reports?");
     if (replies[8] == "Yes"){
-        ui->AddAUserDialogReportsCheckBox->setChecked(true);
+        setReportsPermission(true);
     }else {
-        ui->AddAUserDialogReportsCheckBox->setChecked(false);
+        setReportsPermission(false);
     }
 
 }
@@ -324,4 +428,38 @@ void AddAUserDialog::on_AddAUserDialogEmailLineEdit_textChanged(const QString &a
         ui->AddAUserDialogEmailLineEdit->setStyleSheet("QLineEdit {color : green;}");
     }
     checkUserInfoInput(ui);
+}
+
+void AddAUserDialog::on_AddAUserDialogAdminCheckBox_stateChanged(int arg1)
+{
+    checkAllBoxes(ui);
+}
+
+void AddAUserDialog::on_AddAUserDialogDataLoggersCheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 2){
+        ui->AddAUserDialogAddCheckBox->setCheckable(true);
+        ui->AddAUserDialogModifyCheckBox->setCheckable(true);
+        ui->AddAUserDialogRemoveCheckBox->setCheckable(true);
+    } else if (arg1 == 0){
+        ui->AddAUserDialogAddCheckBox->setChecked(false);
+        ui->AddAUserDialogModifyCheckBox->setChecked(false);
+        ui->AddAUserDialogRemoveCheckBox->setChecked(false);
+        ui->AddAUserDialogAddCheckBox->setCheckable(false);
+        ui->AddAUserDialogModifyCheckBox->setCheckable(false);
+        ui->AddAUserDialogRemoveCheckBox->setCheckable(false);
+    }
+}
+
+void AddAUserDialog::on_AddAUserDialogSettingsCheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 2){
+        ui->AddAUserDialogNotificationsCheckBox->setCheckable(true);
+        ui->AddAUserDialogNetworkCheckBox->setCheckable(true);
+    } else if(arg1 == 0){
+        ui->AddAUserDialogNotificationsCheckBox->setChecked(false);
+        ui->AddAUserDialogNetworkCheckBox->setChecked(false);
+        ui->AddAUserDialogNotificationsCheckBox->setCheckable(false);
+        ui->AddAUserDialogNetworkCheckBox->setCheckable(false);
+    }
 }

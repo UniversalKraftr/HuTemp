@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QDesktopWidget>
 #include <QScreen>
+#include <QCheckBox>
+#include <QModelIndex>
+#include <QTableWidgetItem>
 #include "addauserdialog.h"
 
 
@@ -18,7 +21,6 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
-
 
 
 private slots:
@@ -40,10 +42,14 @@ private slots:
 
     void on_UACPreviousUsersButton_clicked();
 
+    void on_UACTableWidget_itemClicked(QTableWidgetItem *item);
+
 private:
     Ui::Widget *ui;
     QString u = QChar(0x00B3);
     const QString title = "HuTemp Life Cycle – H" + u + " Product";
+    QModelIndex monitorAdminIndex;
+    QCheckBox *monitorAdminCheckBox;
     void setWidgetConfigs(Ui::Widget *ui);
     void setTabWidgetConfigs(Ui::Widget *ui, int widgetWidth, int widgetHeight);
     void setLoginTabConfigs(Ui::Widget *ui);
@@ -52,8 +58,13 @@ private:
     void setReportsTabConfigs(Ui::Widget *ui);
     void setSettingsTabConfigs(Ui::Widget *ui);
     void setDefaults(Ui::Widget *ui);
-
     void addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user);
+    void monitorAdminStatus();
+    void checkAdminBox();
+    void monitorDeleteUsers();
+    void archiveUser(int i);
+    void monitorUserPasswordResets();
+    void setDefaultPermissions(int i);
 };
 
 #endif // WIDGET_H
