@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui printsupport
+QT       += core gui printsupport network sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,6 +27,7 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
     previoususersdialog.cpp \
+    smtp.cpp \
         widget.cpp \
     quickviewsdialogbox.cpp \
     zonesdialogbox.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
 
 HEADERS += \
     previoususersdialog.h \
+    smtp.h \
         widget.h \
     quickviewsdialogbox.h \
     zonesdialogbox.h \
@@ -57,6 +59,7 @@ HEADERS += \
 
 FORMS += \
     previoususersdialog.ui \
+    smtp.ui \
         widget.ui \
     quickviewsdialogbox.ui \
     zonesdialogbox.ui \

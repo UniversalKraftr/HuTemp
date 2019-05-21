@@ -32,56 +32,7 @@
       <string>Additional Administrator Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="1" column="0">
-       <widget class="QLabel" name="AdditionalAdminSettingsDialogCompanyAddressLine1Label">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Company Address Line 1</string>
-        </property>
-       </widget>
-      </item>
-      <item row="12" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogReportExportHLayout">
-        <item>
-         <widget class="QLabel" name="AdditionalAdminSettingsDialogReportExportLabel">
-          <property name="text">
-           <string>A Report has been exported</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="AdditionalAdminSettingsDialogReportExportLine">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogReportExportCheckBox">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="9" column="0" colspan="2">
+      <item row="10" column="0" colspan="2">
        <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogOpenTimeHLayout">
         <item>
          <widget class="QLabel" name="AdditionalAdminSettingsDialogOpenTimeLabel">
@@ -115,7 +66,7 @@
         </item>
        </layout>
       </item>
-      <item row="15" column="0" colspan="2">
+      <item row="16" column="0" colspan="2">
        <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogSupportContactedHLayout">
         <item>
          <widget class="QLabel" name="AdditionalAdminSettingsDialogSupportContactedLabel">
@@ -152,41 +103,7 @@
         </item>
        </layout>
       </item>
-      <item row="10" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogClosingTimeHLayout">
-        <item>
-         <widget class="QLabel" name="AdditionalAdminSettingsDialogClosingTimeLabel">
-          <property name="text">
-           <string>Closing Time</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="AdditionalAdminSettingsDialogClosingTimeLine">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTimeEdit" name="AdditionalAdminSettingsDialogClosingTimeTimeEdit">
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>150</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="14" column="0" colspan="2">
+      <item row="15" column="0" colspan="2">
        <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogLoginActivityHLayout">
         <item>
          <widget class="QLabel" name="AdditionalAdminSettingsDialogLoginActivityLabel">
@@ -223,93 +140,7 @@
         </item>
        </layout>
       </item>
-      <item row="16" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogUserAdjustedSettingsHLayout">
-        <item>
-         <widget class="QLabel" name="AdditionalAdminSettingsDialogUserAdjustedSettingsLabel">
-          <property name="text">
-           <string>User adjusted their settings</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="AdditionalAdminSettingsDialogUserAdjustedSettingsLine">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogUserAdjustedSettingsCheckBox">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="11" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogDataLoggerChangesHLayout">
-        <item>
-         <widget class="QLabel" name="AdditionalAdminSettingsDialogDataLoggerChangesLabel">
-          <property name="text">
-           <string>Any Changes made to a Data Logger</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="AdditionalAdminSettingsDialogDataLoggerChangesLine">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogDataLoggerChangesCheckBox">
-          <property name="minimumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="AdditionalAdminSettingsDialogCompanyPhoneNumberLabel">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Company Phone Number</string>
-        </property>
-       </widget>
-      </item>
-      <item row="13" column="0" colspan="2">
+      <item row="14" column="0" colspan="2">
        <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogProfileChangesHLayout">
         <item>
          <widget class="QLabel" name="AdditionalAdminSettingsDialogProfileChangesLabel">
@@ -346,6 +177,175 @@
         </item>
        </layout>
       </item>
+      <item row="11" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogClosingTimeHLayout">
+        <item>
+         <widget class="QLabel" name="AdditionalAdminSettingsDialogClosingTimeLabel">
+          <property name="text">
+           <string>Closing Time</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="AdditionalAdminSettingsDialogClosingTimeLine">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTimeEdit" name="AdditionalAdminSettingsDialogClosingTimeTimeEdit">
+          <property name="minimumSize">
+           <size>
+            <width>150</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="17" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogUserAdjustedSettingsHLayout">
+        <item>
+         <widget class="QLabel" name="AdditionalAdminSettingsDialogUserAdjustedSettingsLabel">
+          <property name="text">
+           <string>User adjusted their settings</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="AdditionalAdminSettingsDialogUserAdjustedSettingsLine">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogUserAdjustedSettingsCheckBox">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyNameLineEdit"/>
+      </item>
+      <item row="13" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogReportExportHLayout">
+        <item>
+         <widget class="QLabel" name="AdditionalAdminSettingsDialogReportExportLabel">
+          <property name="text">
+           <string>A Report has been exported</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="AdditionalAdminSettingsDialogReportExportLine">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogReportExportCheckBox">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyPhoneNumberLineEdit"/>
+      </item>
+      <item row="12" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="AdditionalAdminSettingsDialogDataLoggerChangesHLayout">
+        <item>
+         <widget class="QLabel" name="AdditionalAdminSettingsDialogDataLoggerChangesLabel">
+          <property name="text">
+           <string>Any Changes made to a Data Logger</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="AdditionalAdminSettingsDialogDataLoggerChangesLine">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="AdditionalAdminSettingsDialogDataLoggerChangesCheckBox">
+          <property name="minimumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="AdditionalAdminSettingsDialogCompanyPhoneNumberLabel">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Company Phone Number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit"/>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="labelAdditionalAdminSettingsDialogCompanyNameLabel">
         <property name="font">
@@ -358,8 +358,17 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit"/>
+      <item row="1" column="0">
+       <widget class="QLabel" name="AdditionalAdminSettingsDialogCompanyAddressLine1Label">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Company Address Line 1</string>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="AdditionalAdminSettingsDialogCompanyAddressLine2Label">
@@ -373,22 +382,13 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyNameLineEdit"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="AdditionalAdminSettingsDialogCompanyPhoneNumberLineEdit"/>
-      </item>
      </layout>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="AdditionalAdminSettingsDialogButtonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

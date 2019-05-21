@@ -7,7 +7,23 @@
 #include <QCheckBox>
 #include <QModelIndex>
 #include <QTableWidgetItem>
+#include <QProcess>
+#include <QMessageBox>
+#include <QRadioButton>
+#include <QtMath>
+#include <QDebug>
+#include <QTime>
+#include <QFont>
+#include <QFile>
+#include <QtSql>
+#include <QSqlDatabase>
+
+#include "smtp.h"
 #include "addauserdialog.h"
+#include "additionaladminsettingsdialog.h"
+#include "additionalsettingsnotificationsdialog.h"
+
+
 
 
 namespace Ui {
@@ -20,6 +36,7 @@ class Widget : public QWidget
 
 public:
     explicit Widget(QWidget *parent = nullptr);
+    QString getLogFolder();
     ~Widget();
 
 
@@ -44,27 +61,81 @@ private slots:
 
     void on_UACTableWidget_itemClicked(QTableWidgetItem *item);
 
+    void on_settingsTabNestedWidgetnotificationsPushButton_clicked();
+
+    void on_UACadminViewScreenPageNestedWidgetEditButton_clicked();
+
+    QString getUserName();
+    QString getUserEmail();
+    QString getUserType();
+    QString getCompanyName();
+    QString getCompanyAddressLine1();
+    QString getCompanyAddressLine2();
+    QString getCompanyPhoneNumber();
+
+    void on_devicesTabAddButton_clicked();
+
+    void on_devicesTabSortOptionsDropDownBox_currentIndexChanged(int index);
+
+    void on_devicesTabRefreshButton_clicked();
+
+    void on_reportsTabNestedWidgetEndDateDateEdit_userDateChanged(const QDate &date);
+
+    void on_reportsTabNestedWidgetEndTimeTimeEdit_userTimeChanged(const QTime &time);
+
 private:
     Ui::Widget *ui;
     QString u = QChar(0x00B3);
     const QString title = "HuTemp Life Cycle – H" + u + " Product";
-    QModelIndex monitorAdminIndex;
+    int monitorAdminIndexRow;
+    int monitorAdminIndexColumn = 0;
+    QTableWidgetItem *UACTableWidgetItem;
     QCheckBox *monitorAdminCheckBox;
-    void setWidgetConfigs(Ui::Widget *ui);
-    void setTabWidgetConfigs(Ui::Widget *ui, int widgetWidth, int widgetHeight);
-    void setLoginTabConfigs(Ui::Widget *ui);
-    void setUACTabConfigs(Ui::Widget *ui);
-    void setDevicesTabConfigs(Ui::Widget *ui);
-    void setReportsTabConfigs(Ui::Widget *ui);
-    void setSettingsTabConfigs(Ui::Widget *ui);
-    void setDefaults(Ui::Widget *ui);
-    void addUserRowToTableWidget(Ui::Widget *ui, AddAUserDialog *user);
+    QPushButton *monitorAdminDeleteButton;
+    int currentButtonByAssociation = 0;
+    QList<int> openCloseHoursMinutes;
+    QString companyName = "";
+    QString companyAddress = "";
+    QString companyPhoneNumber = "";
+    QFont selectedItemFont;
+    QString createdDirectory;
+    QString newTempPassword;
+    QString userFirstName;
+    QString userLastName;
+    QString userPhoneNumber;
+    QString userEmail;
+    QString userType;
+    bool dbOpen;
+    QList<bool> zonesCheckBoxes;
+    QList<bool> devicesCheckBoxes;
+
+
+    void addUserToUserTable(AddAUserDialog *addUser);
+    void connectToDatabase();
+    void extractAllCompanyInfo();
+    void extractAllUserInfo();
+    QString alphaNumGenerator();
+    void createDirectories();
+    void toggleAdminUACCheckBoxStatuses();
+    void setAdditionalAdminData(AdditionalSettingsNotificationsDialog *additionalSettings);
+    void captureAdditionalAdminData(AdditionalSettingsNotificationsDialog *additionalSettings);
+    void setWidgetConfigs();
+    void setTabWidgetConfigs(int widgetWidth, int widgetHeight);
+    void setLoginTabConfigs();
+    void setUACTabConfigs();
+    void setDevicesTabConfigs();
+    void setReportsTabConfigs();
+    void setSettingsTabConfigs();
+    void setDefaults();
+    void addUserRowToTableWidget(AddAUserDialog *user);
     void monitorAdminStatus();
     void checkAdminBox();
     void monitorDeleteUsers();
-    void archiveUser(int i);
+    void archiveUser();
     void monitorUserPasswordResets();
     void setDefaultPermissions(int i);
+    void resetPassword();
+
 };
 
 #endif // WIDGET_H

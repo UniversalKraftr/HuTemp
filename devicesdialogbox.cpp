@@ -17,29 +17,38 @@ DevicesDialogBox::~DevicesDialogBox()
     delete ui;
 }
 
+QList<bool> DevicesDialogBox::getCheckBoxes()
+{
+    checkboxes.append(ui->DevicesDialogBoxAllDataLoggersCheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger1CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger2CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger3CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger4CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger5CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger6CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger7CheckBox->isChecked());
+    checkboxes.append(ui->DevicesDialogBoxDataLogger8CheckBox->isChecked());
+    return checkboxes;
+}
+
+void DevicesDialogBox::setCheckBoxes(QList<bool> checkBoxes)
+{
+    checkboxes = checkBoxes;
+}
+
+
 void DevicesDialogBox::on_DevicesDialogBoxButtons_clicked(QAbstractButton *button)
 {
     QDialogButtonBox::StandardButton devicesStdButton = ui->DevicesDialogBoxButtons->standardButton(button);
 
     if(devicesStdButton == QDialogButtonBox::Reset){
         ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger1CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger2CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger3CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger4CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger5CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger6CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger7CheckBox->setChecked(true);
-        ui->DevicesDialogBoxDataLogger8CheckBox->setChecked(true);
     }
     if(devicesStdButton == QDialogButtonBox::Ok){
         accept();
     }
     if(devicesStdButton == QDialogButtonBox::Cancel){
         reject();
-    }
-    if(devicesStdButton == QDialogButtonBox::Apply){
-
     }
 }
 

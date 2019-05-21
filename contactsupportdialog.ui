@@ -276,7 +276,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Please provide a detailed description</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

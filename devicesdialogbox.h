@@ -16,6 +16,8 @@ public:
     explicit DevicesDialogBox(QWidget *parent = nullptr);
     ~DevicesDialogBox();
 
+    QList<bool> getCheckBoxes();
+    void setCheckBoxes(QList<bool>);
 
 private slots:
     void on_DevicesDialogBoxButtons_clicked(QAbstractButton *button);
@@ -25,6 +27,7 @@ private slots:
 
 private:
     Ui::DevicesDialogBox *ui;
+    QList<bool> checkboxes;
 };
 
 #endif // DEVICESDIALOGBOX_H

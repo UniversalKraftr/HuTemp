@@ -7,7 +7,7 @@
 #include <QDebug>
 #include <QPrinter>
 #include <QMessageBox>
-#include <fileapi.h>
+#include <widget.h>
 
 ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     QDialog(parent),
@@ -17,6 +17,20 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
 
     setWindowTitle("Contact Support");
     adjustSize();
+    ui->ContactSupportDialogDetailedDescriptionLabel->setText("Please provide a detailed description.\nPlease include any actions attempted with User Manual.");
+
+    Widget *user = new Widget(this);
+
+    ui->ContactSupportDialogDateTimeStampLabel->setText(QDateTime::currentDateTime().toString("MM dd yyyy h:mm:ss ap"));
+//    ui->ContactSupportDialogUserNameLabel->setText();
+//    ui->ContactSupportDialogUserEmailLabel->setText();
+//    ui->ContactSupportDialogUserTypeLabel->setText();
+//    ui->ContactSupportDialogCompanyNameLabel->setText();
+//    ui->ContactSupportDialogCompanyAddressLine1Label->setText();
+//    ui->ContactSupportDialogCompanyAddressLine2Label->setText();
+//    ui->ContactSupportDialogCompanyPhoneNumberLabel->setText();
+
+    connect(ui->ContactSupportDialogTextEdit, &QTextEdit::textChanged, this, &ContactSupportDialog::checkMinimumCharacterCount);
 }
 
 ContactSupportDialog::~ContactSupportDialog()
@@ -25,14 +39,11 @@ ContactSupportDialog::~ContactSupportDialog()
 }
 
 
-void ContactSupportDialog::writeToPDF(Ui::ContactSupportDialog *ui)
+void ContactSupportDialog::writeToPDF()
 {
-    QString createdDirectory = QCoreApplication::applicationDirPath() + "/ContactSupportLogs";
-    QDir dir;
-    dir.mkdir(createdDirectory);
-    SetFileAttributesA(createdDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
-
-    QString fileName = createdDirectory + "Test.txt";
+    Widget *widget = new Widget(this);
+    QString directory = widget->getLogFolder();
+    QString fileName =  directory + "Test.txt";
     QFile file(fileName);
     if (file.open(QIODevice::ReadWrite)){
         QTextStream stream(&file);
@@ -67,8 +78,23 @@ void ContactSupportDialog::writeToPDF(Ui::ContactSupportDialog *ui)
 
     QPrinter pdfFile;
     pdfFile.setOutputFormat(QPrinter::PdfFormat);
-    pdfFile.setOutputFileName(createdDirectory + "/Test.pdf");
+    pdfFile.setOutputFileName(directory + "/Test.pdf");
     doc.print(&pdfFile);
+}
+
+void ContactSupportDialog::checkMinimumCharacterCount()
+{
+    int characterCount = ui->ContactSupportDialogTextEdit->toPlainText().length();
+    int minimumLabelCount = 250-characterCount;
+    if (minimumLabelCount > 0){
+        QString statement = QString::number(minimumLabelCount) + " character count";
+        ui->ContactSupportDialogCharacterMinimumLabel->setText(statement);
+        minimumCharactersMet = false;
+    } else if(minimumLabelCount <= 0){
+        ui->ContactSupportDialogCharacterMinimumLabel->setText("0 character count");
+        minimumCharactersMet = true;
+    }
+
 }
 
 
@@ -78,8 +104,13 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
     QDialogButtonBox::StandardButton stdButton = ui->ContactSupportDialogButtonBox->standardButton(button);
 
     if(stdButton == QDialogButtonBox::Ok){
-        writeToPDF(ui);
-        accept();
+        if (minimumCharactersMet == true){
+            writeToPDF();
+            accept();
+        } else{
+            QMessageBox::warning(this, tr("Incomplete"), "You must meet the 250 minimum character count.");
+        }
+
     }
     if(stdButton == QDialogButtonBox::Cancel){
         QMessageBox::StandardButton warningReply = QMessageBox::warning(this, tr("Warning!"),
@@ -93,3 +124,19 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
         }
     }
 }
+
+//void ContactSupportDialog::sendMail()
+//{
+//    Smtp* smtp = new Smtp(ui->uname->text(), ui->paswd->text(), ui->server->text(), ui->port->text().toInt());
+//    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+
+
+//    smtp->sendMail(ui->uname->text(), ui->rcpt->text() , ui->subject->text(),ui->msg->toPlainText());
+//}
+
+//void ContactSupportDialog::mailSent(QString status)
+//{
+//    if(status == "Message sent"){
+//        QMessageBox::information(this,tr("Confirmation"), "Message sent!\n\n");
+//    }
+//}

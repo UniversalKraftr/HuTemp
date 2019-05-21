@@ -15,3 +15,8 @@ PreviousUsersDialog::~PreviousUsersDialog()
 {
     delete ui;
 }
+
+void PreviousUsersDialog::on_PreviousUsersDialogExitButton_clicked()
+{
+    reject();
+}

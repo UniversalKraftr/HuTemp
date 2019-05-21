@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QAbstractButton>
+#include "smtp.h"
 
 namespace Ui {
 class ContactSupportDialog;
@@ -21,7 +22,12 @@ private slots:
 
 private:
     Ui::ContactSupportDialog *ui;
-    void writeToPDF(Ui::ContactSupportDialog *ui);
+
+    void sendMail();
+    void mailSent(QString);
+    void writeToPDF();
+    void checkMinimumCharacterCount();
+    bool minimumCharactersMet = false;
 };
 
 #endif // CONTACTSUPPORTDIALOG_H

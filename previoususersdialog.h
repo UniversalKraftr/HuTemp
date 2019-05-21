@@ -15,6 +15,9 @@ public:
     explicit PreviousUsersDialog(QWidget *parent = nullptr);
     ~PreviousUsersDialog();
 
+private slots:
+    void on_PreviousUsersDialogExitButton_clicked();
+
 private:
     Ui::PreviousUsersDialog *ui;
 };

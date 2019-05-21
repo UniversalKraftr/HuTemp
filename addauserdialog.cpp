@@ -150,10 +150,18 @@ void AddAUserDialog::on_AddAUserDialogButtonBox_clicked(QAbstractButton *button)
 
     if (addUserStdButton == QDialogButtonBox::Ok){
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, tr("Confirmation"), "Is all the information you entered correct?", QMessageBox::Yes | QMessageBox::No);
-        if (reply == QMessageBox::Yes){
-            accept();
+        if (!ui->AddAUserDialogFirstNameLineEdit->text().isEmpty() &&
+                !ui->AddAUserDialogLastNameLineEdit->text().isEmpty() &&
+                !ui->AddAUserDialogPhoneNumberLineEdit->text().isEmpty() &&
+                !ui->AddAUserDialogEmailLineEdit->text().isEmpty()){
+            reply = QMessageBox::question(this, tr("Confirmation"), "Is all the information you entered correct?", QMessageBox::Yes | QMessageBox::No);
+            if (reply == QMessageBox::Yes){
+                accept();
+            }
+        } else {
+            QMessageBox::warning(this, tr("Warning"), "First Name, Last Name, Phone Number, and Email are required!");
         }
+
     }
     if (addUserStdButton == QDialogButtonBox::Cancel){
         QMessageBox::StandardButton reply;
@@ -168,7 +176,7 @@ void AddAUserDialog::on_AddAUserDialogButtonBox_clicked(QAbstractButton *button)
 void AddAUserDialog::setUserInfoRequirements(Ui::AddAUserDialog *ui)
 {
     QRegularExpression rxName("\\b[A-Z]*\\b", QRegularExpression::CaseInsensitiveOption);
-    QRegularExpression rxPhone("\\b[0-9]*\\b", QRegularExpression::CaseInsensitiveOption);
+    QRegularExpression rxPhone("\\b[0-9]{10}\\b", QRegularExpression::CaseInsensitiveOption);
     QRegularExpression rxEmail("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{3,4}\\b", QRegularExpression::CaseInsensitiveOption);
     ui->AddAUserDialogFirstNameLineEdit->setValidator(new QRegularExpressionValidator(rxName, this));
     ui->AddAUserDialogLastNameLineEdit->setValidator(new QRegularExpressionValidator(rxName, this));

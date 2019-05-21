@@ -15,12 +15,27 @@ class AdditionalAdminSettingsDialog : public QDialog
 public:
     explicit AdditionalAdminSettingsDialog(QWidget *parent = nullptr);
     ~AdditionalAdminSettingsDialog();
+    int getOpenTimeHour();
+    int getOpenTimeMinute();
+    int getCloseTimeHour();
+    int getCloseTimeMinute();
+    QString getCompanyName();
+    QString getCompanyAddress();
+    QString getCompanyPhoneNumber();
+    void setOpenTime(int hour, int minute);
+    void setCloseTime(int hour, int minute);
+    void setCompanyName(QString cname);
+    void setCompanyAddress(QString caddress);
+    void setCompanyPhoneNumber(QString cnumber);
 
 private slots:
     void on_AdditionalAdminSettingsDialogButtonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::AdditionalAdminSettingsDialog *ui;
+
+
+
 };
 
 #endif // ADDITIONALADMINSETTINGSDIALOG_H
