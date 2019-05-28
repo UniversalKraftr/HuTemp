@@ -19,21 +19,24 @@ DevicesDialogBox::~DevicesDialogBox()
 
 QList<bool> DevicesDialogBox::getCheckBoxes()
 {
-    checkboxes.append(ui->DevicesDialogBoxAllDataLoggersCheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger1CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger2CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger3CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger4CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger5CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger6CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger7CheckBox->isChecked());
-    checkboxes.append(ui->DevicesDialogBoxDataLogger8CheckBox->isChecked());
     return checkboxes;
 }
 
 void DevicesDialogBox::setCheckBoxes(QList<bool> checkBoxes)
 {
+    if (!checkboxes.isEmpty()){
+        checkboxes.clear();
+    }
     checkboxes = checkBoxes;
+    ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(checkboxes[0]);
+    ui->DevicesDialogBoxDataLogger1CheckBox->setChecked(checkboxes[1]);
+    ui->DevicesDialogBoxDataLogger2CheckBox->setChecked(checkboxes[2]);
+    ui->DevicesDialogBoxDataLogger3CheckBox->setChecked(checkboxes[3]);
+    ui->DevicesDialogBoxDataLogger4CheckBox->setChecked(checkboxes[4]);
+    ui->DevicesDialogBoxDataLogger5CheckBox->setChecked(checkboxes[5]);
+    ui->DevicesDialogBoxDataLogger6CheckBox->setChecked(checkboxes[6]);
+    ui->DevicesDialogBoxDataLogger7CheckBox->setChecked(checkboxes[7]);
+    ui->DevicesDialogBoxDataLogger8CheckBox->setChecked(checkboxes[8]);
 }
 
 
@@ -52,9 +55,10 @@ void DevicesDialogBox::on_DevicesDialogBoxButtons_clicked(QAbstractButton *butto
     }
 }
 
-void DevicesDialogBox::on_DevicesDialogBoxAllDataLoggersCheckBox_toggled(bool checked)
+
+void DevicesDialogBox::on_DevicesDialogBoxAllDataLoggersCheckBox_stateChanged(int arg1)
 {
-    if(checked == true){
+    if (arg1 == 2){
         ui->DevicesDialogBoxDataLogger1CheckBox->setChecked(true);
         ui->DevicesDialogBoxDataLogger2CheckBox->setChecked(true);
         ui->DevicesDialogBoxDataLogger3CheckBox->setChecked(true);
@@ -64,14 +68,69 @@ void DevicesDialogBox::on_DevicesDialogBoxAllDataLoggersCheckBox_toggled(bool ch
         ui->DevicesDialogBoxDataLogger7CheckBox->setChecked(true);
         ui->DevicesDialogBoxDataLogger8CheckBox->setChecked(true);
     }
-    if(checked == false){
-        ui->DevicesDialogBoxDataLogger1CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger2CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger3CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger4CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger5CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger6CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger7CheckBox->setChecked(false);
-        ui->DevicesDialogBoxDataLogger8CheckBox->setChecked(false);
+    checkboxes[0] = ui->DevicesDialogBoxAllDataLoggersCheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger1CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
     }
+    checkboxes[1] = ui->DevicesDialogBoxDataLogger1CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger2CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[2] = ui->DevicesDialogBoxDataLogger2CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger3CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[3] = ui->DevicesDialogBoxDataLogger3CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger4CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[4] = ui->DevicesDialogBoxDataLogger4CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger5CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[5] = ui->DevicesDialogBoxDataLogger5CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger6CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[6] = ui->DevicesDialogBoxDataLogger6CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger7CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[7] = ui->DevicesDialogBoxDataLogger7CheckBox->isChecked();
+}
+
+void DevicesDialogBox::on_DevicesDialogBoxDataLogger8CheckBox_stateChanged(int arg1)
+{
+    if (arg1 == 0){
+        ui->DevicesDialogBoxAllDataLoggersCheckBox->setChecked(false);
+    }
+    checkboxes[8] = ui->DevicesDialogBoxDataLogger8CheckBox->isChecked();
 }

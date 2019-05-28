@@ -13,25 +13,21 @@ quickViewsDialogBox::quickViewsDialogBox(QWidget *parent) :
 
 
     connect(ui->quickViewsDialogBoxAllDayRadioButton, &QRadioButton::released, [=](){
-        quickViewsDialogBox::captureCurrentButtons();
         quickViewsDialogBox::setCurrentRadioButton(1);
     });
 
 
     connect(ui->quickViewsDialogBoxBusinessHoursRadioBox, &QRadioButton::released, [=](){
-        quickViewsDialogBox::captureCurrentButtons();
         quickViewsDialogBox::setCurrentRadioButton(2);
     });
 
 
     connect(ui->quickViewsDialogBoxOvernightHoursRadioBox, &QRadioButton::released, [=](){
-        quickViewsDialogBox::captureCurrentButtons();
         quickViewsDialogBox::setCurrentRadioButton(3);
     });
 
 
     connect(ui->quickViewsDialogBoxSpecificHoursRadioBox, &QRadioButton::released, [=](){
-        quickViewsDialogBox::captureCurrentButtons();
         quickViewsDialogBox::setCurrentRadioButton(4);
     });
 }
@@ -70,6 +66,7 @@ void quickViewsDialogBox::on_quickViewsDialogBoxButtons_clicked(QAbstractButton 
 
     if(quickViewsStdButton == QDialogButtonBox::Reset){
         ui->quickViewsDialogBoxBusinessHoursRadioBox->setChecked(true);
+        currentButtonByAssociation = 2;
     }
     if(quickViewsStdButton == QDialogButtonBox::Ok){
         accept();
@@ -77,15 +74,4 @@ void quickViewsDialogBox::on_quickViewsDialogBoxButtons_clicked(QAbstractButton 
     if(quickViewsStdButton == QDialogButtonBox::Cancel){
         reject();
     }
-}
-
-void quickViewsDialogBox::captureCurrentButtons()
-{
-    if (!buttonStates.isEmpty()){
-        buttonStates.clear();
-    }
-    buttonStates.insert("All day", ui->quickViewsDialogBoxAllDayRadioButton);
-    buttonStates.insert("Business Hours", ui->quickViewsDialogBoxBusinessHoursRadioBox);
-    buttonStates.insert("Overnight Hours", ui->quickViewsDialogBoxOvernightHoursRadioBox);
-    buttonStates.insert("Specific Hours", ui->quickViewsDialogBoxSpecificHoursRadioBox);
 }

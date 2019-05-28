@@ -7,7 +7,8 @@
 #include <QDebug>
 #include <QPrinter>
 #include <QMessageBox>
-#include <widget.h>
+#include <QDir>
+
 
 ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     QDialog(parent),
@@ -19,17 +20,28 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     adjustSize();
     ui->ContactSupportDialogDetailedDescriptionLabel->setText("Please provide a detailed description.\nPlease include any actions attempted with User Manual.");
 
-    Widget *user = new Widget(this);
 
     ui->ContactSupportDialogDateTimeStampLabel->setText(QDateTime::currentDateTime().toString("MM dd yyyy h:mm:ss ap"));
-//    ui->ContactSupportDialogUserNameLabel->setText();
-//    ui->ContactSupportDialogUserEmailLabel->setText();
-//    ui->ContactSupportDialogUserTypeLabel->setText();
-//    ui->ContactSupportDialogCompanyNameLabel->setText();
-//    ui->ContactSupportDialogCompanyAddressLine1Label->setText();
-//    ui->ContactSupportDialogCompanyAddressLine2Label->setText();
-//    ui->ContactSupportDialogCompanyPhoneNumberLabel->setText();
-
+    ui->ContactSupportDialogUserNameLabel->setText(widget->getUserName());
+    ui->ContactSupportDialogUserEmailLabel->setText(widget->getUserEmail());
+    ui->ContactSupportDialogUserTypeLabel->setText(widget->getUserType());
+    QFile file(widget->getLogFolder() + "/CompanyInfo.txt");
+    if (!file.exists()){
+        qDebug() << "file does not exist";
+    } else{
+        if (file.open(QIODevice::ReadOnly)){
+            QTextStream in(&file);
+            QString myFileText = in.readAll();
+            qDebug() << myFileText;
+            QStringList myText = myFileText.split("\n");
+            ui->ContactSupportDialogCompanyNameLabel->setText(myText[0]);
+            ui->ContactSupportDialogCompanyAddressLine1Label->setText(myText[1]);
+            ui->ContactSupportDialogCompanyAddressLine2Label->setText(myText[2]);
+            ui->ContactSupportDialogCompanyPhoneNumberLabel->setText(myText[3]);
+        }else{
+            qDebug() << "File currently does not exist";
+        }
+    }
     connect(ui->ContactSupportDialogTextEdit, &QTextEdit::textChanged, this, &ContactSupportDialog::checkMinimumCharacterCount);
 }
 
@@ -41,9 +53,19 @@ ContactSupportDialog::~ContactSupportDialog()
 
 void ContactSupportDialog::writeToPDF()
 {
-    Widget *widget = new Widget(this);
-    QString directory = widget->getLogFolder();
-    QString fileName =  directory + "Test.txt";
+    directory = widget->getPDFFolder();
+
+    QDir dir(directory);
+    QStringList files = dir.entryList(QDir::NoDotAndDotDot | QDir::Files);
+    int fileMatchedCount = 0;
+    for (int f = 0; f < files.length(); f++){
+        if (files[f].contains("ContactSupportForm")){
+            fileMatchedCount++;
+        }
+    }
+
+
+    QString fileName =  directory + "/ContactSupportForm" + QString::number(fileMatchedCount) +".txt";
     QFile file(fileName);
     if (file.open(QIODevice::ReadWrite)){
         QTextStream stream(&file);
@@ -62,13 +84,16 @@ void ContactSupportDialog::writeToPDF()
 
         stream << ui->ContactSupportDialogDetailedDescriptionLabel->text() << endl;
         stream << ui->ContactSupportDialogTextEdit->toPlainText() << endl;
+        stream << endl << endl;
+
+        stream << captureLogs();
     }
     file.close();
 
+//    captureLogs();
     QTextDocument doc;
     QFile file2(fileName);
     if (file2.open(QIODevice::ReadOnly|QIODevice::Text)){
-
         QTextStream in(&file2);
         QString myText = in.readAll();
         doc.setPlainText(myText);
@@ -78,8 +103,48 @@ void ContactSupportDialog::writeToPDF()
 
     QPrinter pdfFile;
     pdfFile.setOutputFormat(QPrinter::PdfFormat);
-    pdfFile.setOutputFileName(directory + "/Test.pdf");
+    fileName = fileName.split(".").front();
+    pdfFile.setOutputFileName(fileName + ".pdf");
     doc.print(&pdfFile);
+    qDebug() << fileName;
+    qDebug() << fileName + ".pdf";
+    attachPDF(fileName + ".pdf");
+}
+
+QString ContactSupportDialog::captureLogs()
+{
+    QDir dir("C:/ShareToUbuntu/logs");
+    QStringList files = dir.entryList(QDir::NoDotAndDotDot | QDir::Files);
+    qDebug() << files;
+    QString fileDetails = "";
+
+    fileDetails.append("LOG FILES");
+    fileDetails.append("\n==========================================================");
+    fileDetails.append("\n==========================================================\n");
+
+
+    for (int i = 0; i < files.length(); i++){
+        qDebug() << files[i];
+        QFile file("C:/ShareToUbuntu/logs/" + files[i]);
+        fileDetails.append("FILE NAME:\t" + files[i]);
+        fileDetails.append("\n==========================================================\n");
+        QFileInfo fileInfo(file);
+        QDateTime dateTimeA = fileInfo.lastModified();
+        QString dateTimeB = dateTimeA.toString();
+        fileDetails.append("DATE LAST MODIFIED:\t" + dateTimeB);
+        fileDetails.append("\n==========================================================\n");
+        fileDetails.append("FILE CONTENT:\n==========================================================\n");
+        if (file.open(QIODevice::ReadOnly|QIODevice::Text)){
+            QTextStream in(&file);
+            QString fileText = in.readAll();
+            fileDetails.append(fileText);
+        } else{
+            fileDetails.append("Log Details Unrecoverable");
+        }
+        fileDetails.append("==========================================================");
+        fileDetails.append("\n\n");
+    }
+    return fileDetails;
 }
 
 void ContactSupportDialog::checkMinimumCharacterCount()
@@ -98,7 +163,6 @@ void ContactSupportDialog::checkMinimumCharacterCount()
 }
 
 
-
 void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractButton *button)
 {
     QDialogButtonBox::StandardButton stdButton = ui->ContactSupportDialogButtonBox->standardButton(button);
@@ -106,6 +170,7 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
     if(stdButton == QDialogButtonBox::Ok){
         if (minimumCharactersMet == true){
             writeToPDF();
+            sendMail();
             accept();
         } else{
             QMessageBox::warning(this, tr("Incomplete"), "You must meet the 250 minimum character count.");
@@ -125,18 +190,29 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
     }
 }
 
-//void ContactSupportDialog::sendMail()
-//{
-//    Smtp* smtp = new Smtp(ui->uname->text(), ui->paswd->text(), ui->server->text(), ui->port->text().toInt());
-//    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+void ContactSupportDialog::sendMail()
+{
+//    qDebug() << "in sendMail";
+    Smtp *smtp = new Smtp("hutempcs@gmail.com", "|WjzL]sa[|3", "smtp.gmail.com", 465);
+    connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
 
+    if(!files.isEmpty()){
+//        qDebug() << "!files.isEmpty()";
+        smtp->sendMail("hutempcs@gmail.com", "hutempcs@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)", files );
+    } else{
+//        qDebug() << "files.isEmpty()";
+        smtp->sendMail("hutempcs@gmail.com", "hutempcs@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)");
+    }
+}
 
-//    smtp->sendMail(ui->uname->text(), ui->rcpt->text() , ui->subject->text(),ui->msg->toPlainText());
-//}
+void ContactSupportDialog::mailSent(QString status)
+{
+    if(status == "Message sent"){
+        QMessageBox::warning(this, "Contact Support", "Message sent!");
+    }
+}
 
-//void ContactSupportDialog::mailSent(QString status)
-//{
-//    if(status == "Message sent"){
-//        QMessageBox::information(this,tr("Confirmation"), "Message sent!\n\n");
-//    }
-//}
+void ContactSupportDialog::attachPDF(QString fileName)
+{
+    files.append(fileName);
+}

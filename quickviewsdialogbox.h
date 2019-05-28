@@ -21,8 +21,6 @@ public:
 
 private slots:
     void on_quickViewsDialogBoxButtons_clicked(QAbstractButton *button);
-    void captureCurrentButtons();
-
 
 private:
     Ui::quickViewsDialogBox *ui;

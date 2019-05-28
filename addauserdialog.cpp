@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QDebug>
+#include <QSqlQuery>
 
 
 
@@ -22,6 +23,8 @@ AddAUserDialog::AddAUserDialog(QWidget *parent) :
     ui->AddAUserDialogLastNameLineEdit->setPlaceholderText(userContent[1]);
     ui->AddAUserDialogPhoneNumberLineEdit->setPlaceholderText(userContent[2]);
     ui->AddAUserDialogEmailLineEdit->setPlaceholderText(userContent[3]);
+    QDate tomorrow(QDate::currentDate().year(), QDate::currentDate().month(), QDate::currentDate().day()+1);
+    ui->AddAUserDialogHireDateDateEdit->setDate(tomorrow);
     setUserInfoRequirements(ui);
 
     customInfoMessageBox("Start", "Start with entering in the User's Name and Contact Information");
@@ -132,6 +135,7 @@ void AddAUserDialog::setEmailPermission(bool truth)
     ui->AddAUserDialogEmailCheckBox->setChecked(truth);
 }
 
+
 QStringList AddAUserDialog::getUserInfo() const
 {
     QStringList userInfo {};
@@ -139,6 +143,7 @@ QStringList AddAUserDialog::getUserInfo() const
     userInfo.append(ui->AddAUserDialogLastNameLineEdit->text());
     userInfo.append(ui->AddAUserDialogPhoneNumberLineEdit->text());
     userInfo.append(ui->AddAUserDialogEmailLineEdit->text());
+    userInfo.append(ui->AddAUserDialogHireDateDateEdit->date().toString("MM-dd-yyyy"));
     return userInfo;
 }
 
@@ -153,13 +158,14 @@ void AddAUserDialog::on_AddAUserDialogButtonBox_clicked(QAbstractButton *button)
         if (!ui->AddAUserDialogFirstNameLineEdit->text().isEmpty() &&
                 !ui->AddAUserDialogLastNameLineEdit->text().isEmpty() &&
                 !ui->AddAUserDialogPhoneNumberLineEdit->text().isEmpty() &&
-                !ui->AddAUserDialogEmailLineEdit->text().isEmpty()){
+                !ui->AddAUserDialogEmailLineEdit->text().isEmpty() &&
+                !(ui->AddAUserDialogHireDateDateEdit->date() > QDate::currentDate())){
             reply = QMessageBox::question(this, tr("Confirmation"), "Is all the information you entered correct?", QMessageBox::Yes | QMessageBox::No);
             if (reply == QMessageBox::Yes){
                 accept();
             }
         } else {
-            QMessageBox::warning(this, tr("Warning"), "First Name, Last Name, Phone Number, and Email are required!");
+            QMessageBox::warning(this, tr("Warning"), "First Name, Last Name, Phone Number, and Email are required!\nDate also cannot be any sooner than today!");
         }
 
     }
@@ -199,9 +205,38 @@ void AddAUserDialog::checkUserInfoInput(Ui::AddAUserDialog *ui)
             !ui->AddAUserDialogPhoneNumberLineEdit->text().isEmpty() && !ui->AddAUserDialogEmailLineEdit->text().isEmpty() &&
             ui->AddAUserDialogFirstNameLineEdit->hasAcceptableInput() && ui->AddAUserDialogLastNameLineEdit->hasAcceptableInput() &&
             ui->AddAUserDialogPhoneNumberLineEdit->hasAcceptableInput() && ui->AddAUserDialogEmailLineEdit->hasAcceptableInput()){
-        customInfoMessageBox("Permissions", "Moving on to the permissions for this user.");
 
-        getUserPermissions(ui);
+        QSqlQuery selectQuery;
+        selectQuery.exec("SELECT * FROM users");
+        bool validation = true;
+        while (selectQuery.next()){
+            QString firstName = selectQuery.value(1).toString();
+            QString lastName = selectQuery.value(2).toString();
+            QString email = selectQuery.value(4).toString();
+            QString phoneNumber = selectQuery.value(6).toString();
+            if (ui->AddAUserDialogFirstNameLineEdit->text() == firstName ||
+                    ui->AddAUserDialogLastNameLineEdit->text() == lastName ||
+                    ui->AddAUserDialogEmailLineEdit->text() == email ||
+                    ui->AddAUserDialogPhoneNumberLineEdit->text() == phoneNumber){
+                QString statement = "You must enter unique information for the following:\n";
+                statement += "\t- First Name\n";
+                statement += "\t- Last Name\n";
+                statement += "\t- Email\n";
+                statement += "\t- Phone Number\n";
+                QMessageBox::warning(this, tr("INVALID ENTRY"), statement);
+                validation = false;
+                ui->AddAUserDialogFirstNameLineEdit->clear();
+                ui->AddAUserDialogLastNameLineEdit->clear();
+                ui->AddAUserDialogEmailLineEdit->clear();
+                ui->AddAUserDialogPhoneNumberLineEdit->clear();
+                break;
+            }
+        }
+        if (validation == true){
+            customInfoMessageBox("Permissions", "Moving on to the permissions for this user.");
+
+            getUserPermissions(ui);
+        }
     }
 
 }

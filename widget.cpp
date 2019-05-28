@@ -28,7 +28,12 @@ Widget::Widget(QWidget *parent) :
 
 QString Widget::getLogFolder()
 {
-    return createdDirectory;
+    return logsDirectory;
+}
+
+QString Widget::getPDFFolder()
+{
+    return pdfDirectory;
 }
 
 Widget::~Widget()
@@ -38,6 +43,7 @@ Widget::~Widget()
 
 void Widget::setWidgetConfigs()
 {
+    connectToDatabase();
     setWindowTitle(title);
     QRect rect = QGuiApplication::primaryScreen()->geometry();
     int screenHeight = rect.height();
@@ -70,8 +76,8 @@ void Widget::setWidgetConfigs()
     //set default program upon opening
     setDefaults();
 
+
     createDirectories();
-    connectToDatabase();
 }
 
 void Widget::setTabWidgetConfigs(int widgetWidth, int widgetHeight)
@@ -110,6 +116,9 @@ void Widget::setUACTabConfigs()
         ui->UACTableWidget->setColumnWidth(i, 120);
     }
     ui->UACTableWidget->setAlternatingRowColors(true);
+    ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
+    ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(false);
+    populateTableWidget();
 }
 
 void Widget::setDevicesTabConfigs()
@@ -139,8 +148,6 @@ void Widget::setDevicesTabConfigs()
 void Widget::setReportsTabConfigs()
 {
     ui->reportsTabNestedWidget->setFixedSize(ui->reportsTab->width(), ui->reportsTab->height());
-    QPixmap pix(":/icons/calendar.png");
-    QIcon icon(pix);
     ui->reportsTabNestedWidgetEndDateDateEdit->setDate(QDate::currentDate());
     ui->reportsTabNestedWidgetStartDateDateEdit->setCalendarPopup(true);
     ui->reportsTabNestedWidgetEndDateDateEdit->setCalendarPopup(true);
@@ -162,88 +169,89 @@ void Widget::setDefaults()
     //    ui->tabWidget->setTabEnabled(4, false);
 }
 
-void Widget::addUserRowToTableWidget(AddAUserDialog *user)
+void Widget::populateTableWidget()
 {
-    ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
-
-    QStringList usersInfo = user->getUserInfo();
-    QTableWidgetItem *userName = new QTableWidgetItem(usersInfo[0] + " " + usersInfo[1]);
-    QTableWidgetItem *userEmail = new QTableWidgetItem(usersInfo[3]);
-    QTableWidgetItem *userNumber = new QTableWidgetItem(usersInfo[2]);
-    userName->setFlags(Qt::NoItemFlags);
-    userEmail->setFlags(Qt::NoItemFlags);
-    userNumber->setFlags(Qt::NoItemFlags);
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1 ,0, userName);
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmail);
-    ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
-
-
-    QList<bool> permissions {};
-    permissions.append(user->getDataLoggerPermission());//0
-    permissions.append(user->getAddDevicePermission());//1
-    permissions.append(user->getModifyDevicePermission());//2
-    permissions.append(user->getRemoveDevicePermission());//3
-    permissions.append(user->getUserAdminPermission());//4
-    permissions.append(user->getReportsPermission());//5
-    permissions.append(user->getSettingsPermission());//6
-    permissions.append(user->getNotificationsPermission());//7
-    permissions.append(user->getNetworksPermission());//8
-    permissions.append(user->getEmailPermission());//9
-    for (int i = 0; i < permissions.length(); i++){
-        QWidget *checkBoxWidget = new QWidget();
-        QCheckBox *checkBox = new QCheckBox();
-        QHBoxLayout *layout = new QHBoxLayout(checkBoxWidget);
-        if (permissions[i] == true){
-            checkBox->setCheckState(Qt::Checked);
-        } else {
-            checkBox->setCheckState(Qt::Unchecked);
-        }
-        checkBox->setEnabled(false);
-        checkBox->setObjectName("checkbox");
-        layout->addWidget(checkBox);
-        layout->setAlignment(Qt::AlignCenter);
-        layout->setContentsMargins(0,0,0,0);
-        checkBoxWidget->setLayout(layout);
-        ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
+    if (ui->UACTableWidget->rowCount() > 0){
+        ui->UACTableWidget->clear();
     }
+    QSqlQuery getUserTableQuery;
+    QString selectStatement = "SELECT * FROM users WHERE activestatus = 1";
+    getUserTableQuery.exec(selectStatement);
+//    int rowCount = 0;
+    if (getUserTableQuery.size() > 0){
+        while (getUserTableQuery.next()){
+//            rowCount += 1;
+            ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
 
+            QString firstName = getUserTableQuery.value(1).toString();
+            QString lastName = getUserTableQuery.value(2).toString();
+            QTableWidgetItem *userName = new QTableWidgetItem(firstName + " " + lastName);
+            QTableWidgetItem *userEmail = new QTableWidgetItem(getUserTableQuery.value(4).toString());
+            QTableWidgetItem *userNumber = new QTableWidgetItem(getUserTableQuery.value(6).toString());
+            QTableWidgetItem *userHireDate = new QTableWidgetItem(getUserTableQuery.value(5).toString());
+            userName->setFlags(Qt::NoItemFlags);
+            userEmail->setFlags(Qt::NoItemFlags);
+            userNumber->setFlags(Qt::NoItemFlags);
+            userHireDate->setFlags(Qt::NoItemFlags);
+            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1,0, userName);
+            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmail);
+            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
+            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 13, userHireDate);
 
-    QWidget *resetButtonWidget = new QWidget();
-    QPushButton *resetButton = new QPushButton();
-    resetButton->setText("Reset Password");
-    QHBoxLayout *resetButtonlayout = new QHBoxLayout(resetButtonWidget);
-    connect(resetButton, &QPushButton::clicked, this, &Widget::resetPassword, Qt::UniqueConnection);
-    resetButtonlayout->addWidget(resetButton);
-    resetButtonlayout->setAlignment(Qt::AlignCenter);
-    resetButtonlayout->setContentsMargins(0,0,0,0);
-    resetButtonWidget->setLayout(resetButtonlayout);
-    resetButtonWidget->setEnabled(false);
-    ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 13, resetButtonWidget);
+            bool ok;
+            QString userPermissions = getUserTableQuery.value(7).toString();
+            int hexToBinary = userPermissions.toInt(&ok, 16);
+            QString binary = QString::number(hexToBinary, 2);
+            for (int i = 0; i < binary.count(); i++){
+                QWidget *checkBoxWidget = new QWidget();
+                QCheckBox *checkBox = new QCheckBox();
+                QHBoxLayout *layout = new QHBoxLayout(checkBoxWidget);
+                if (binary[i] == '1'){
+                    checkBox->setCheckState(Qt::Checked);
+                } else if (binary[i] == '0'){
+                    checkBox->setCheckState(Qt::Unchecked);
+                }
+                checkBox->setEnabled(false);
+                checkBox->setObjectName("checkbox");
+                layout->addWidget(checkBox);
+                layout->setAlignment(Qt::AlignCenter);
+                layout->setContentsMargins(0,0,0,0);
+                checkBoxWidget->setLayout(layout);
+                ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
+            }
 
+            QWidget *resetButtonWidget = new QWidget();
+            QPushButton *resetButton = new QPushButton();
+            resetButton->setText("Reset Password");
+            QHBoxLayout *resetButtonlayout = new QHBoxLayout(resetButtonWidget);
+            connect(resetButton, &QPushButton::clicked, this, &Widget::resetPassword, Qt::UniqueConnection);
+            resetButtonlayout->addWidget(resetButton);
+            resetButtonlayout->setAlignment(Qt::AlignCenter);
+            resetButtonlayout->setContentsMargins(0,0,0,0);
+            resetButtonWidget->setLayout(resetButtonlayout);
+            resetButtonWidget->setEnabled(false);
+            ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, resetButtonWidget);
 
-
-    QWidget *deleteButtonWidget = new QWidget();
-    QPushButton *deleteButton = new QPushButton();
-    deleteButton->setText("Delete");
-    QHBoxLayout *deleteButtonlayout = new QHBoxLayout(deleteButtonWidget);
-    connect(deleteButton, &QPushButton::clicked, this, &Widget::monitorDeleteUsers, Qt::UniqueConnection);
-    deleteButtonlayout->addWidget(deleteButton);
-    deleteButtonlayout->setAlignment(Qt::AlignCenter);
-    deleteButtonlayout->setContentsMargins(0,0,0,0);
-    deleteButtonWidget->setLayout(deleteButtonlayout);
-    deleteButtonWidget->setEnabled(false);
-    ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, deleteButtonWidget);
-
-    qDebug() << "user added";
-
-
+            QWidget *deleteButtonWidget = new QWidget();
+            QPushButton *deleteButton = new QPushButton();
+            deleteButton->setText("Delete");
+            QHBoxLayout *deleteButtonlayout = new QHBoxLayout(deleteButtonWidget);
+            connect(deleteButton, &QPushButton::clicked, this, &Widget::monitorDeleteUsers, Qt::UniqueConnection);
+            deleteButtonlayout->addWidget(deleteButton);
+            deleteButtonlayout->setAlignment(Qt::AlignCenter);
+            deleteButtonlayout->setContentsMargins(0,0,0,0);
+            deleteButtonWidget->setLayout(deleteButtonlayout);
+            deleteButtonWidget->setEnabled(false);
+            ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 15, deleteButtonWidget);
+        }
+    }
+//    qDebug() << "user added";
 }
 
 void Widget::monitorAdminStatus()
 {
-    qDebug() << "in monitorAdminStatus";
-    qDebug() << "current index is: " << monitorAdminIndexRow;
-
+//    qDebug() << "in monitorAdminStatus";
+//    qDebug() << "current index is: " << monitorAdminIndexRow;
     QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 5);
     monitorAdminCheckBox = widget->findChild<QCheckBox *>();
     connect(monitorAdminCheckBox, &QCheckBox::toggled, this, &Widget::checkAdminBox, Qt::UniqueConnection);
@@ -251,17 +259,17 @@ void Widget::monitorAdminStatus()
 
 void Widget::checkAdminBox()
 {
-    qDebug() << "in checkAdminBox";
+//    qDebug() << "in checkAdminBox";
 
     if (monitorAdminCheckBox->isChecked()){
-        qDebug() << "admin box is checked";
+//        qDebug() << "admin box is checked";
         for (int j = 1; j < 11; j++){
             QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, j);
             QCheckBox *checkBox = widget->findChild<QCheckBox *>();
             checkBox->setCheckState(Qt::Checked);
         }
     } else if (!monitorAdminCheckBox->isChecked()){
-        qDebug() << "admin box is unchecked";
+//        qDebug() << "admin box is unchecked";
         for (int j = 1; j < 11; j++){
             QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, j);
             QCheckBox *checkBox = widget->findChild<QCheckBox *>();
@@ -286,16 +294,14 @@ void Widget::monitorDeleteUsers()
 
 void Widget::archiveUser()
 {
-    //connect to database
     //locate user in user USER TABLE using USER ID
     //change active status to false
-    //capture user's first and last name
-    //remove from UACTableWidget
+    //update table widget with user table
 }
 
 void Widget::setDefaultPermissions(int i)
 {
-    qDebug() << "in setDefaultPermissions";
+//    qDebug() << "in setDefaultPermissions";
     QWidget *widget = ui->UACTableWidget->cellWidget(i, 1);
     QCheckBox *checkBox = widget->findChild<QCheckBox *>();
     checkBox->setChecked(true);
@@ -339,34 +345,32 @@ void Widget::setDefaultPermissions(int i)
 
 void Widget::resetPassword()
 {
-    qDebug() << "reset password button clicked for row";
+//    qDebug() << "reset password button clicked for row";
     newTempPassword = alphaNumGenerator();
-    qDebug() << newTempPassword;
-
-
+//    qDebug() << newTempPassword;
 }
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
 {
     quickViewsDialogBox *quickViews = new quickViewsDialogBox(this);
 
-    quickViews->setCurrentRadioButton(currentButtonByAssociation);
+    quickViews->setCurrentRadioButton(quickViewsRadioButton);
 
     connect(quickViews, &quickViewsDialogBox::accepted, [=](){
-        currentButtonByAssociation = quickViews->getCurrentRadioButton();
-        if (currentButtonByAssociation == 1){
+        quickViewsRadioButton = quickViews->getCurrentRadioButton();
+        if (quickViewsRadioButton == 1){
             QDateTime fullDay = QDateTime::currentDateTime();
             QDateTime yesterday = fullDay.addDays(-1);
             ui->reportsTabNestedWidgetEndDateDateEdit->setDate(fullDay.date());
             ui->reportsTabNestedWidgetStartDateDateEdit->setDate(yesterday.date());
             ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(fullDay.time());
             ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(fullDay.time());
-        } else if (currentButtonByAssociation == 2){
+        } else if (quickViewsRadioButton == 2){
             QTime time = QTime(openCloseHoursMinutes[0], openCloseHoursMinutes[1]);
             ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(time);
             time = QTime(openCloseHoursMinutes[2], openCloseHoursMinutes[3]);
             ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(time);
-        } else if (currentButtonByAssociation == 3){
+        } else if (quickViewsRadioButton == 3){
             QTime time = QTime(openCloseHoursMinutes[2], openCloseHoursMinutes[3]+1);
             ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(time);
             if (openCloseHoursMinutes[1] == 0){
@@ -375,14 +379,12 @@ void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
                 time = QTime(openCloseHoursMinutes[0], openCloseHoursMinutes[1]-1);
             }
             ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(time);
-        } else if (currentButtonByAssociation == 4){
+        } else if (quickViewsRadioButton == 4){
             ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(QTime(0,0));
             ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(QTime(0,0));
         }
     });
     quickViews->show();
-
-
 }
 
 void Widget::on_reportsTabNestedWidgetZonesPushButton_clicked()
@@ -399,7 +401,6 @@ void Widget::on_reportsTabNestedWidgetZonesPushButton_clicked()
         zonesCheckBoxes = zones->getCheckBoxes();
     });
     zones->show();
-
 }
 
 void Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked()
@@ -410,6 +411,7 @@ void Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked()
             devicesCheckBoxes.append(true);
         }
     }
+    devices->setCheckBoxes(devicesCheckBoxes);
     connect(devices, &DevicesDialogBox::accepted, [=](){
         devicesCheckBoxes.clear();
         devicesCheckBoxes = devices->getCheckBoxes();
@@ -420,12 +422,27 @@ void Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked()
 void Widget::on_reportsTabNestedWidgetReadingsPushButton_clicked()
 {
     ReadingsDialogBox *readings = new ReadingsDialogBox(this);
+    if (readingsCheckBoxes.isEmpty()){
+        for (int i = 0; i < 3; i++){
+            readingsCheckBoxes.append(true);
+        }
+    }
+    readings->setCheckBoxes(readingsCheckBoxes);
+    connect(readings, &ReadingsDialogBox::accepted, [=](){
+        readingsCheckBoxes.clear();
+        readingsCheckBoxes = readings->getCheckBoxes();
+    });
     readings->show();
 }
 
 void Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked()
 {
     PeriodsDialogBox *periods = new PeriodsDialogBox(this);
+    periods->setCurrentRadioButton(periodsRadioButton);
+
+    connect(periods, &PeriodsDialogBox::accepted, [=](){
+        periodsRadioButton = periods->getCurrentRadioButton();
+    });
     periods->show();
 }
 
@@ -440,7 +457,7 @@ void Widget::on_UACAddAUserButton_clicked()
     AddAUserDialog *addUser = new AddAUserDialog(this);
     connect(addUser, &AddAUserDialog::accepted, [=](){
         addUserToUserTable(addUser);
-        addUserRowToTableWidget(addUser);
+        populateTableWidget();
     });
 
     addUser->show();
@@ -459,45 +476,28 @@ void Widget::on_UACPreviousUsersButton_clicked()
 
 void Widget::on_UACTableWidget_itemClicked(QTableWidgetItem *item)
 {
-    monitorAdminIndexRow = item->row();
-    item->setTextColor("green");
-    selectedItemFont = item->font();
-    QFont font;
-    font.setBold(true);
-    font.setFamily("Consolas");
-    item->setFont(font);
-    UACTableWidgetItem = item;
-    ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(true);
-}
-
-void Widget::captureAdditionalAdminData(AdditionalSettingsNotificationsDialog *additionalSettings)
-{
-    if (!openCloseHoursMinutes.isEmpty()){
-        openCloseHoursMinutes.clear();
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
+//    qDebug() << "in itemClicked";
+    if (ui->UACadminViewScreenPageNestedWidgetEditButton->isEnabled() || ui->UACadminViewScreenPageNestedWidgetSaveButton->isEnabled())
+    {
+        QMessageBox::warning(this, tr("Error"), "You can only select one user at a time!");
     } else{
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
-        openCloseHoursMinutes.append(0);
+        item->setTextColor("green");
+        selectedItemFont = item->font();
+        QFont font;
+        font.setBold(true);
+        font.setFamily("Consolas");
+        if (UACTableWidgetItem->text() == nullptr){
+            UACTableWidgetItem = item;
+        } else{
+            if (UACTableWidgetItem != item){
+                UACTableWidgetItem->setTextColor("black");
+                UACTableWidgetItem->setFont(selectedItemFont);
+                UACTableWidgetItem = item;
+            }
+        }
+        monitorAdminIndexRow = UACTableWidgetItem->row();
+        ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(true);
     }
-
-    int hour = additionalSettings->getOpenTimeHour();
-    int minute = additionalSettings->getOpenTimeMinute();
-    openCloseHoursMinutes[0] = hour;
-    openCloseHoursMinutes[1] = minute;
-
-    hour = additionalSettings->getCloseTimeHour();
-    minute = additionalSettings->getCloseTimeMinute();
-    openCloseHoursMinutes[2] = hour;
-    openCloseHoursMinutes[3] = minute;
-
-    companyAddress = additionalSettings->getCompanyAddress();
-    companyName = additionalSettings->getCompanyName();
-    companyPhoneNumber = additionalSettings->getCompanyPhoneNumber();
 }
 
 void Widget::on_settingsTabNestedWidgetnotificationsPushButton_clicked()
@@ -505,22 +505,19 @@ void Widget::on_settingsTabNestedWidgetnotificationsPushButton_clicked()
     AdditionalSettingsNotificationsDialog *additionalSettings = new AdditionalSettingsNotificationsDialog(this);
 
 
-    setAdditionalAdminData(additionalSettings);
+//    setAdditionalAdminData(additionalSettings);
 
     connect(additionalSettings, &AdditionalSettingsNotificationsDialog::accepted, [=](){
-        captureAdditionalAdminData(additionalSettings);
-        qDebug() << "main widget layer";
-        qDebug() << openCloseHoursMinutes;
-        qDebug() << companyName;
-        qDebug() << companyAddress;
-        qDebug() << companyPhoneNumber;
+//        captureAdditionalAdminData(additionalSettings);
+//        qDebug() << "main widget layer";
+//        qDebug() << openCloseHoursMinutes;
     });
     additionalSettings->show();
 }
 
 void Widget::toggleAdminUACCheckBoxStatuses()
 {
-
+//    qDebug() << "in toggleAdminUACCheckBoxStatuses";
     for (int i = 1; i < 11; i++){
         QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
         QCheckBox *checkBox = widget->findChild<QCheckBox *>();
@@ -531,14 +528,14 @@ void Widget::toggleAdminUACCheckBoxStatuses()
         }
     }
 
-    QWidget *widgetButton = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 13);
+    QWidget *widgetButton = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 14);
     if(!widgetButton->isEnabled()){
         widgetButton->setEnabled(true);
     } else if (widgetButton->isEnabled()){
         widgetButton->setEnabled(false);
     }
 
-    QWidget *widgetButton2 = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 14);
+    QWidget *widgetButton2 = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 15);
     if(!widgetButton2->isEnabled()){
         widgetButton2->setEnabled(true);
     } else if (widgetButton2->isEnabled()){
@@ -546,54 +543,110 @@ void Widget::toggleAdminUACCheckBoxStatuses()
     }
 }
 
-void Widget::setAdditionalAdminData(AdditionalSettingsNotificationsDialog *additionalSettings)
-{
-    additionalSettings->setOpenTime(openCloseHoursMinutes[0], openCloseHoursMinutes[1]);
-    additionalSettings->setCloseTime(openCloseHoursMinutes[2], openCloseHoursMinutes[3]);
-    additionalSettings->setCompanyName(companyName);
-    additionalSettings->setCompanyAddress(companyAddress);
-    additionalSettings->setCompanyPhoneNumber(companyPhoneNumber);
-}
-
 void Widget::on_UACadminViewScreenPageNestedWidgetEditButton_clicked()
 {
-    toggleAdminUACCheckBoxStatuses();
+    qDebug() << "editButton clicked";
+    qDebug() << "current index = " << monitorAdminIndexRow;
+    ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
+    ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(true);
     monitorAdminStatus();
-    ui->UACadminViewScreenPageNestedWidgetEditButton->setText("Save");
-    connect(ui->UACadminViewScreenPageNestedWidgetEditButton, &QPushButton::clicked, [=](){
-        //capture the permissions that were just saved
-        QList<bool> userPerms;
-        for (int i = 1; i < 11; i++){
-            QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
-            QCheckBox *checkBox = widget->findChild<QCheckBox *>();
-            userPerms.append(checkBox->isChecked());
-        }
-        //convert to hex
-        QString binaryToHex;
-        for (int i = 0; i < userPerms.count(); i++){
-            binaryToHex.append(QString::number(userPerms[i]));
-        }
-        bool ok;
-        int hex = binaryToHex.toInt(&ok, 2);
-        QString finalHex = QString::number(hex, 16);
-        //update database permission for user
-        //WILL NEED TO CHECK THIS FOR SUCCESS ONCE FULL DATABASE COMMUNICATIONS ARE OCCURRING
-        QString updateQuery;
-        updateQuery = QString("UPDATE users SET perms = " + finalHex);
-        updateQuery.append(" WHERE firstname = ");
-        QString fullName = ui->UACTableWidget->item(monitorAdminIndexRow, 0)->text();
-        updateQuery.append(fullName.split(" ").front());
-        updateQuery.append(" AND lastname = ");
-        updateQuery.append(fullName.split(" ").back());
-        QSqlQuery update;
-        update.exec(updateQuery);
+    toggleAdminUACCheckBoxStatuses();
+}
 
-        ui->UACadminViewScreenPageNestedWidgetEditButton->setText("Edit");
-        ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
-        UACTableWidgetItem->setTextColor("black");
-        UACTableWidgetItem->setFont(selectedItemFont);
-        monitorAdminIndexColumn = 0;
-    });
+void Widget::on_UACadminViewScreenPageNestedWidgetSaveButton_clicked()
+{
+    qDebug() << "save button clicked";
+    qDebug() << "current index = " << monitorAdminIndexRow;
+    UACTableWidgetItem->setTextColor("black");
+    UACTableWidgetItem->setFont(selectedItemFont);
+    QList<bool> userPerms;
+    for (int i = 1; i < 11; i++){
+        QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
+        QCheckBox *checkBox = widget->findChild<QCheckBox *>();
+        userPerms.append(checkBox->isChecked());
+    }
+    //convert to hex
+    QString binaryToHex;
+    for (int i = 0; i < userPerms.count(); i++){
+        binaryToHex.append(QString::number(userPerms[i]));
+    }
+    bool ok;
+    int hex = binaryToHex.toInt(&ok, 2);
+    QString finalHex = QString::number(hex, 16);
+
+    QString fullName = ui->UACTableWidget->item(monitorAdminIndexRow, 0)->text();
+    QString updateQueryStatement = QString("UPDATE users SET permissions = '%1' WHERE firstname = '%2' and lastname = '%3'")
+            .arg(finalHex)
+            .arg(fullName.split(" ").front())
+            .arg(fullName.split(" ").back());
+    QSqlQuery updateQuery;
+    updateQuery.exec(updateQueryStatement);
+    ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(false);
+    toggleAdminUACCheckBoxStatuses();
+}
+
+void Widget::sendMail(QString userEmail, QString tempPassword)
+{
+    //    qDebug() << "in sendMail";
+        Smtp *smtp = new Smtp("hutempcs@gmail.com", "|WjzL]sa[|3", "smtp.gmail.com", 465);
+        connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+        QString subjectLine = "HuTemp - New Account -->(DO NOT REPLY TO THIS EMAIL)";
+        QString message = "You account has been activated for HuTemp use. "
+                          "Please review the following information below.\n\n";
+        message += "Login Credentials:\n\t";
+        message += "Username:\t";
+        message += userEmail;
+        message += "\n\tTemporary Password:\t";
+        message += tempPassword;
+        message += "\n\n\n\n";
+        message += "Please make an attempt to login with these credentials.\n";
+        message += "For support, review the User Manual, or contact your manager.\n";
+        message += "\n\n\n=========================================";
+        message += "DO NOT REPLY TO THIS EMAIL";
+
+
+        if(!files.isEmpty()){
+    //        qDebug() << "!files.isEmpty()";
+            smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message, files );
+        } else{
+    //        qDebug() << "files.isEmpty()";
+            smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message);
+        }
+}
+
+void Widget::mailSent(QString status)
+{
+    if(status == "Message sent"){
+        QMessageBox::warning(this, "New Account", "Notify the account holder to check their email for their login credentials.");
+    }
+}
+
+void Widget::addUserToLoginTable(QString userEmail)
+{
+    QSqlQuery checkQuery;
+    checkQuery.exec("SELECT * FROM login");
+    bool check = true;
+    while (checkQuery.next()){
+        QString username = checkQuery.value(1).toString();
+        if (userEmail == username){
+            QMessageBox::warning(this, tr("CRITICAL ERROR"), "This user email has already been used! Provide a different email!");
+            check = false;
+            break;
+        }
+    }
+    if (check == true){
+        qDebug() << "check is true";
+        QSqlQuery insertQuery;
+        resetPassword();
+        QString insertStatement = QString("INSERT INTO login (username, password, temporarypassword) VALUES ('%1', '%2', 1)").arg(userEmail).arg(newTempPassword);
+        if (insertQuery.exec(insertStatement)){
+            qDebug() << "successful logins table query";
+        } else{
+            qDebug() << "unsuccessful logins table query";
+        }
+    } else{
+        qDebug() << "check is false";
+    }
 }
 
 QString Widget::getUserName()
@@ -612,38 +665,19 @@ QString Widget::getUserType()
     return userType;
 }
 
-QString Widget::getCompanyName()
-{
-    return companyName;
-}
-
-QString Widget::getCompanyAddressLine1()
-{
-    return companyAddress.split("\n").front();
-}
-
-QString Widget::getCompanyAddressLine2()
-{
-    return companyAddress.split("\n").back();
-}
-
-QString Widget::getCompanyPhoneNumber()
-{
-    return companyPhoneNumber;
-}
-
 void Widget::addUserToUserTable(AddAUserDialog *addUser)
 {
     QSqlQuery insertQuery;
     insertQuery.exec("SELECT * FROM users");
-    int userCount = insertQuery.size();
-    qDebug() << userCount;
+//    int userCount = insertQuery.size();
+//    qDebug() << userCount;
     QStringList usersInfo = addUser->getUserInfo();
     QString firstName = usersInfo[0];
     QString lastName = usersInfo[1];
     QString userNumber = usersInfo[2];
 //    qDebug() << userNumber;
     QString email = usersInfo[3];
+    QString hireDate = usersInfo[4];
 
     QList<bool> userPermissions {};
     userPermissions.append(addUser->getDataLoggerPermission());//0
@@ -678,61 +712,37 @@ void Widget::addUserToUserTable(AddAUserDialog *addUser)
 //    QString hexToBinary = QString::number(bin, 2);
 //    qDebug() << hexToBinary;
     bool activeStatus = true;
-    QDateTime hireDate = QDateTime::currentDateTime();
-    int userID = userCount+1;
-    QString queryStatement = QString("INSERT INTO users ");
-    queryStatement.append("(userID, firstname, lastname, activestatus, ");
-    queryStatement.append("email, hiredate, phonenumber, permissions) ");
-    queryStatement.append("VALUES (");
-    queryStatement.append(QString::number(userID));
-    queryStatement.append(", ");
-    queryStatement.append(firstName);
-    queryStatement.append(", ");
-    queryStatement.append(lastName);
-    queryStatement.append(", ");
-    queryStatement.append(QString::number(activeStatus));
-    queryStatement.append(", ");
-    queryStatement.append(email);
-    queryStatement.append(", ");
-    queryStatement.append(hireDate.toString("yyyy-MM-dd hh:mm:ss"));
-    queryStatement.append(", ");
-    queryStatement.append(userNumber);
-    queryStatement.append(", ");
-    queryStatement.append(finalHex);
-    queryStatement.append(");");
 
-//    insertQuery.prepare("INSERT INTO users (userID, firstname, lastname, activestatus, email, hiredate, phonenumber, permissions) VALUES (:pk, :fname, :lname, :status, :email, :hd, :pn, :perms");
-//    insertQuery.bindValue(":id", userID);
-//    insertQuery.bindValue(":fname", firstName);
-//    insertQuery.bindValue(":lname", lastName);
-//    insertQuery.bindValue(":status", activeStatus);
-//    insertQuery.bindValue(":email", email);
-//    insertQuery.bindValue(":hd", hireDate.toString("yyyy-MM-dd hh:mm:ss"));
-//    insertQuery.bindValue(":pn", userNumber);
-//    insertQuery.bindValue(":perms", finalHex);
+    QString queryStatement = QString("INSERT INTO users (firstname, lastname, activestatus, email, hiredate, phonenumber, permissions) "
+                             "VALUES ('%1', '%2', %3, '%4', '%5', '%6', '%7')").arg(firstName).arg(lastName).arg(QString::number(activeStatus))
+            .arg(email).arg(hireDate).arg(userNumber).arg(finalHex);
 
-
-
-    qDebug() << queryStatement << "\n";
     insertQuery.exec(queryStatement);
-    if (!insertQuery.exec(queryStatement)){
-        qDebug() << insertQuery.lastError().text();
-    }
 
+    addUserToLoginTable(userEmail);
+//    insertQuery.exec("INSERT INTO users (firstname, lastname, activestatus, email, hiredate, phonenumber, permissions) "
+//                     "VALUES ('Dude', 'Wheres My Car?', 1, 'something@example.com', '2019-05-24 10:44:35', 7204363017, '3ff')");
+
+//    insertQuery.exec("SELECT * FROM users");
+//    while (insertQuery.next()){
+//        QString firstName = insertQuery.value(1).toString();
+//        qDebug() << firstName;
+//    }
 }
 
 void Widget::connectToDatabase()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     db.setDatabaseName("HuTemp");
-    db.setHostName("10.0.0.4");
+    db.setHostName("10.0.0.10");
     db.setUserName("HuTempApp");
     db.setPassword("cookie");
 
     dbOpen = db.open();
     if(dbOpen){
         QSqlQuery mainquery(db);
-        QMessageBox::information(this, "Connection", "Successful connection");
+//        QMessageBox::information(this, "Connection", "Successful connection");
+        qDebug() << "successful connection";
         QSqlQuery query;
         int numRows;
         query.exec("SELECT * FROM data");
@@ -785,10 +795,14 @@ QString Widget::alphaNumGenerator()
 
 void Widget::createDirectories()
 {
-    createdDirectory = QCoreApplication::applicationDirPath() + "/logs";
+    logsDirectory = "C:/ShareToUbuntu/logs";
     QDir dir;
-    dir.mkdir(createdDirectory);
-    SetFileAttributesA(createdDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+    dir.mkdir(logsDirectory);
+    SetFileAttributesA(logsDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+
+    pdfDirectory = "C:/ShareToUbuntu/PDFs";
+    dir.mkdir(pdfDirectory);
+    SetFileAttributesA(pdfDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
 }
 
 void Widget::on_devicesTabAddButton_clicked()
@@ -819,3 +833,26 @@ void Widget::on_reportsTabNestedWidgetEndTimeTimeEdit_userTimeChanged(const QTim
         ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(QTime::currentTime());
     }
 }
+
+void Widget::on_reportsTabNestedWidgetResetButton_clicked()
+{
+    ui->reportsTabNestedWidgetTableWidget->clearContents();
+}
+
+void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
+{
+    QDateTime dateTime = QDateTime::currentDateTime();
+    QTime currentTime = dateTime.time();
+    QTime backTime;
+    backTime.setHMS(currentTime.hour(), currentTime.minute()-1, currentTime.second());
+    QDate currentDate = dateTime.date();
+    QDate backDate;
+    backDate.setDate(currentDate.year(), currentDate.month(), currentDate.day()-1);
+
+    ui->reportsTabNestedWidgetStartDateDateEdit->setDate(backDate);
+    ui->reportsTabNestedWidgetEndDateDateEdit->setDate(currentDate);
+    ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(backTime);
+    ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(currentTime);
+}
+
+

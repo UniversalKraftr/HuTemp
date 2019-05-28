@@ -59,7 +59,6 @@ HEADERS += \
 
 FORMS += \
     previoususersdialog.ui \
-    smtp.ui \
         widget.ui \
     quickviewsdialogbox.ui \
     zonesdialogbox.ui \

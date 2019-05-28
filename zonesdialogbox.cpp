@@ -57,7 +57,6 @@ void ZonesDialogBox::on_ZonesDialogBoxButtons_clicked(QAbstractButton *button)
 
 void ZonesDialogBox::on_ZonesDialogBoxAllZonesCheckBox_stateChanged(int arg1)
 {
-
     if (arg1 == 2){
         ui->ZonesDialogBoxLobbyCheckBox->setChecked(true);
         ui->ZonesDialogBoxCollectionsCheckBox->setChecked(true);
@@ -69,18 +68,6 @@ void ZonesDialogBox::on_ZonesDialogBoxAllZonesCheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxGallery5CheckBox->setChecked(true);
         ui->ZonesDialogBoxGallery6CheckBox->setChecked(true);
     }
-
-//    if (arg1 == 0){
-//        ui->ZonesDialogBoxLobbyCheckBox->setChecked(false);
-//        ui->ZonesDialogBoxCollectionsCheckBox->setChecked(false);
-//        ui->ZonesDialogBoxDockAreaCheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery1CheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery2CheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery3CheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery4CheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery5CheckBox->setChecked(false);
-//        ui->ZonesDialogBoxGallery6CheckBox->setChecked(false);
-//    }
     checkBoxes[0] = ui->ZonesDialogBoxAllZonesCheckBox->isChecked();
 }
 

@@ -36,6 +36,7 @@ public:
     void setReportsPermission(bool truth);
     bool getEmailPermission() const;
     void setEmailPermission(bool truth);
+
     QStringList getUserInfo() const;
     void checkAllBoxes(Ui::AddAUserDialog *ui);
 

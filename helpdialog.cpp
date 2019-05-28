@@ -38,7 +38,7 @@ void HelpDialog::on_HelpDialogUserManualButton_clicked()
 void HelpDialog::on_HelpDialogContactSupportButton_clicked()
 {
     ContactSupportDialog *contact = new ContactSupportDialog(this);
-    contact->exec();
+    contact->show();
 }
 
 void HelpDialog::on_HelpDialogButtonBox_clicked(QAbstractButton *button)
