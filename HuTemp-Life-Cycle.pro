@@ -26,6 +26,7 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
+    passwordreset.cpp \
     previoususersdialog.cpp \
     smtp.cpp \
         widget.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     addauserdialog.cpp
 
 HEADERS += \
+    passwordreset.h \
     previoususersdialog.h \
     smtp.h \
         widget.h \
@@ -58,6 +60,7 @@ HEADERS += \
     addauserdialog.h
 
 FORMS += \
+    passwordreset.ui \
     previoususersdialog.ui \
         widget.ui \
     quickviewsdialogbox.ui \

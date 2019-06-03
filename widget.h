@@ -17,6 +17,7 @@
 #include <QFile>
 #include <QtSql>
 #include <QSqlDatabase>
+#include <QCryptographicHash>
 
 
 #include "smtp.h"
@@ -68,11 +69,18 @@ private slots:
     void on_UACadminViewScreenPageNestedWidgetSaveButton_clicked();
     void sendMail(QString, QString);
     void mailSent(QString);
+    void on_loginButton_clicked();
+    void on_loginScreenPageNestedWidgetPasswordResetButton_clicked();
+    void on_devicesTabTableWidget_itemClicked(QTableWidgetItem *item);
+
+    void on_reportsTabNestedWidgetCaptureButton_clicked();
 
 private:
     Ui::Widget *ui;
+    QString vmDBIPAddress = "10.0.0.3";
     QString u = QChar(0x00B3);
     const QString title = "HuTemp Life Cycle – H" + u + " Product";
+    QString charList = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+/?><";
     int monitorAdminIndexRow;
     int monitorAdminIndexColumn = 0;
     QTableWidgetItem *UACTableWidgetItem = new QTableWidgetItem(nullptr);
@@ -96,8 +104,16 @@ private:
     QList<bool> readingsCheckBoxes;
     int overallUserCount = 0;
     QStringList files;
+    int rowCount = 0;
+    int devicesTableWidgetCellRow;
+    int devicesTableWidgetCellColumn;
+    QString deviceMacAddress;
+    QTableWidgetItem *currentDeviceTableWidgetItem = nullptr;
+    QTableWidgetItem *previousDeviceTableWidgetItem = new QTableWidgetItem(nullptr);
 
 
+
+    QString generateHexString(int);
     void addUserToLoginTable(QString);
     void addUserToUserTable(AddAUserDialog *addUser);
     void connectToDatabase();
@@ -114,7 +130,9 @@ private:
     void setReportsTabConfigs();
     void setSettingsTabConfigs();
     void setDefaults();
-    void populateTableWidget();
+    void populateUACTableWidget();
+    void populateDevicesTableWidget();
+    void populateReportsTableWidget();
     void monitorAdminStatus();
     void checkAdminBox();
     void monitorDeleteUsers();
@@ -122,6 +140,15 @@ private:
     void monitorUserPasswordResets();
     void setDefaultPermissions(int i);
     void resetPassword();
+    QString convertToHex(QString);
+    QString convertToBinary(QString);
+    QByteArray sha1Encrypt(QString);
+    QByteArray encrypt(QByteArray, QByteArray);
+    QByteArray decrypt(QString);
+    QString generateOffset();
+    void captureCellChange();
+    void removeDevice();
+    void checkDevicesForInfo();
 
 };
 

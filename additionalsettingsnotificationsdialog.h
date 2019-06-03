@@ -18,20 +18,6 @@ public:
     explicit AdditionalSettingsNotificationsDialog(QWidget *parent = nullptr);
     ~AdditionalSettingsNotificationsDialog();
 
-//    int getOpenTimeHour();
-//    int getOpenTimeMinute();
-//    int getCloseTimeHour();
-//    int getCloseTimeMinute();
-//    QString getCompanyName();
-//    QString getCompanyAddress();
-//    QString getCompanyPhoneNumber();
-
-//    void setOpenTime(int hour, int minute);
-//    void setCloseTime(int hour, int minute);
-//    void setCompanyName(QString cname);
-//    void setCompanyAddress(QString caddress);
-//    void setCompanyPhoneNumber(QString cnumber);
-
 private slots:
     void on_AdditionalSettingsNotificationsDialogAdditionalAdminSettings_clicked();
 
@@ -39,13 +25,7 @@ private slots:
 
 private:
     Ui::AdditionalSettingsNotificationsDialog *ui;
-//    QList<int> openCloseHoursMinutes {0,0,0,0};
-//    QString companyName;
-//    QString companyAddress;
-//    QString companyPhoneNumber;
-
-//    void captureInfo(AdditionalAdminSettingsDialog *adminSettings);
-//    void setInfo(AdditionalAdminSettingsDialog *adminSettings);
+    void setAllDefaults();
 };
 
 #endif // ADDITIONALSETTINGSNOTIFICATIONSDIALOG_H

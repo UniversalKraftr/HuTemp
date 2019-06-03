@@ -11,6 +11,7 @@ AdditionalSettingsNotificationsDialog::AdditionalSettingsNotificationsDialog(QWi
 
     setWindowTitle("Additional Settings & Notifications");
     adjustSize();
+    setAllDefaults();
 }
 
 AdditionalSettingsNotificationsDialog::~AdditionalSettingsNotificationsDialog()
@@ -18,40 +19,6 @@ AdditionalSettingsNotificationsDialog::~AdditionalSettingsNotificationsDialog()
     delete ui;
 }
 
-//int AdditionalSettingsNotificationsDialog::getOpenTimeHour()
-//{
-//    return openCloseHoursMinutes[0];
-//}
-
-//int AdditionalSettingsNotificationsDialog::getOpenTimeMinute()
-//{
-//    return openCloseHoursMinutes[1];
-//}
-
-//int AdditionalSettingsNotificationsDialog::getCloseTimeHour()
-//{
-//    return openCloseHoursMinutes[2];
-//}
-
-//int AdditionalSettingsNotificationsDialog::getCloseTimeMinute()
-//{
-//    return openCloseHoursMinutes[3];
-//}
-
-//QString AdditionalSettingsNotificationsDialog::getCompanyName()
-//{
-//    return companyName;
-//}
-
-//QString AdditionalSettingsNotificationsDialog::getCompanyAddress()
-//{
-//    return companyAddress;
-//}
-
-//QString AdditionalSettingsNotificationsDialog::getCompanyPhoneNumber()
-//{
-//    return companyPhoneNumber;
-//}
 
 void AdditionalSettingsNotificationsDialog::on_AdditionalSettingsNotificationsDialogAdditionalAdminSettings_clicked()
 {
@@ -81,68 +48,31 @@ void AdditionalSettingsNotificationsDialog::on_AdditionalSettingsNotificationsDi
     }
 }
 
+void AdditionalSettingsNotificationsDialog::setAllDefaults()
+{
+    ui->AdditionalSettingsNotificationsDialogHighTempThresholdCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogHighTempThresholdCheckBox->setEnabled(false);
+    ui->AdditionalSettingsNotificationsDialogLowTempThresholdCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogLowTempThresholdCheckBox->setEnabled(false);
 
-//void AdditionalSettingsNotificationsDialog::captureInfo(AdditionalAdminSettingsDialog *adminSettings)
-//{
-//    if (!openCloseHoursMinutes.isEmpty()){
-//        openCloseHoursMinutes.clear();
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//    } else{
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//        openCloseHoursMinutes.append(0);
-//    }
-//    int hour = adminSettings->getOpenTimeHour();
-//    int minute = adminSettings->getOpenTimeMinute();
-//    openCloseHoursMinutes[0] = hour;
-//    openCloseHoursMinutes[1] = minute;
+    ui->AdditionalSettingsNotificationsDialogHighHumThresholdCheckbox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogHighHumThresholdCheckbox->setEnabled(false);
+    ui->AdditionalSettingsNotificationsDialogLowHumThresholdCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogLowHumThresholdCheckBox->setEnabled(false);
 
-//    hour = adminSettings->getCloseTimeHour();
-//    minute = adminSettings->getCloseTimeMinute();
-//    openCloseHoursMinutes[2] = hour;
-//    openCloseHoursMinutes[3] = minute;
+    ui->AdditionalSettingsNotificationsDialogLowPowerCheckbox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogLowPowerCheckbox->setEnabled(false);
 
-//    companyName = adminSettings->getCompanyName();
-//    companyAddress = adminSettings->getCompanyAddress();
-//    companyPhoneNumber = adminSettings->getCompanyPhoneNumber();
-//}
+    ui->AdditionalSettingsNotificationsDialogActiveStatusCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogActiveStatusCheckBox->setEnabled(false);
 
-//void AdditionalSettingsNotificationsDialog::setInfo(AdditionalAdminSettingsDialog *adminSettings)
-//{
-//    adminSettings->setOpenTime(openCloseHoursMinutes[0], openCloseHoursMinutes[1]);
-//    adminSettings->setCloseTime(openCloseHoursMinutes[2], openCloseHoursMinutes[3]);
-//    adminSettings->setCompanyName(companyName);
-//    adminSettings->setCompanyAddress(companyAddress);
-//    adminSettings->setCompanyPhoneNumber(companyPhoneNumber);
-//}
+    ui->AdditionalSettingsNotificationsDialogWifiConnectionCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogWifiConnectionCheckBox->setEnabled(false);
 
-//void AdditionalSettingsNotificationsDialog::setOpenTime(int hour, int minute)
-//{
-//    openCloseHoursMinutes[0] = hour;
-//    openCloseHoursMinutes[1] = minute;
-//}
+    ui->AdditionalSettingsNotificationsDialogDisconnectedInternetCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogDisconnectedInternetCheckBox->setEnabled(false);
 
-//void AdditionalSettingsNotificationsDialog::setCloseTime(int hour, int minute)
-//{
-//    openCloseHoursMinutes[2] = hour;
-//    openCloseHoursMinutes[3] = minute;
-//}
+    ui->AdditionalSettingsNotificationsDialogDatabaseConnectionCheckBox->setChecked(true);
+    ui->AdditionalSettingsNotificationsDialogDatabaseConnectionCheckBox->setEnabled(false);
+}
 
-//void AdditionalSettingsNotificationsDialog::setCompanyName(QString cname)
-//{
-//    companyName = cname;
-//}
-
-//void AdditionalSettingsNotificationsDialog::setCompanyAddress(QString caddress)
-//{
-//    companyAddress = caddress;
-//}
-
-//void AdditionalSettingsNotificationsDialog::setCompanyPhoneNumber(QString cnumber)
-//{
-//    companyPhoneNumber = cnumber;
-//}

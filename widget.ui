@@ -29,7 +29,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
@@ -206,6 +206,9 @@
                           <width>16777215</width>
                           <height>40</height>
                          </size>
+                        </property>
+                        <property name="echoMode">
+                         <enum>QLineEdit::Password</enum>
                         </property>
                        </widget>
                       </item>
@@ -2223,10 +2226,22 @@
               <verstretch>1</verstretch>
              </sizepolicy>
             </property>
+            <property name="font">
+             <font>
+              <family>Consolas</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
             <attribute name="horizontalHeaderCascadingSectionResizes">
              <bool>false</bool>
             </attribute>
             <attribute name="horizontalHeaderStretchLastSection">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
             <column>

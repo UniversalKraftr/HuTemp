@@ -23,7 +23,75 @@ AddAUserDialog::AddAUserDialog(QWidget *parent) :
     ui->AddAUserDialogLastNameLineEdit->setPlaceholderText(userContent[1]);
     ui->AddAUserDialogPhoneNumberLineEdit->setPlaceholderText(userContent[2]);
     ui->AddAUserDialogEmailLineEdit->setPlaceholderText(userContent[3]);
-    QDate tomorrow(QDate::currentDate().year(), QDate::currentDate().month(), QDate::currentDate().day()+1);
+    QDate tomorrow;
+    int year =  QDate::currentDate().year();
+    int month = QDate::currentDate().month();
+    int day = QDate::currentDate().day();
+    bool compare31Jan = (day == 31) && (month == 1);
+    bool compare28Feb = (day == 28) && (month == 2);
+    bool compare31Mar = (day == 31) && (month == 3);
+    bool compare30Apr = (day == 30) && (month == 4);
+    bool compare31May = (day == 31) && (month == 5);
+    bool compare30Jun = (day == 30) && (month == 6);
+    bool compare31Jul = (day == 31) && (month == 7);
+    bool compare31Aug = (day == 31) && (month == 8);
+    bool compare30Sep = (day == 30) && (month == 9);
+    bool compare31Oct = (day == 31) && (month == 10);
+    bool compare30Nov = (day == 30) && (month == 11);
+    bool compare31Dec = (day == 31) && (month == 12);
+
+
+    if (compare31Jan){
+        day = 1;
+        month += 1;
+    }
+    if (compare28Feb){
+        day = 1;
+        month += 1;
+    }
+    if (compare31Mar){
+        day = 1;
+        month += 1;
+    }
+    if (compare30Apr){
+        day = 1;
+        month += 1;
+    }
+    if (compare31May){
+        day = 1;
+        month += 1;
+    }
+    if (compare30Jun){
+        day = 1;
+        month += 1;
+    }
+    if (compare31Jul){
+        day = 1;
+        month += 1;
+    }
+    if (compare31Aug){
+        day = 1;
+        month += 1;
+    }
+    if (compare30Sep){
+        day = 1;
+        month += 1;
+    }
+    if (compare31Oct){
+        day = 1;
+        month += 1;
+    }
+    if (compare30Nov){
+        day = 1;
+        month += 1;
+    }
+    if (compare31Dec){
+        day = 1;
+        month = 1;
+        year += 1;
+    }
+
+    tomorrow.setDate(year, month, day);
     ui->AddAUserDialogHireDateDateEdit->setDate(tomorrow);
     setUserInfoRequirements(ui);
 

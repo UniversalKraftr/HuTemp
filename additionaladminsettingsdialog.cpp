@@ -14,49 +14,13 @@ AdditionalAdminSettingsDialog::AdditionalAdminSettingsDialog(QWidget *parent) :
     setWindowTitle("Additional Administrator Settings");
     adjustSize();
     extractFromLogFile();
+    setAllDefaults();
 }
 
 AdditionalAdminSettingsDialog::~AdditionalAdminSettingsDialog()
 {
     delete ui;
 }
-
-//int AdditionalAdminSettingsDialog::getOpenTimeMinute()
-//{
-//    return ui->AdditionalAdminSettingsDialogOpenTimeTimeEdit->time().minute();
-//}
-
-//int AdditionalAdminSettingsDialog::getOpenTimeHour()
-//{
-//    return ui->AdditionalAdminSettingsDialogOpenTimeTimeEdit->time().hour();
-//}
-
-//int AdditionalAdminSettingsDialog::getCloseTimeHour()
-//{
-//    return ui->AdditionalAdminSettingsDialogClosingTimeTimeEdit->time().hour();
-//}
-
-//int AdditionalAdminSettingsDialog::getCloseTimeMinute()
-//{
-//    return ui->AdditionalAdminSettingsDialogClosingTimeTimeEdit->time().minute();;
-//}
-
-//QString AdditionalAdminSettingsDialog::getCompanyName()
-//{
-//    return ui->AdditionalAdminSettingsDialogCompanyNameLineEdit->text();
-//}
-
-//QString AdditionalAdminSettingsDialog::getCompanyAddress()
-//{
-//    QString companyAddress = ui->AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit->text() + QString("\n") +
-//            ui->AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit->text();
-//    return companyAddress;
-//}
-
-//QString AdditionalAdminSettingsDialog::getCompanyPhoneNumber()
-//{
-//    return ui->AdditionalAdminSettingsDialogCompanyPhoneNumberLineEdit->text();
-//}
 
 void AdditionalAdminSettingsDialog::on_AdditionalAdminSettingsDialogButtonBox_clicked(QAbstractButton *button)
 {
@@ -117,49 +81,31 @@ void AdditionalAdminSettingsDialog::extractFromLogFile()
             ui->AdditionalAdminSettingsDialogOpenTimeTimeEdit->setTime(QTime(timeList[0].toInt(), timeList[1].toInt()));
             timeList = myText[5].split(":");
             ui->AdditionalAdminSettingsDialogClosingTimeTimeEdit->setTime(QTime(timeList[0].toInt(), timeList[1].toInt()));
+
+            file.close();
         } else{
             qDebug() << "File currently does not exist";
         }
     }
-
-
-
-//    QTextDocument doc;
-//    QFile file2(fileName);
-//    if (file2.open(QIODevice::ReadOnly|QIODevice::Text)){
-
-//        QTextStream in(&file2);
-//        QString myText = in.readAll();
-//        doc.setPlainText(myText);
-//    }
-
-//    file2.remove();
 }
 
-//void AdditionalAdminSettingsDialog::setOpenTime(int hour, int minute)
-//{
-//    ui->AdditionalAdminSettingsDialogOpenTimeTimeEdit->setTime(QTime(hour, minute));
-//}
+void AdditionalAdminSettingsDialog::setAllDefaults()
+{
+    ui->AdditionalAdminSettingsDialogDataLoggerChangesCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogDataLoggerChangesCheckBox->setEnabled(false);
 
-//void AdditionalAdminSettingsDialog::setCloseTime(int hour, int minute)
-//{
-//    ui->AdditionalAdminSettingsDialogClosingTimeTimeEdit->setTime(QTime(hour, minute));
-//}
+    ui->AdditionalAdminSettingsDialogReportExportCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogReportExportCheckBox->setEnabled(false);
 
-//void AdditionalAdminSettingsDialog::setCompanyName(QString cname)
-//{
-//    ui->AdditionalAdminSettingsDialogCompanyNameLineEdit->setText(cname);
-//}
+    ui->AdditionalAdminSettingsDialogProfileChangesCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogProfileChangesCheckBox->setEnabled(false);
 
-//void AdditionalAdminSettingsDialog::setCompanyAddress(QString caddress)
-//{
-//    QString line1 = caddress.split('\n').front();
-//    QString line2 = caddress.split('\n').back();
-//    ui->AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit->setText(line1);
-//    ui->AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit->setText(line2);
-//}
+    ui->AdditionalAdminSettingsDialogLoginActivityCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogLoginActivityCheckBox->setEnabled(false);
 
-//void AdditionalAdminSettingsDialog::setCompanyPhoneNumber(QString cnumber)
-//{
-//    ui->AdditionalAdminSettingsDialogCompanyPhoneNumberLineEdit->setText(cnumber);
-//}
+    ui->AdditionalAdminSettingsDialogSupportContactedCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogSupportContactedCheckBox->setEnabled(false);
+
+    ui->AdditionalAdminSettingsDialogUserAdjustedSettingsCheckBox->setChecked(true);
+    ui->AdditionalAdminSettingsDialogUserAdjustedSettingsCheckBox->setEnabled(false);
+}

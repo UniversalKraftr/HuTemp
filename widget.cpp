@@ -8,6 +8,7 @@
 #include "zonesdialogbox.h"
 #include "helpdialog.h"
 #include "previoususersdialog.h"
+#include "passwordreset.h"
 #include <QDir>
 #include <fileapi.h>
 
@@ -118,7 +119,7 @@ void Widget::setUACTabConfigs()
     ui->UACTableWidget->setAlternatingRowColors(true);
     ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
     ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(false);
-    populateTableWidget();
+    populateUACTableWidget();
 }
 
 void Widget::setDevicesTabConfigs()
@@ -142,7 +143,12 @@ void Widget::setDevicesTabConfigs()
     ui->devicesTabTableWidget->horizontalHeaderItem(11)->setText("High\nHumidity\n(%)");
     ui->devicesTabTableWidget->horizontalHeaderItem(12)->setText("Power");
 
+    ui->devicesTabUpdateButton->setEnabled(false);
+    ui->devicesTabDeleteButton->setEnabled(false);
+
     ui->devicesTabTableWidget->setSortingEnabled(true);
+    ui->devicesTabTableWidget->setAlternatingRowColors(true);
+    populateDevicesTableWidget();
 }
 
 void Widget::setReportsTabConfigs()
@@ -151,6 +157,8 @@ void Widget::setReportsTabConfigs()
     ui->reportsTabNestedWidgetEndDateDateEdit->setDate(QDate::currentDate());
     ui->reportsTabNestedWidgetStartDateDateEdit->setCalendarPopup(true);
     ui->reportsTabNestedWidgetEndDateDateEdit->setCalendarPopup(true);
+    ui->reportsTabNestedWidgetTableWidget->setAlternatingRowColors(true);
+
 }
 
 void Widget::setSettingsTabConfigs()
@@ -162,17 +170,18 @@ void Widget::setDefaults()
 {
     //set default view of application upon open
     ui->mainTabsWidget->setCurrentIndex(0);
-    ui->loginScreenViewsStack->setCurrentIndex(1);
+    ui->loginScreenViewsStack->setCurrentIndex(0);
 //    ui->tabWidget->setTabEnabled(1, false);
 //    ui->tabWidget->setTabEnabled(2, false);
 //    ui->tabWidget->setTabEnabled(3, false);
     //    ui->tabWidget->setTabEnabled(4, false);
 }
 
-void Widget::populateTableWidget()
+void Widget::populateUACTableWidget()
 {
     if (ui->UACTableWidget->rowCount() > 0){
-        ui->UACTableWidget->clear();
+        ui->UACTableWidget->clearContents();
+        ui->UACTableWidget->setRowCount(0);
     }
     QSqlQuery getUserTableQuery;
     QString selectStatement = "SELECT * FROM users WHERE activestatus = 1";
@@ -181,27 +190,25 @@ void Widget::populateTableWidget()
     if (getUserTableQuery.size() > 0){
         while (getUserTableQuery.next()){
 //            rowCount += 1;
+//            qDebug() << ui->UACTableWidget->rowCount();
             ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
 
             QString firstName = getUserTableQuery.value(1).toString();
             QString lastName = getUserTableQuery.value(2).toString();
             QTableWidgetItem *userName = new QTableWidgetItem(firstName + " " + lastName);
-            QTableWidgetItem *userEmail = new QTableWidgetItem(getUserTableQuery.value(4).toString());
+            QTableWidgetItem *userEmailItem = new QTableWidgetItem(getUserTableQuery.value(4).toString());
             QTableWidgetItem *userNumber = new QTableWidgetItem(getUserTableQuery.value(6).toString());
             QTableWidgetItem *userHireDate = new QTableWidgetItem(getUserTableQuery.value(5).toString());
             userName->setFlags(Qt::NoItemFlags);
-            userEmail->setFlags(Qt::NoItemFlags);
+            userEmailItem->setFlags(Qt::NoItemFlags);
             userNumber->setFlags(Qt::NoItemFlags);
             userHireDate->setFlags(Qt::NoItemFlags);
             ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1,0, userName);
-            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmail);
+            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmailItem);
             ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
             ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 13, userHireDate);
 
-            bool ok;
-            QString userPermissions = getUserTableQuery.value(7).toString();
-            int hexToBinary = userPermissions.toInt(&ok, 16);
-            QString binary = QString::number(hexToBinary, 2);
+            QString binary = convertToBinary(getUserTableQuery.value(7).toString());
             for (int i = 0; i < binary.count(); i++){
                 QWidget *checkBoxWidget = new QWidget();
                 QCheckBox *checkBox = new QCheckBox();
@@ -245,8 +252,251 @@ void Widget::populateTableWidget()
             ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 15, deleteButtonWidget);
         }
     }
-//    qDebug() << "user added";
+    //    qDebug() << "user added";
 }
+
+void Widget::populateDevicesTableWidget()
+{
+    qDebug() << "in populateDevicesTableWidget()";
+    if (ui->devicesTabTableWidget->rowCount() > 0){
+        ui->devicesTabTableWidget->clearContents();
+        ui->devicesTabTableWidget->setRowCount(0);
+    }
+
+    QSqlQuery selectConfigQuery;
+    QString selectConfigQueryStatement = "SELECT * FROM config";
+
+
+
+    if (selectConfigQuery.exec(selectConfigQueryStatement)){
+//        qDebug() << "selectConfigQuery successful";
+//        qDebug() << selectConfigQuery.size();
+
+
+        while (selectConfigQuery.next()){
+//            qDebug() << "in selectConfigQuery.next()";
+            ui->devicesTabTableWidget->insertRow(ui->devicesTabTableWidget->rowCount());
+            QString deviceID = selectConfigQuery.value(4).toString();//
+            QString interval = selectConfigQuery.value(6).toString();//
+            QString zoneID = selectConfigQuery.value(7).toString();//
+            QString highTempThreshold = selectConfigQuery.value(8).toString();
+            QString lowTempThreshold = selectConfigQuery.value(9).toString();
+            QString highHumidityThreshold = selectConfigQuery.value(10).toString();
+            QString lowHumidityThreshold = selectConfigQuery.value(11).toString();
+
+            QTableWidgetItem *zoneIDItem = new QTableWidgetItem(zoneID);
+            zoneIDItem->setTextAlignment(Qt::AlignCenter);
+//            zoneIDItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *deviceIDItem = new QTableWidgetItem(deviceID);
+            deviceIDItem->setTextAlignment(Qt::AlignCenter);
+//            deviceIDItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *intervalItem = new QTableWidgetItem(interval);
+            intervalItem->setTextAlignment(Qt::AlignCenter);
+//            intervalItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *highTempThresholdItem = new QTableWidgetItem(highTempThreshold);
+            highTempThresholdItem->setTextAlignment(Qt::AlignCenter);
+//            highTempThresholdItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *lowTempThresholdItem = new QTableWidgetItem(lowTempThreshold);
+            lowTempThresholdItem->setTextAlignment(Qt::AlignCenter);
+//            lowTempThresholdItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *highHumidityThresholdItem = new QTableWidgetItem(highHumidityThreshold);
+            highHumidityThresholdItem->setTextAlignment(Qt::AlignCenter);
+//            highHumidityThresholdItem->setFlags(Qt::ItemIsEditable);
+            QTableWidgetItem *lowHumidityThresholdItem = new QTableWidgetItem(lowHumidityThreshold);
+            lowHumidityThresholdItem->setTextAlignment(Qt::AlignCenter);
+//            lowHumidityThresholdItem->setFlags(Qt::ItemIsEditable);
+
+            QSqlQuery selectDataQuery;
+            QString selectDataQueryStatment = QString("SELECT * FROM data WHERE MAC = '%1' ORDER BY event DESC LIMIT 1").arg(selectConfigQuery.value(1).toString());
+            QString dateTimeData;//device table widget column: 5
+            QString temperatureData;//device table widget column: 6
+            QString humidityData;//device table widget column: 7
+            QString powerLevelData;//device table widget column: 12
+            //CALCULATION WILL HAVE 4.2 FOR THE HIGHEST, ANYTHING ABOVE WILL JUST READ 100%
+            //STILL NEED THE LOW END TO GET THE PROPER CALCULATION FOR REFLECTING THE PERCENTAGE ACCURATELY
+            //MOST LIKELY GOING TO BE 3.3, BUT GET CONFIRMATION FROM BRANDON
+            if (selectDataQuery.exec(selectDataQueryStatment)){
+//                qDebug() << "selectDataQuery successful";
+                while (selectDataQuery.next()){
+//                    qDebug() << selectDataQuery.value(2).toString();
+//                    qDebug() << selectDataQuery.value(4).toString();
+//                    qDebug() << selectDataQuery.value(5).toString();
+//                    qDebug() << selectDataQuery.value(6).toString();
+                    dateTimeData = selectDataQuery.value(2).toString();
+                    temperatureData = selectDataQuery.value(4).toString();
+                    humidityData = selectDataQuery.value(5).toString();
+                    powerLevelData = selectDataQuery.value(6).toString();
+                }
+            } else{
+//                qDebug() << "selectDataQuery unsuccessful";
+                continue;
+            }
+
+
+            QSqlQuery secondSelectDataQuery;
+            QString secondSelectDataQueryStatement = QString("SELECT * FROM data WHERE MAC = '%1' ORDER BY event DESC LIMIT 2").arg(selectConfigQuery.value(1).toString());
+            QStringList bothDateTimes;
+            if (secondSelectDataQuery.exec(secondSelectDataQueryStatement)){
+                while (secondSelectDataQuery.next()){
+                    bothDateTimes.append(secondSelectDataQuery.value(2).toString());
+                }
+            }
+//            qDebug() << "capturing top two date times of a device";
+//            qDebug() << bothDateTimes;
+//            QString firstDate = bothDateTimes[0].split('T').front();
+//            QString firstTime = bothDateTimes[0].split('T').back();
+//            QString secondDate = bothDateTimes[1].split('T').front();
+//            QString secondTime = bothDateTimes[1].split('T').back();
+//            qDebug () << "firstDate:\t" << firstDate;
+//            qDebug() << "secondDate:\t" << secondDate;
+//            qDebug() << "firstTime:\t" << firstTime;
+//            qDebug() << "secondTime:\t" << secondTime;
+//            QDate dateOne = QDate::fromString(firstDate, "yyyy-MM-dd");
+//            QDate dateTwo = QDate::fromString(secondDate, "yyyy-MM-dd");
+//            QTime timeOne = QTime::fromString(firstTime, "hh:mm:ss.zzz");
+//            QTime timeTwo = QTime::fromString(secondTime, "hh:mm:ss.zzz");
+//            qDebug() << "dateOne:\t" << dateOne;
+//            qDebug() << "dateTwo:\t" << dateTwo;
+//            qDebug() << "timeOne:\t" << timeOne;
+//            qDebug() << "timeTwo:\t" << timeTwo << "\n";
+            QDateTime firstDateTime = QDateTime::fromString(bothDateTimes[0], "yyyy-MM-ddThh:mm:ss.zzz");
+            QDateTime secondDateTime = QDateTime::fromString(bothDateTimes[1], "yyyy-MM-ddThh:mm:ss.zzz");
+//            qDebug() << "firstDateTime:\t" << firstDateTime;
+//            qDebug() << "secondDateTime:\t" << secondDateTime;
+            qint64 timeDiff = secondDateTime.secsTo(firstDateTime);
+//            qDebug() << "timeDiff:\t" << timeDiff;
+            int timeDiffConvertedToMinutes = timeDiff/60;
+
+            QTableWidgetItem *connectivityItem;
+            QTableWidgetItem *activeStatusItem;
+            if (timeDiffConvertedToMinutes > interval){
+                QString connectivityStatus = "Disconnected";
+                QString activeStatus = "Inactive";
+                connectivityItem = new QTableWidgetItem(connectivityStatus);
+                activeStatusItem = new QTableWidgetItem(activeStatus);
+            } else{
+                QString connectivityStatus = "Connected";
+                QString activeStatus = "Active";
+                connectivityItem = new QTableWidgetItem(connectivityStatus);
+                activeStatusItem = new QTableWidgetItem(activeStatus);
+            }
+
+            QDateTime dateTime = QDateTime::fromString(dateTimeData, "yyyy-MM-ddTHH:mm:ss.zzz");
+            QString inputDateTime = dateTime.date().toString() + "\n" + dateTime.time().toString();
+
+            connectivityItem->setTextAlignment(Qt::AlignCenter);
+            connectivityItem->setFlags(Qt::NoItemFlags);
+
+            activeStatusItem->setTextAlignment(Qt::AlignCenter);
+            activeStatusItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *dateTimeDataItem = new QTableWidgetItem(inputDateTime);
+            dateTimeDataItem->setTextAlignment(Qt::AlignCenter);
+            dateTimeDataItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *temperatureDataItem = new QTableWidgetItem(temperatureData);
+            temperatureDataItem->setTextAlignment(Qt::AlignCenter);
+            temperatureDataItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *humidityDataItem = new QTableWidgetItem(humidityData);
+            humidityDataItem->setTextAlignment(Qt::AlignCenter);
+            humidityDataItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *powerLevelDataItem = new QTableWidgetItem(powerLevelData);
+            powerLevelDataItem->setTextAlignment(Qt::AlignCenter);
+            powerLevelDataItem->setFlags(Qt::NoItemFlags);
+
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 0, zoneIDItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 1, deviceIDItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 2, connectivityItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 3, activeStatusItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 4, intervalItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 5, dateTimeDataItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 6, temperatureDataItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 7, humidityDataItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 8, lowTempThresholdItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 9, highTempThresholdItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 10, lowHumidityThresholdItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 11, highHumidityThresholdItem);
+            ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 12, powerLevelDataItem);
+        }
+    }
+}
+
+void Widget::populateReportsTableWidget()
+{
+    QDateTime startDateTime = QDateTime(ui->reportsTabNestedWidgetStartDateDateEdit->date(), ui->reportsTabNestedWidgetStartTimeTimeEdit->time());
+    QDateTime endDateTime = QDateTime(ui->reportsTabNestedWidgetEndDateDateEdit->date(), ui->reportsTabNestedWidgetEndTimeTimeEdit->time());
+
+    QString start = startDateTime.toString();
+    QString end = endDateTime.toString();
+
+    QSqlQuery selectDataQuery;
+    QString selectDataQueryStatement = QString("SELECT * FROM data");
+    if (selectDataQuery.exec(selectDataQueryStatement)){
+        while (selectDataQuery.next()){
+            ui->reportsTabNestedWidgetTableWidget->insertRow(ui->reportsTabNestedWidgetTableWidget->rowCount());
+
+            QString deviceIDColumn = selectDataQuery.value(3).toString();
+            QString dateTimeColumn = selectDataQuery.value(2).toString();
+            QString temperatureColumn = selectDataQuery.value(4).toString();
+            QString humidityColumn = selectDataQuery.value(5).toString();
+
+            QTableWidgetItem *deviceIDItem = new QTableWidgetItem(deviceIDColumn);
+            deviceIDItem->setTextAlignment(Qt::AlignCenter);
+            deviceIDItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *temperatureItem = new QTableWidgetItem(temperatureColumn);
+            temperatureItem->setTextAlignment(Qt::AlignCenter);
+            temperatureItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *humidityItem = new QTableWidgetItem(humidityColumn);
+            humidityItem->setTextAlignment(Qt::AlignCenter);
+            humidityItem->setFlags(Qt::NoItemFlags);
+
+            QDateTime dateTime = QDateTime::fromString(dateTimeColumn, "yyyy-MM-ddThh:mm:ss.zzz");
+            qDebug() << "dateTime.secsTo(startDateTime):\t" << dateTime.secsTo(startDateTime)/60;
+            qDebug() << "dateTime.secsTo(endDateTime):\t" << dateTime.secsTo(endDateTime)/60;
+            qDebug() << "startDateTime.secsTo(dateTime):\t" << startDateTime.secsTo(dateTime)/60;
+            qDebug() << "endDateTime.secsTo(dateTime):\t" << endDateTime.secsTo(dateTime)/60;
+
+
+            QString inputDateTime = dateTime.date().toString() + " " + dateTime.time().toString();
+            QTableWidgetItem *dateTimeItem = new QTableWidgetItem(inputDateTime);
+            dateTimeItem->setTextAlignment(Qt::AlignCenter);
+            dateTimeItem->setFlags(Qt::NoItemFlags);
+
+
+            QString zoneIDColumn;
+            QString intervalColumn;
+            QSqlQuery selectConfigQuery;
+            QString selectConfigQueryStatement = QString("SELECT * FROM config WHERE sensorID = '%1'").arg(deviceIDColumn);
+            if (selectConfigQuery.exec(selectConfigQueryStatement)){
+                while (selectConfigQuery.next()){
+                    zoneIDColumn = selectConfigQuery.value(7).toString();
+                    intervalColumn = selectConfigQuery.value(6).toString();
+                }
+            }
+
+            QTableWidgetItem *zoneIDItem = new QTableWidgetItem(zoneIDColumn);
+            zoneIDItem->setTextAlignment(Qt::AlignCenter);
+            zoneIDItem->setFlags(Qt::NoItemFlags);
+
+            QTableWidgetItem *intervalItem = new QTableWidgetItem(intervalColumn);
+            intervalItem->setTextAlignment(Qt::AlignCenter);
+            intervalItem->setFlags(Qt::NoItemFlags);
+
+
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 0, zoneIDItem);
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 1, deviceIDItem);
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 2, intervalItem);
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 3, dateTimeItem);
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 4, temperatureItem);
+            ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 5, humidityItem);
+        }
+    }
+}
+
 
 void Widget::monitorAdminStatus()
 {
@@ -347,8 +597,60 @@ void Widget::resetPassword()
 {
 //    qDebug() << "reset password button clicked for row";
     newTempPassword = alphaNumGenerator();
-//    qDebug() << newTempPassword;
+    //    qDebug() << newTempPassword;
 }
+
+QString Widget::convertToHex(QString binaryToHex)
+{
+    bool ok;
+    int hex = binaryToHex.toInt(&ok, 2);
+    return QString::number(hex, 16);
+}
+
+QString Widget::convertToBinary(QString hexToBinary)
+{
+    bool ok;
+    int hex = hexToBinary.toInt(&ok, 16);
+    return QString::number(hex, 2);
+}
+
+QByteArray Widget::sha1Encrypt(QString input)
+{
+    return QCryptographicHash::hash(input.toLocal8Bit(), QCryptographicHash::Sha1);
+}
+
+QByteArray Widget::encrypt(QByteArray password, QByteArray offset)
+{
+    QByteArray hash = QCryptographicHash::hash((password + offset), QCryptographicHash::Sha256);
+    QByteArray hexHash = hash.toHex();
+    QByteArray b64Hash = hexHash.toBase64();
+    return b64Hash;
+}
+
+QByteArray Widget::decrypt(QString input)
+{
+    QByteArray finalHash = QByteArray::fromStdString(input.toStdString());
+    QByteArray hexHash = QByteArray::fromBase64(finalHash);
+    QByteArray hash = QByteArray::fromHex(hexHash);
+    return hash;
+}
+
+QString Widget::generateOffset()
+{
+//    qDebug() << "in generateOffset";
+    srand(QDateTime::currentMSecsSinceEpoch());
+    QString offsetFill = "";
+    for (int i = 0; i < 32; i++){
+        QCharRef character = charList[rand() % charList.count()];
+        while (character == nullptr){
+            character = charList[rand() & charList.count()];
+        }
+        offsetFill += character;
+    }
+//    qDebug() << "offsetFill:\t" << offsetFill;
+    return offsetFill;
+}
+
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
 {
@@ -457,7 +759,7 @@ void Widget::on_UACAddAUserButton_clicked()
     AddAUserDialog *addUser = new AddAUserDialog(this);
     connect(addUser, &AddAUserDialog::accepted, [=](){
         addUserToUserTable(addUser);
-        populateTableWidget();
+        populateUACTableWidget();
     });
 
     addUser->show();
@@ -570,9 +872,7 @@ void Widget::on_UACadminViewScreenPageNestedWidgetSaveButton_clicked()
     for (int i = 0; i < userPerms.count(); i++){
         binaryToHex.append(QString::number(userPerms[i]));
     }
-    bool ok;
-    int hex = binaryToHex.toInt(&ok, 2);
-    QString finalHex = QString::number(hex, 16);
+    QString finalHex = convertToHex(binaryToHex);
 
     QString fullName = ui->UACTableWidget->item(monitorAdminIndexRow, 0)->text();
     QString updateQueryStatement = QString("UPDATE users SET permissions = '%1' WHERE firstname = '%2' and lastname = '%3'")
@@ -585,17 +885,23 @@ void Widget::on_UACadminViewScreenPageNestedWidgetSaveButton_clicked()
     toggleAdminUACCheckBoxStatuses();
 }
 
-void Widget::sendMail(QString userEmail, QString tempPassword)
+void Widget::sendMail(QString userEmailMail, QString tempPassword)
 {
-    //    qDebug() << "in sendMail";
-        Smtp *smtp = new Smtp("hutempcs@gmail.com", "|WjzL]sa[|3", "smtp.gmail.com", 465);
+    //NEED TO CHECK THIS AND SEE IF IT WORKS OUTSIDE OF THE SCHOOL
+    //COULD BE THE NETWORK SETUP THE SCHOOL HAS
+        qDebug() << "in sendMail";
+        qDebug() << userEmailMail << " : " << tempPassword;
+        Smtp *smtp = new Smtp("hutemph3@gmail.com", "MnJhUy&^67", "smtp.gmail.com", 465);
         connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
+
+
+        qDebug() << "socketStatus is true";
         QString subjectLine = "HuTemp - New Account -->(DO NOT REPLY TO THIS EMAIL)";
         QString message = "You account has been activated for HuTemp use. "
                           "Please review the following information below.\n\n";
         message += "Login Credentials:\n\t";
         message += "Username:\t";
-        message += userEmail;
+        message += userEmailMail;
         message += "\n\tTemporary Password:\t";
         message += tempPassword;
         message += "\n\n\n\n";
@@ -606,11 +912,23 @@ void Widget::sendMail(QString userEmail, QString tempPassword)
 
 
         if(!files.isEmpty()){
-    //        qDebug() << "!files.isEmpty()";
-            smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message, files );
+            qDebug() << "!files.isEmpty()";
+            smtp->sendMail("hutemph3@gmail.com", userEmailMail, subjectLine, message, files);
         } else{
-    //        qDebug() << "files.isEmpty()";
-            smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message);
+            qDebug() << "files.isEmpty()";
+            smtp->sendMail("hutemph3@gmail.com", userEmailMail, subjectLine, message);
+        }
+
+        bool socketStatus = smtp->getSocketStatus();
+        if (socketStatus == false){
+            qDebug() << "socket Status is false";
+            QString message = "Email failed to send to user!";
+            message += "\nPlease provide this new user with their login information:";
+            message += "\n\tUsername:\t";
+            message += userEmailMail;
+            message += "\n\tPassword:\t";
+            message += tempPassword;
+            QMessageBox::warning(this, tr("Failed Email"), message);
         }
 }
 
@@ -621,14 +939,15 @@ void Widget::mailSent(QString status)
     }
 }
 
-void Widget::addUserToLoginTable(QString userEmail)
+void Widget::addUserToLoginTable(QString inputUserEmail)
 {
+    qDebug() << "in addUserToLoginTable";
     QSqlQuery checkQuery;
     checkQuery.exec("SELECT * FROM login");
     bool check = true;
     while (checkQuery.next()){
         QString username = checkQuery.value(1).toString();
-        if (userEmail == username){
+        if (inputUserEmail == username){
             QMessageBox::warning(this, tr("CRITICAL ERROR"), "This user email has already been used! Provide a different email!");
             check = false;
             break;
@@ -638,12 +957,51 @@ void Widget::addUserToLoginTable(QString userEmail)
         qDebug() << "check is true";
         QSqlQuery insertQuery;
         resetPassword();
-        QString insertStatement = QString("INSERT INTO login (username, password, temporarypassword) VALUES ('%1', '%2', 1)").arg(userEmail).arg(newTempPassword);
+//        qDebug() << inputUserEmail << "-:-" << newTempPassword;
+        QString offset = generateOffset();
+//        qDebug() << offset;
+        QByteArray offsetEncrypted = sha1Encrypt(offset);
+        QByteArray passwordEncrypted = sha1Encrypt(newTempPassword);
+        QByteArray finalHash = encrypt(passwordEncrypted, offsetEncrypted);
+
+
+        //DOUBLE CHECK THE COLUMN NAME IN THIS STATEMENT TO MAKE SURE IT'S THE RIGHT SPELLING
+//        qDebug() << "userEmail:\t" << inputUserEmail;
+        QString selectQueryStatement = QString("SELECT * FROM users WHERE email = '%1'").arg(inputUserEmail);
+        QSqlQuery selectQuery;
+        selectQuery.exec(selectQueryStatement);
+        QString userID;
+//        qDebug() << userID;
+        while (selectQuery.next()){
+            userID = selectQuery.value(0).toString();
+        }
+
+        int convertedUserID = userID.toInt();
+//        qDebug() << userID;
+//        qDebug() << convertedUserID;
+
+        //NEED TO FIX THIS QUERY TO THE NEW STRUCTURE OF THE LOGIN TABLE
+
+        //use MYSQL's 256 AES_ENCRYPT() on password, username, and offset columns
+        //use generateHexString for the AES_ENCRYPT() stuff
+        //review links for proper setup:
+            //https://security.stackexchange.com/questions/190611/mysql-aes-encrypt-string-key-length
+            //https://dev.mysql.com/doc/refman/8.0/en/encryption-functions#function_aes-encrypt
+            //https://www.w3resource.com/mysql/encryption-and-compression-functions/aes_encrypt().php
+        QString insertStatement = QString("INSERT INTO login (userID, username, password, offset, temporarypassword, lockout)"
+                                          " VALUES (%1, '%2', '%3', '%4', %5, %6)").arg(QString::number(convertedUserID))
+                .arg(inputUserEmail).arg(QString::fromStdString(finalHash.toStdString()))
+                .arg(QString::fromStdString(offsetEncrypted.toStdString())).arg(QString::number(true)).arg(QString::number(false));
         if (insertQuery.exec(insertStatement)){
             qDebug() << "successful logins table query";
+//            qDebug() << "userEmail:\t" << inputUserEmail;
+//            qDebug() << "finalHash:\t" << finalHash;
+//            qDebug() << "offsetEncrypted:\t" << offsetEncrypted;
+            sendMail(inputUserEmail, newTempPassword);
         } else{
             qDebug() << "unsuccessful logins table query";
         }
+
     } else{
         qDebug() << "check is false";
     }
@@ -703,10 +1061,8 @@ void Widget::addUserToUserTable(AddAUserDialog *addUser)
     for (int j = 0; j < binaryPermissions.count(); j++){
         binaryToHex.append(QString::number(binaryPermissions[j]));
     }
-//    qDebug() << binaryToHex;
-    bool ok;
-    int hex = binaryToHex.toInt(&ok, 2);
-    QString finalHex = QString::number(hex, 16);
+
+    QString finalHex = convertToHex(binaryToHex);
 //    qDebug() << finalHex;
 //    int bin = finalHex.toInt(&ok, 16);
 //    QString hexToBinary = QString::number(bin, 2);
@@ -719,7 +1075,7 @@ void Widget::addUserToUserTable(AddAUserDialog *addUser)
 
     insertQuery.exec(queryStatement);
 
-    addUserToLoginTable(userEmail);
+    addUserToLoginTable(email);
 //    insertQuery.exec("INSERT INTO users (firstname, lastname, activestatus, email, hiredate, phonenumber, permissions) "
 //                     "VALUES ('Dude', 'Wheres My Car?', 1, 'something@example.com', '2019-05-24 10:44:35', 7204363017, '3ff')");
 
@@ -734,7 +1090,7 @@ void Widget::connectToDatabase()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
     db.setDatabaseName("HuTemp");
-    db.setHostName("10.0.0.10");
+    db.setHostName(vmDBIPAddress);
     db.setUserName("HuTempApp");
     db.setPassword("cookie");
 
@@ -763,7 +1119,8 @@ void Widget::connectToDatabase()
 //                 qDebug() << address.toString();
 //        }
     } else{
-        QMessageBox::warning(this, "Connection", QString(db.lastError().text()));
+//        QMessageBox::warning(this, "Connection", QString(db.lastError().text()));
+        qDebug() << "Failed to connect to database";
     }
 
 }
@@ -785,7 +1142,7 @@ void Widget::extractAllUserInfo()
 
 QString Widget::alphaNumGenerator()
 {
-    QString charList = "0123456789abcdefghijklmnopqrdtuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ?$@!;()&";
+    srand(QDateTime::currentMSecsSinceEpoch());
     QString tempWord = "";
     for (int i = 0; i < 10; i++){
         tempWord += charList[rand() % charList.count()];
@@ -817,7 +1174,7 @@ void Widget::on_devicesTabSortOptionsDropDownBox_currentIndexChanged(int index)
 
 void Widget::on_devicesTabRefreshButton_clicked()
 {
-    //update the devicestabtablewidget based on the latest information from the database
+    populateDevicesTableWidget();
 }
 
 void Widget::on_reportsTabNestedWidgetEndDateDateEdit_userDateChanged(const QDate &date)
@@ -837,6 +1194,7 @@ void Widget::on_reportsTabNestedWidgetEndTimeTimeEdit_userTimeChanged(const QTim
 void Widget::on_reportsTabNestedWidgetResetButton_clicked()
 {
     ui->reportsTabNestedWidgetTableWidget->clearContents();
+    ui->reportsTabNestedWidgetTableWidget->setRowCount(0);
 }
 
 void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
@@ -853,6 +1211,182 @@ void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
     ui->reportsTabNestedWidgetEndDateDateEdit->setDate(currentDate);
     ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(backTime);
     ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(currentTime);
+    populateReportsTableWidget();
 }
 
 
+
+void Widget::on_loginButton_clicked()
+{
+    //if attempt is at or greater than 5, check to see if email is matched.
+    QString enteredUserName = ui->loginScreenPageNestedWidgetUserNameLineEdit->text();
+    QString enteredPassWord = ui->loginScreenPageNestedWidgetPasswordLineEdit->text();
+    qDebug() << enteredUserName;
+    qDebug() << enteredPassWord;
+
+    //select all (username, password, temporarypassword, offset, and lockout) from logins with AES_DECRYPT()
+    //extract all five columns into their respective variables (QString for varchars/bool for tinyint\boolean)
+    //run each string through the decryption algorithm
+    //compare the result to the user input
+    //define and declare integer attempt at 0
+    //define and declare boolean flag as false
+    //if matched, break from while(loginTableQuery.next()) and set boolean flag to true
+    //after while loop is complete, inspect boolean flag
+    //if boolean flag is true, run select query to get user's permissions
+    //adjust enabled flags on objects based on user permissions
+    //if boolean flag is false, clear line edits
+    //in false check, check to see if either username or password matched
+    //if either one of them matched, increment attempt by one and tell user with warning window that they entered an incorrect username or password
+    //if neither of them matched, tell user with warning window that they entered an incorrect username of password
+
+    QSqlQuery loginTableQuery;
+    QString loginTableQueryStatement = QString("SELECT * FROM login");
+
+
+}
+
+void Widget::on_loginScreenPageNestedWidgetPasswordResetButton_clicked()
+{
+    passwordReset *reset = new passwordReset(this);
+
+    reset->show();
+}
+
+QString Widget::generateHexString(int hexSize)
+{
+    srand(QDateTime::currentMSecsSinceEpoch());
+    QString hexString = "";
+    QString hexCharacters = "123456789ABCDEF";
+    for (int i = 0; i < hexSize; i++){
+         hexString += hexCharacters[rand() % hexCharacters.count()];
+    }
+    return hexString;
+}
+
+
+void Widget::on_devicesTabTableWidget_itemClicked(QTableWidgetItem *item)
+{
+    int row = item->row();
+    int column = item->column();
+//    qDebug() << currentDeviceTableWidgetItem;
+    if (currentDeviceTableWidgetItem == nullptr){
+//        qDebug() << "Null Item";
+        currentDeviceTableWidgetItem = item;
+    } else{
+        previousDeviceTableWidgetItem = currentDeviceTableWidgetItem;
+        currentDeviceTableWidgetItem = item;
+        previousDeviceTableWidgetItem->setText("");
+    }
+
+    ui->devicesTabUpdateButton->setEnabled(true);
+    if (column == 1){
+        ui->devicesTabDeleteButton->setEnabled(true);
+    }
+
+    QString sensorID = ui->devicesTabTableWidget->item(row, 1)->text();
+    QSqlQuery selectMACQuery;
+    QString selectMACQueryStatement = QString("SELECT MAC FROM config WHERE sensorID = '%1'").arg(sensorID);
+    selectMACQuery.exec(selectMACQueryStatement);
+
+    while (selectMACQuery.next()){
+        deviceMacAddress = selectMACQuery.value(0).toString();
+    }
+
+    connect(ui->devicesTabUpdateButton, &QPushButton::clicked, this, &Widget::captureCellChange, Qt::UniqueConnection);
+    connect(ui->devicesTabDeleteButton, &QPushButton::clicked, this, &Widget::removeDevice, Qt::UniqueConnection);
+}
+
+
+void Widget::captureCellChange()
+{
+//    qDebug() << "macAddress:\t" << macAddress;
+//    qDebug() << "sensorID:\t" << ui->devicesTabTableWidget->item(item->row(), 1)->text();
+//    qDebug() << "in captureCellChange";
+    ui->devicesTabUpdateButton->setEnabled(false);
+    ui->devicesTabDeleteButton->setEnabled(false);
+//    qDebug() << "after disabling update and delete buttons";
+
+    QString configTableColumnName;
+    int column = currentDeviceTableWidgetItem->column();
+//    qDebug() << "item->column():\t" << column;
+    if (column > -1){
+        if (column == 0){
+            configTableColumnName = "zoneID";
+        }
+        if (column == 1){
+            configTableColumnName = "sensorID";
+        }
+        if (column == 4){
+            configTableColumnName = "readInterval";
+        }
+        if (column == 8){
+            configTableColumnName = "lowtempthreshold";
+        }
+        if (column == 9){
+            configTableColumnName = "hightempthreshold";
+        }
+        if (column == 10){
+            configTableColumnName = "lowhumiditythreshold";
+        }
+        if (column == 11){
+            configTableColumnName = "highhumiditythreshold";
+        }
+//        qDebug() << "configTableColumnName:\t" << configTableColumnName;
+
+        QSqlQuery updateQuery;
+        QString updateQueryStatement = QString("UPDATE config SET %1 = '%2' WHERE MAC = '%3'")
+                .arg(configTableColumnName).arg(currentDeviceTableWidgetItem->text()).arg(deviceMacAddress);
+        if (updateQuery.exec(updateQueryStatement)){
+//            qDebug() << "updateQuery successful";
+            populateDevicesTableWidget();
+        } else{
+//            qDebug() << "updateQuery unsuccessful";
+            QMessageBox::warning(this, tr("Warning!"), "Your current update(s) could not be saved at this time.");
+        }
+    } else {
+        QMessageBox::information(this, tr("Notice"), "No changes have been made at this time.");
+    }
+
+    checkDevicesForInfo();
+}
+
+void Widget::removeDevice()
+{
+    ui->devicesTabUpdateButton->setEnabled(false);
+    ui->devicesTabDeleteButton->setEnabled(false);
+
+    QString criticalWarning = "Are you sure you wish to remove this data logger from your device list?"
+                              "\nThis action cannot be undone.";
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::warning(this, tr("Critical Warning!"), criticalWarning, QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes){
+        QSqlQuery deleteQuery;
+        QString deleteQueryStatement = QString("DELETE FROM config WHERE sensorID = '%1'").arg(currentDeviceTableWidgetItem->text());
+        if (deleteQuery.exec(deleteQueryStatement)){
+            populateDevicesTableWidget();
+            QMessageBox::information(this, tr("Device Removed"), "Your selected device has been removed.");
+        } else{
+            QMessageBox::warning(this, tr("Error"), "This action cannot be performed at this time.");
+        }
+    }
+}
+
+void Widget::checkDevicesForInfo()
+{
+    for (int i = 0; i < ui->devicesTabTableWidget->rowCount(); i++){
+        if (ui->devicesTabTableWidget->itemAt(i, 0) &&
+                ui->devicesTabTableWidget->itemAt(i, 8) &&
+                ui->devicesTabTableWidget->itemAt(i, 9) &&
+                ui->devicesTabTableWidget->itemAt(i, 10) &&
+                ui->devicesTabTableWidget->itemAt(i, 11)){
+            QString request = "Please enter in a ZoneID and thresholds for " + ui->devicesTabTableWidget->item(i, 1)->text();
+            QMessageBox::warning(this, tr("Missing Data!"), request);
+        }
+    }
+}
+
+void Widget::on_reportsTabNestedWidgetCaptureButton_clicked()
+{
+    populateReportsTableWidget();
+}

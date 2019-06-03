@@ -39,6 +39,8 @@ public:
                    const QString &subject, const QString &body,
                    QStringList files = QStringList());
 
+    bool getSocketStatus();
+
 signals:
     void status( const QString &);
 
@@ -54,6 +56,7 @@ private:
     QString message;
     QTextStream *t;
     QSslSocket *socket;
+    bool socketStatus;
     QString from;
     QString rcpt;
     QString response;

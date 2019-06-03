@@ -193,15 +193,16 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
 void ContactSupportDialog::sendMail()
 {
 //    qDebug() << "in sendMail";
-    Smtp *smtp = new Smtp("hutempcs@gmail.com", "|WjzL]sa[|3", "smtp.gmail.com", 465);
+    //  SWITCH ME TO THE EMAIL ACCOUNT THAT BRANDON CREATED
+    Smtp *smtp = new Smtp("hutemph3@gmail.com", "MnJhUy&^67", "smtp.gmail.com", 465);
     connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
 
     if(!files.isEmpty()){
 //        qDebug() << "!files.isEmpty()";
-        smtp->sendMail("hutempcs@gmail.com", "hutempcs@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)", files );
+        smtp->sendMail("hutemph3@gmail.com", "hutemph3@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)", files );
     } else{
 //        qDebug() << "files.isEmpty()";
-        smtp->sendMail("hutempcs@gmail.com", "hutempcs@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)");
+        smtp->sendMail("hutemph3@gmail.com", "hutemph3@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)");
     }
 }
 
