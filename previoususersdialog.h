@@ -17,6 +17,9 @@ public:
 
 private slots:
     void on_PreviousUsersDialogExitButton_clicked();
+    void populateListWidget();
+
+    void on_PreviousUsersDialogRestoreButton_clicked();
 
 private:
     Ui::PreviousUsersDialog *ui;

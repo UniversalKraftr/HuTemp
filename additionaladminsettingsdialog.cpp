@@ -91,6 +91,11 @@ void AdditionalAdminSettingsDialog::extractFromLogFile()
 
 void AdditionalAdminSettingsDialog::setAllDefaults()
 {
+    setTabOrder(ui->AdditionalAdminSettingsDialogCompanyNameLineEdit, ui->AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit);
+    setTabOrder(ui->AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit, ui->AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit);
+    setTabOrder(ui->AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit, ui->AdditionalAdminSettingsDialogCompanyPhoneNumberLineEdit);
+    ui->AdditionalAdminSettingsDialogCompanyNameLineEdit->setFocus();
+
     ui->AdditionalAdminSettingsDialogDataLoggerChangesCheckBox->setChecked(true);
     ui->AdditionalAdminSettingsDialogDataLoggerChangesCheckBox->setEnabled(false);
 

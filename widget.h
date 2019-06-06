@@ -18,7 +18,7 @@
 #include <QtSql>
 #include <QSqlDatabase>
 #include <QCryptographicHash>
-
+#include <QRandomGenerator64>
 
 #include "smtp.h"
 #include "addauserdialog.h"
@@ -72,12 +72,17 @@ private slots:
     void on_loginButton_clicked();
     void on_loginScreenPageNestedWidgetPasswordResetButton_clicked();
     void on_devicesTabTableWidget_itemClicked(QTableWidgetItem *item);
-
     void on_reportsTabNestedWidgetCaptureButton_clicked();
+    void on_UACadminViewScreenPageNestedWidgetMyProfileButton_clicked();
+    void on_UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton_clicked();
+    void on_mainTabsWidget_tabBarClicked(int index);
+    void on_logoutScreenPageNestedWidgetLogoutButton_clicked();
 
 private:
     Ui::Widget *ui;
-    QString vmDBIPAddress = "10.0.0.3";
+    QString vmDBIPAddress = "10.0.0.9";
+    QString KEY = "*:2Q-S9AX||NkvVg<q&i";
+    int loginAttempts = 0;
     QString u = QChar(0x00B3);
     const QString title = "HuTemp Life Cycle – H" + u + " Product";
     QString charList = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+/?><";
@@ -85,6 +90,8 @@ private:
     int monitorAdminIndexColumn = 0;
     QTableWidgetItem *UACTableWidgetItem = new QTableWidgetItem(nullptr);
     QCheckBox *monitorAdminCheckBox;
+    QCheckBox *monitorDevicesCheckBox;
+    QCheckBox *monitorSettingsCheckBox;
     QPushButton *monitorAdminDeleteButton;
     int quickViewsRadioButton = 0;
     int periodsRadioButton = 0;
@@ -112,8 +119,17 @@ private:
     QTableWidgetItem *previousDeviceTableWidgetItem = new QTableWidgetItem(nullptr);
 
 
-
+    void monitorDevicePermissions();
+    void monitorSettingsPermissions();
     QString generateHexString(int);
+    void loginCurrentUser(QString);
+    void activatePermissions(QString);
+    void activateBasicConfigurations();
+    void activateAllPermissions();
+    void disableAdminPermissions();
+    void setDevicePermissions(int, int, int, int);
+    void setSettingsPermissions(int, int, int);
+    void setReportsAndEmailPermission(int, int);
     void addUserToLoginTable(QString);
     void addUserToUserTable(AddAUserDialog *addUser);
     void connectToDatabase();
@@ -129,23 +145,21 @@ private:
     void setDevicesTabConfigs();
     void setReportsTabConfigs();
     void setSettingsTabConfigs();
-    void setDefaults();
+    void setAllDefaultsOff();
     void populateUACTableWidget();
     void populateDevicesTableWidget();
     void populateReportsTableWidget();
     void monitorAdminStatus();
     void checkAdminBox();
-    void monitorDeleteUsers();
     void archiveUser();
     void monitorUserPasswordResets();
     void setDefaultPermissions(int i);
     void resetPassword();
     QString convertToHex(QString);
     QString convertToBinary(QString);
-    QByteArray sha1Encrypt(QString);
-    QByteArray encrypt(QByteArray, QByteArray);
-    QByteArray decrypt(QString);
-    QString generateOffset();
+    QString encrypt(QString);
+    QString decrypt(QString);
+    QString generateOffset(QString);
     void captureCellChange();
     void removeDevice();
     void checkDevicesForInfo();

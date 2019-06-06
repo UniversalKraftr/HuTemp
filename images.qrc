@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/calendar.png</file>
+        <file>icons/icons8-eye-30.png</file>
+        <file>icons/icons8-invisible-30.png</file>
     </qresource>
 </RCC>

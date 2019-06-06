@@ -20,12 +20,18 @@ public:
 
 private slots:
     void on_passwordResetButtonBox_clicked(QAbstractButton *button);
-    void sendMail(QString);
+    void sendMail(QString, QString);
     void mailSent(QString);
+    QString alphaNumGenerator();
+    void changePassword();
+    QString encrypt(QString);
+    QString generateOffset(QString);
 
 private:
     Ui::passwordReset *ui;
     QStringList files;
+    QString charList = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()-_=+/?><";
+    QString KEY = "*:2Q-S9AX||NkvVg<q&i";
 };
 
 #endif // PASSWORDRESET_H

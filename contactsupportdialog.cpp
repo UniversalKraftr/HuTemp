@@ -41,6 +41,7 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
         }else{
             qDebug() << "File currently does not exist";
         }
+        file.close();
     }
     connect(ui->ContactSupportDialogTextEdit, &QTextEdit::textChanged, this, &ContactSupportDialog::checkMinimumCharacterCount);
 }

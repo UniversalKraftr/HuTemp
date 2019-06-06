@@ -9,6 +9,7 @@
 #include "helpdialog.h"
 #include "previoususersdialog.h"
 #include "passwordreset.h"
+#include "newpasswordpostresetdialog.h"
 #include <QDir>
 #include <fileapi.h>
 
@@ -75,8 +76,7 @@ void Widget::setWidgetConfigs()
     setSettingsTabConfigs();
 
     //set default program upon opening
-    setDefaults();
-
+    setAllDefaultsOff();
 
     createDirectories();
 }
@@ -166,98 +166,133 @@ void Widget::setSettingsTabConfigs()
     ui->settingsTabNestedWidget->setFixedSize(ui->settingsTab->width(), ui->settingsTab->height());
 }
 
-void Widget::setDefaults()
+void Widget::setAllDefaultsOff()
 {
-    //set default view of application upon open
     ui->mainTabsWidget->setCurrentIndex(0);
     ui->loginScreenViewsStack->setCurrentIndex(0);
-//    ui->tabWidget->setTabEnabled(1, false);
-//    ui->tabWidget->setTabEnabled(2, false);
-//    ui->tabWidget->setTabEnabled(3, false);
-    //    ui->tabWidget->setTabEnabled(4, false);
+
+    ui->mainTabsWidget->setTabEnabled(1, false);
+    ui->UACScreenViewsStack->setCurrentIndex(0);
+    ui->UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton->setEnabled(false);
+
+    ui->mainTabsWidget->setTabEnabled(2, false);
+    ui->devicesTabAddButton->setEnabled(false);
+    ui->devicesTabUpdateButton->setEnabled(false);
+    ui->devicesTabDeleteButton->setEnabled(false);
+    ui->UACuserViewScreenPageNestedWidgetDevicesCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetAddCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetModifyCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetRemoveCheckBox->setChecked(false);
+
+    ui->mainTabsWidget->setTabEnabled(3, false);
+    ui->UACuserViewScreenPageNestedWidgetReportsCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetEmailCheckBox->setChecked(false);
+
+    ui->mainTabsWidget->setTabEnabled(4, false);
+    ui->settingsTabNestedWidgetnotificationsPushButton->setEnabled(false);
+    ui->settingsTabNestedWidgetnetworkPushButton->setEnabled(false);
+    ui->UACuserViewScreenPageNestedWidgetSettingsCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetNotificationsCheckBox->setChecked(false);
+    ui->UACuserViewScreenPageNestedWidgetNetworkCheckBox->setChecked(false);
 }
 
 void Widget::populateUACTableWidget()
 {
+//    qDebug() << "in populateUACTableWidget()";
     if (ui->UACTableWidget->rowCount() > 0){
+//        qDebug() << "rowCount() > 0";
         ui->UACTableWidget->clearContents();
         ui->UACTableWidget->setRowCount(0);
     }
     QSqlQuery getUserTableQuery;
     QString selectStatement = "SELECT * FROM users WHERE activestatus = 1";
-    getUserTableQuery.exec(selectStatement);
+    if (getUserTableQuery.exec(selectStatement)){
+//        qDebug() << "query successful";
+
+
 //    int rowCount = 0;
-    if (getUserTableQuery.size() > 0){
-        while (getUserTableQuery.next()){
-//            rowCount += 1;
-//            qDebug() << ui->UACTableWidget->rowCount();
-            ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
+        if (getUserTableQuery.size() > 0){
+//            qDebug() << "userTable size > 0";
+            while (getUserTableQuery.next()){
+//                qDebug() << "getUserTableQuery.next()";
+    //            rowCount += 1;
+    //            qDebug() << ui->UACTableWidget->rowCount();
+                ui->UACTableWidget->insertRow(ui->UACTableWidget->rowCount());
+//                qDebug() << "ui->UACTableWidget->rowCount() = " << ui->UACTableWidget->rowCount();
+//                qDebug() << "monitorAdminIndexRow = " << monitorAdminIndexRow;
 
-            QString firstName = getUserTableQuery.value(1).toString();
-            QString lastName = getUserTableQuery.value(2).toString();
-            QTableWidgetItem *userName = new QTableWidgetItem(firstName + " " + lastName);
-            QTableWidgetItem *userEmailItem = new QTableWidgetItem(getUserTableQuery.value(4).toString());
-            QTableWidgetItem *userNumber = new QTableWidgetItem(getUserTableQuery.value(6).toString());
-            QTableWidgetItem *userHireDate = new QTableWidgetItem(getUserTableQuery.value(5).toString());
-            userName->setFlags(Qt::NoItemFlags);
-            userEmailItem->setFlags(Qt::NoItemFlags);
-            userNumber->setFlags(Qt::NoItemFlags);
-            userHireDate->setFlags(Qt::NoItemFlags);
-            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1,0, userName);
-            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmailItem);
-            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
-            ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 13, userHireDate);
 
-            QString binary = convertToBinary(getUserTableQuery.value(7).toString());
-            for (int i = 0; i < binary.count(); i++){
-                QWidget *checkBoxWidget = new QWidget();
-                QCheckBox *checkBox = new QCheckBox();
-                QHBoxLayout *layout = new QHBoxLayout(checkBoxWidget);
-                if (binary[i] == '1'){
-                    checkBox->setCheckState(Qt::Checked);
-                } else if (binary[i] == '0'){
-                    checkBox->setCheckState(Qt::Unchecked);
+                QString firstName = getUserTableQuery.value(1).toString();
+                QString lastName = getUserTableQuery.value(2).toString();
+                QTableWidgetItem *userName = new QTableWidgetItem(firstName + " " + lastName);
+                QTableWidgetItem *userEmailItem = new QTableWidgetItem(getUserTableQuery.value(4).toString());
+                QTableWidgetItem *userNumber = new QTableWidgetItem(getUserTableQuery.value(6).toString());
+                QTableWidgetItem *userHireDate = new QTableWidgetItem(getUserTableQuery.value(5).toString());
+                userName->setFlags(Qt::NoItemFlags);
+                userEmailItem->setFlags(Qt::NoItemFlags);
+                userNumber->setFlags(Qt::NoItemFlags);
+                userHireDate->setFlags(Qt::NoItemFlags);
+                ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1,0, userName);
+                ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 11, userEmailItem);
+                ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 12, userNumber);
+                ui->UACTableWidget->setItem(ui->UACTableWidget->rowCount()-1, 13, userHireDate);
+
+                QString binary = convertToBinary(getUserTableQuery.value(7).toString());
+                for (int i = 0; i < binary.count(); i++){
+//                    qDebug() << "permissions being set";
+                    QWidget *checkBoxWidget = new QWidget();
+                    QCheckBox *checkBox = new QCheckBox();
+                    QHBoxLayout *layout = new QHBoxLayout(checkBoxWidget);
+                    if (binary[i] == '1'){
+                        checkBox->setCheckState(Qt::Checked);
+                    } else if (binary[i] == '0'){
+                        checkBox->setCheckState(Qt::Unchecked);
+                    }
+                    checkBox->setEnabled(false);
+                    checkBox->setObjectName("checkbox");
+                    layout->addWidget(checkBox);
+                    layout->setAlignment(Qt::AlignCenter);
+                    layout->setContentsMargins(0,0,0,0);
+                    checkBoxWidget->setLayout(layout);
+                    ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
                 }
-                checkBox->setEnabled(false);
-                checkBox->setObjectName("checkbox");
-                layout->addWidget(checkBox);
-                layout->setAlignment(Qt::AlignCenter);
-                layout->setContentsMargins(0,0,0,0);
-                checkBoxWidget->setLayout(layout);
-                ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, i+1, checkBoxWidget);
+
+                QWidget *resetButtonWidget = new QWidget();
+                QPushButton *resetButton = new QPushButton();
+                resetButton->setText("Reset Password");
+                QHBoxLayout *resetButtonlayout = new QHBoxLayout(resetButtonWidget);
+                connect(resetButton, &QPushButton::clicked, this, &Widget::resetPassword, Qt::UniqueConnection);
+                resetButtonlayout->addWidget(resetButton);
+                resetButtonlayout->setAlignment(Qt::AlignCenter);
+                resetButtonlayout->setContentsMargins(0,0,0,0);
+                resetButtonWidget->setLayout(resetButtonlayout);
+                resetButtonWidget->setEnabled(false);
+                ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, resetButtonWidget);
+//                qDebug() << "after reset button created";
+
+                QWidget *deleteButtonWidget = new QWidget();
+                QPushButton *deleteButton = new QPushButton();
+                deleteButton->setText("Delete");
+                QHBoxLayout *deleteButtonlayout = new QHBoxLayout(deleteButtonWidget);
+                connect(deleteButton, &QPushButton::clicked, this, &Widget::archiveUser, Qt::UniqueConnection);
+                deleteButtonlayout->addWidget(deleteButton);
+                deleteButtonlayout->setAlignment(Qt::AlignCenter);
+                deleteButtonlayout->setContentsMargins(0,0,0,0);
+                deleteButtonWidget->setLayout(deleteButtonlayout);
+                deleteButtonWidget->setEnabled(false);
+                ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 15, deleteButtonWidget);
+//                qDebug() << "after delete button created";
             }
-
-            QWidget *resetButtonWidget = new QWidget();
-            QPushButton *resetButton = new QPushButton();
-            resetButton->setText("Reset Password");
-            QHBoxLayout *resetButtonlayout = new QHBoxLayout(resetButtonWidget);
-            connect(resetButton, &QPushButton::clicked, this, &Widget::resetPassword, Qt::UniqueConnection);
-            resetButtonlayout->addWidget(resetButton);
-            resetButtonlayout->setAlignment(Qt::AlignCenter);
-            resetButtonlayout->setContentsMargins(0,0,0,0);
-            resetButtonWidget->setLayout(resetButtonlayout);
-            resetButtonWidget->setEnabled(false);
-            ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 14, resetButtonWidget);
-
-            QWidget *deleteButtonWidget = new QWidget();
-            QPushButton *deleteButton = new QPushButton();
-            deleteButton->setText("Delete");
-            QHBoxLayout *deleteButtonlayout = new QHBoxLayout(deleteButtonWidget);
-            connect(deleteButton, &QPushButton::clicked, this, &Widget::monitorDeleteUsers, Qt::UniqueConnection);
-            deleteButtonlayout->addWidget(deleteButton);
-            deleteButtonlayout->setAlignment(Qt::AlignCenter);
-            deleteButtonlayout->setContentsMargins(0,0,0,0);
-            deleteButtonWidget->setLayout(deleteButtonlayout);
-            deleteButtonWidget->setEnabled(false);
-            ui->UACTableWidget->setCellWidget(ui->UACTableWidget->rowCount()-1, 15, deleteButtonWidget);
         }
+    } else{
+        qDebug() << "query failed";
     }
     //    qDebug() << "user added";
 }
 
 void Widget::populateDevicesTableWidget()
 {
-    qDebug() << "in populateDevicesTableWidget()";
+//    qDebug() << "in populateDevicesTableWidget()";
     if (ui->devicesTabTableWidget->rowCount() > 0){
         ui->devicesTabTableWidget->clearContents();
         ui->devicesTabTableWidget->setRowCount(0);
@@ -315,6 +350,9 @@ void Widget::populateDevicesTableWidget()
             //CALCULATION WILL HAVE 4.2 FOR THE HIGHEST, ANYTHING ABOVE WILL JUST READ 100%
             //STILL NEED THE LOW END TO GET THE PROPER CALCULATION FOR REFLECTING THE PERCENTAGE ACCURATELY
             //MOST LIKELY GOING TO BE 3.3, BUT GET CONFIRMATION FROM BRANDON
+            //3.3 IS THE LOW END
+            //THE EQUATION FOR DISPLAYING THE BATTERY PERCENTAGE IS AS FOLLOWS
+            //100*((.9-(4.2-powerLevelData))/.9) -->round to 2 decimal places
             if (selectDataQuery.exec(selectDataQueryStatment)){
 //                qDebug() << "selectDataQuery successful";
                 while (selectDataQuery.next()){
@@ -536,17 +574,24 @@ void Widget::checkAdminBox()
     }
 }
 
-void Widget::monitorDeleteUsers()
-{
-    qDebug() << "Delete button clicked for row";
-    archiveUser();
-}
 
 void Widget::archiveUser()
 {
-    //locate user in user USER TABLE using USER ID
-    //change active status to false
-    //update table widget with user table
+//    qDebug() << "in archiveUser";
+    QString fullName = ui->UACTableWidget->item(monitorAdminIndexRow, 0)->text();
+    QString firstName = fullName.split(" ").front();
+    QString lastName = fullName.split(" ").back();
+    QSqlQuery archiveQuery;
+    QString archiveQueryStatement = QString("UPDATE users SET activestatus = 0 WHERE firstname = '%2' and lastname = '%3'")
+            .arg(firstName).arg(lastName);
+    if (archiveQuery.exec(archiveQueryStatement)){
+        QMessageBox::information(this, tr("Archived"), "This user has been archived to previous users.");
+    } else{
+        QMessageBox::warning(this, tr("Archive Error"), "Archiving failed! Please try again later.");
+    }
+    populateUACTableWidget();
+    ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(false);
+    UACTableWidgetItem = nullptr;
 }
 
 void Widget::setDefaultPermissions(int i)
@@ -595,6 +640,7 @@ void Widget::setDefaultPermissions(int i)
 
 void Widget::resetPassword()
 {
+//    qDebug() << "in resetPassword()";
 //    qDebug() << "reset password button clicked for row";
     newTempPassword = alphaNumGenerator();
     //    qDebug() << newTempPassword;
@@ -614,43 +660,43 @@ QString Widget::convertToBinary(QString hexToBinary)
     return QString::number(hex, 2);
 }
 
-QByteArray Widget::sha1Encrypt(QString input)
+
+QString Widget::encrypt(QString input)
 {
-    return QCryptographicHash::hash(input.toLocal8Bit(), QCryptographicHash::Sha1);
+    return input.toLocal8Bit().toHex().toBase64();
 }
 
-QByteArray Widget::encrypt(QByteArray password, QByteArray offset)
+QString Widget::decrypt(QString input)
 {
-    QByteArray hash = QCryptographicHash::hash((password + offset), QCryptographicHash::Sha256);
-    QByteArray hexHash = hash.toHex();
-    QByteArray b64Hash = hexHash.toBase64();
-    return b64Hash;
+//    qDebug() << "input = " << input;
+    QByteArray reverseInput = QByteArray::fromStdString(input.toStdString());
+//    qDebug() << "reverseInput = " << reverseInput;
+    QByteArray b64FromStdStringInput = QByteArray::fromBase64(reverseInput);
+//    qDebug() << "b64FromStdStringInput = " << b64FromStdStringInput;
+    QByteArray fromHexInput = QByteArray::fromHex(b64FromStdStringInput);
+//    qDebug() << fromHexInput;
+    QString toDecrypt = fromHexInput;
+    return toDecrypt;
 }
 
-QByteArray Widget::decrypt(QString input)
+QString Widget::generateOffset(QString password)
 {
-    QByteArray finalHash = QByteArray::fromStdString(input.toStdString());
-    QByteArray hexHash = QByteArray::fromBase64(finalHash);
-    QByteArray hash = QByteArray::fromHex(hexHash);
-    return hash;
-}
+    qDebug() << "in generateOffset";
 
-QString Widget::generateOffset()
-{
-//    qDebug() << "in generateOffset";
-    srand(QDateTime::currentMSecsSinceEpoch());
+    int length = 64 - password.length();
+
     QString offsetFill = "";
-    for (int i = 0; i < 32; i++){
-        QCharRef character = charList[rand() % charList.count()];
-        while (character == nullptr){
-            character = charList[rand() & charList.count()];
-        }
-        offsetFill += character;
+    for (int i = 0; i < length; i++){
+        std::uniform_int_distribution<int> distribution(1, charList.count());
+        int value = distribution(*QRandomGenerator::global()) - 1;
+
+        QChar character = charList[value];
+
+        offsetFill.append(character);
     }
-//    qDebug() << "offsetFill:\t" << offsetFill;
+    qDebug() << "offsetFill:\t" << offsetFill;
     return offsetFill;
 }
-
 
 void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
 {
@@ -756,6 +802,7 @@ void Widget::on_settingsTabNestedWidgethelpPushButton_clicked()
 
 void Widget::on_UACAddAUserButton_clicked()
 {
+//    qDebug() << "in UACAddAUserButton_clicked()";
     AddAUserDialog *addUser = new AddAUserDialog(this);
     connect(addUser, &AddAUserDialog::accepted, [=](){
         addUserToUserTable(addUser);
@@ -772,32 +819,51 @@ void Widget::on_logoutScreenPageClearNotificationsButton_clicked()
 
 void Widget::on_UACPreviousUsersButton_clicked()
 {
+//    qDebug() << "in UACPreviousUsersButton_clicked()";
     PreviousUsersDialog *previousUsers = new PreviousUsersDialog(this);
+    connect(previousUsers, &PreviousUsersDialog::accepted, [=](){
+        populateUACTableWidget();
+    });
     previousUsers->show();
 }
 
 void Widget::on_UACTableWidget_itemClicked(QTableWidgetItem *item)
 {
-//    qDebug() << "in itemClicked";
+//    qDebug() << "in UACTableWidget_itemClicked()";
     if (ui->UACadminViewScreenPageNestedWidgetEditButton->isEnabled() || ui->UACadminViewScreenPageNestedWidgetSaveButton->isEnabled())
     {
+//        qDebug() << "one of the buttons is active";
         QMessageBox::warning(this, tr("Error"), "You can only select one user at a time!");
     } else{
+//        qDebug() << "neither button is active";
+//        qDebug() << "item = " << item->text();
         item->setTextColor("green");
+//        qDebug() << "post item color change";
         selectedItemFont = item->font();
+//        qDebug() << "selectedItemFont = " << selectedItemFont.toString();
         QFont font;
         font.setBold(true);
         font.setFamily("Consolas");
-        if (UACTableWidgetItem->text() == nullptr){
+//        qDebug() << "new font created";
+//        qDebug() << "UACTableWidgetItem = " << UACTableWidgetItem;
+//        qDebug() << "UACTableWidgetItem = " << UACTableWidgetItem->text();
+        if (UACTableWidgetItem == nullptr){
+//            qDebug() << "UACTableWidgetItem has no text";
             UACTableWidgetItem = item;
         } else{
+//            qDebug() << "has something";
             if (UACTableWidgetItem != item){
+//                qDebug() << "UACTableWidgetItem != item";
+//                qDebug() << "UACTableWidgetItem = " << UACTableWidgetItem;
                 UACTableWidgetItem->setTextColor("black");
                 UACTableWidgetItem->setFont(selectedItemFont);
                 UACTableWidgetItem = item;
+//                qDebug() << "UACTableWidgetItem = " << UACTableWidgetItem;
             }
         }
+//        qDebug() << "previous monitorAdminIndexRow = " << monitorAdminIndexRow;
         monitorAdminIndexRow = UACTableWidgetItem->row();
+//        qDebug() << "current monitorAdminIndexRow = " << monitorAdminIndexRow;
         ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(true);
     }
 }
@@ -847,18 +913,19 @@ void Widget::toggleAdminUACCheckBoxStatuses()
 
 void Widget::on_UACadminViewScreenPageNestedWidgetEditButton_clicked()
 {
-    qDebug() << "editButton clicked";
-    qDebug() << "current index = " << monitorAdminIndexRow;
+//    qDebug() << "editButton clicked";
+//    qDebug() << "current index = " << monitorAdminIndexRow;
     ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
     ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(true);
     monitorAdminStatus();
     toggleAdminUACCheckBoxStatuses();
+    monitorDevicePermissions();
 }
 
 void Widget::on_UACadminViewScreenPageNestedWidgetSaveButton_clicked()
 {
-    qDebug() << "save button clicked";
-    qDebug() << "current index = " << monitorAdminIndexRow;
+//    qDebug() << "save button clicked";
+//    qDebug() << "current index = " << monitorAdminIndexRow;
     UACTableWidgetItem->setTextColor("black");
     UACTableWidgetItem->setFont(selectedItemFont);
     QList<bool> userPerms;
@@ -889,13 +956,13 @@ void Widget::sendMail(QString userEmailMail, QString tempPassword)
 {
     //NEED TO CHECK THIS AND SEE IF IT WORKS OUTSIDE OF THE SCHOOL
     //COULD BE THE NETWORK SETUP THE SCHOOL HAS
-        qDebug() << "in sendMail";
-        qDebug() << userEmailMail << " : " << tempPassword;
+//        qDebug() << "in sendMail";
+//        qDebug() << userEmailMail << " : " << tempPassword;
         Smtp *smtp = new Smtp("hutemph3@gmail.com", "MnJhUy&^67", "smtp.gmail.com", 465);
         connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
 
 
-        qDebug() << "socketStatus is true";
+//        qDebug() << "socketStatus is true";
         QString subjectLine = "HuTemp - New Account -->(DO NOT REPLY TO THIS EMAIL)";
         QString message = "You account has been activated for HuTemp use. "
                           "Please review the following information below.\n\n";
@@ -912,16 +979,16 @@ void Widget::sendMail(QString userEmailMail, QString tempPassword)
 
 
         if(!files.isEmpty()){
-            qDebug() << "!files.isEmpty()";
+//            qDebug() << "!files.isEmpty()";
             smtp->sendMail("hutemph3@gmail.com", userEmailMail, subjectLine, message, files);
         } else{
-            qDebug() << "files.isEmpty()";
+//            qDebug() << "files.isEmpty()";
             smtp->sendMail("hutemph3@gmail.com", userEmailMail, subjectLine, message);
         }
 
         bool socketStatus = smtp->getSocketStatus();
         if (socketStatus == false){
-            qDebug() << "socket Status is false";
+//            qDebug() << "socket Status is false";
             QString message = "Email failed to send to user!";
             message += "\nPlease provide this new user with their login information:";
             message += "\n\tUsername:\t";
@@ -954,15 +1021,23 @@ void Widget::addUserToLoginTable(QString inputUserEmail)
         }
     }
     if (check == true){
-        qDebug() << "check is true";
+//        qDebug() << "check is true";
         QSqlQuery insertQuery;
         resetPassword();
+        qDebug() << "newTempPassword = " << newTempPassword;
 //        qDebug() << inputUserEmail << "-:-" << newTempPassword;
-        QString offset = generateOffset();
-//        qDebug() << offset;
-        QByteArray offsetEncrypted = sha1Encrypt(offset);
-        QByteArray passwordEncrypted = sha1Encrypt(newTempPassword);
-        QByteArray finalHash = encrypt(passwordEncrypted, offsetEncrypted);
+        QString offset = generateOffset(newTempPassword);
+        qDebug() << "offset = " << offset;
+        QString offsetEncrypted = encrypt(offset);
+        qDebug() << "offsetEncrypted = " << offsetEncrypted;
+        QString passwordEncrypted = encrypt(newTempPassword);
+        qDebug() << "passwordEncrypted = " << passwordEncrypted;
+        QString finalPassword = passwordEncrypted + offsetEncrypted;
+        qDebug() << "finalPassword = " << finalPassword;
+        QString finalPasswordEncrypted = encrypt(finalPassword);
+        qDebug() << "finalPasswordEncrypted = " << finalPasswordEncrypted;
+//        QString passwordEncrypted = encrypt("");
+//        QString finalHash = encrypt("");
 
 
         //DOUBLE CHECK THE COLUMN NAME IN THIS STATEMENT TO MAKE SURE IT'S THE RIGHT SPELLING
@@ -987,11 +1062,11 @@ void Widget::addUserToLoginTable(QString inputUserEmail)
         //review links for proper setup:
             //https://security.stackexchange.com/questions/190611/mysql-aes-encrypt-string-key-length
             //https://dev.mysql.com/doc/refman/8.0/en/encryption-functions#function_aes-encrypt
-            //https://www.w3resource.com/mysql/encryption-and-compression-functions/aes_encrypt().php
+            //https://www.w3resource.com/mysql/encryption-and-compression-functions/aes_().php
+//        qDebug() << "QString::fromStdString(offsetEncrypted.toStdString()) --> " << QString::fromStdString(offsetEncrypted.toStdString());
         QString insertStatement = QString("INSERT INTO login (userID, username, password, offset, temporarypassword, lockout)"
-                                          " VALUES (%1, '%2', '%3', '%4', %5, %6)").arg(QString::number(convertedUserID))
-                .arg(inputUserEmail).arg(QString::fromStdString(finalHash.toStdString()))
-                .arg(QString::fromStdString(offsetEncrypted.toStdString())).arg(QString::number(true)).arg(QString::number(false));
+                                          " VALUES (%1, '%2', AES_ENCRYPT('%3', '%7'), AES_ENCRYPT('%4','%7'), %5, %6)").arg(QString::number(convertedUserID))
+                .arg(inputUserEmail).arg(finalPasswordEncrypted).arg(offsetEncrypted).arg(QString::number(true)).arg(QString::number(false)).arg(KEY);
         if (insertQuery.exec(insertStatement)){
             qDebug() << "successful logins table query";
 //            qDebug() << "userEmail:\t" << inputUserEmail;
@@ -1003,7 +1078,7 @@ void Widget::addUserToLoginTable(QString inputUserEmail)
         }
 
     } else{
-        qDebug() << "check is false";
+//        qDebug() << "check is false";
     }
 }
 
@@ -1025,6 +1100,7 @@ QString Widget::getUserType()
 
 void Widget::addUserToUserTable(AddAUserDialog *addUser)
 {
+    qDebug() << "in addUserToUserTable";
     QSqlQuery insertQuery;
     insertQuery.exec("SELECT * FROM users");
 //    int userCount = insertQuery.size();
@@ -1142,6 +1218,7 @@ void Widget::extractAllUserInfo()
 
 QString Widget::alphaNumGenerator()
 {
+//    qDebug() << "in alphaNumGenerator";
     srand(QDateTime::currentMSecsSinceEpoch());
     QString tempWord = "";
     for (int i = 0; i < 10; i++){
@@ -1214,15 +1291,12 @@ void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
     populateReportsTableWidget();
 }
 
-
-
 void Widget::on_loginButton_clicked()
 {
     //if attempt is at or greater than 5, check to see if email is matched.
     QString enteredUserName = ui->loginScreenPageNestedWidgetUserNameLineEdit->text();
     QString enteredPassWord = ui->loginScreenPageNestedWidgetPasswordLineEdit->text();
-    qDebug() << enteredUserName;
-    qDebug() << enteredPassWord;
+
 
     //select all (username, password, temporarypassword, offset, and lockout) from logins with AES_DECRYPT()
     //extract all five columns into their respective variables (QString for varchars/bool for tinyint\boolean)
@@ -1239,10 +1313,73 @@ void Widget::on_loginButton_clicked()
     //if either one of them matched, increment attempt by one and tell user with warning window that they entered an incorrect username or password
     //if neither of them matched, tell user with warning window that they entered an incorrect username of password
 
-    QSqlQuery loginTableQuery;
-    QString loginTableQueryStatement = QString("SELECT * FROM login");
 
 
+
+    QSqlQuery loginTableLockoutQuery;
+    QString loginTableLockoutQueryStatement = QString("SELECT lockout FROM login WHERE username = '%1'").arg(enteredUserName);
+    int lockout = 0;
+    if (loginTableLockoutQuery.exec(loginTableLockoutQueryStatement)){
+        while(loginTableLockoutQuery.next()){
+            lockout = loginTableLockoutQuery.value(0).toInt();
+        }
+    } else{
+        QMessageBox::warning(this, tr("Error!"), "Invalid username entry");
+        //WILL NEED TO ADD MORE HERE EVENTUALLY TO HANDLE WHEN SOMEONE MAKES THREE TO FIVE FALSE ATTEMPTS WITH AN INVALID USERNAME ENTRY
+        //CREATE A LOCKOUT MECHANISM THAT CHECKS UPON OPENING OF APPLICATION FOR A TIMER VARIABLE THAT RUNS FOR AN HOUR WHEN
+        //SOMEONE TRIES TO FALSELY LOGIN. NEED TO FIGURE OUT WHERE TO STORE THE TIMER. NEED TO MAKE SURE THE TIMER IS RUNNING FOR THE
+        //SET TIME FOR WHEN THE SYSTEM IS ON. THE TIMER NEEDS TO PAUSE WHEN THE SYSTEM IS TURNED OFF. AND THEN CONTINUES WHEN THE SYSTEM
+        //GETS TURNED BACK ON. IF OR WHEN THE TIMER IS AT 0, THEN THE APPLICATION CAN START UP.
+        //IF THE TIMER IS NOT AT 0, THEN A MESSAGEBOX WILL APPEAR THAT SAYS THE APPLICATION HAS BEEN FULLY LOCKED OUT AND TO REVIEW THE USER
+        //MANUAL FOR FURTHER EXPLANATION
+    }
+
+    if (lockout == 1){
+        //trigger password reset protocol
+    } else{
+        //Start process of gathering remaining information for comparison check
+        QSqlQuery loginTableQuery;
+        QString loginTableQueryStatement = QString("SELECT AES_DECRYPT(password, '%2'), AES_DECRYPT(offset, '%2'), temporarypassword FROM login WHERE username = '%1'").arg(enteredUserName).arg(KEY);
+        QString password;//0
+        QString offset;//1
+        int temporaryPasswordStatus = 0;//2
+        if (loginTableQuery.exec(loginTableQueryStatement)){
+            while(loginTableQuery.next()){
+                password = loginTableQuery.value(0).toString();
+                offset = loginTableQuery.value(1).toString();
+                temporaryPasswordStatus = loginTableQuery.value(2).toInt();
+            }
+        } else{
+            QMessageBox::warning(this, tr("ERROR"), "Connection to database failed. Please try again shortly.");
+        }
+
+        QString offsetDecrypted = decrypt(offset);
+        QString passwordDecrypted = decrypt(password);
+        QString passwordSplit = passwordDecrypted.replace(offset, "");
+        QString finalPassword = decrypt(passwordSplit);
+//        qDebug() << "enteredPassWord = " << enteredPassWord;
+//        qDebug() << "finalPassword = " << finalPassword;
+
+        if (enteredPassWord == finalPassword){
+            qDebug() << "SUCCESS!!!";
+            if (temporaryPasswordStatus == 1){
+                NewPasswordPostResetDialog *newPassword = new NewPasswordPostResetDialog(enteredUserName);
+                newPassword->show();
+            } else{
+                loginCurrentUser(enteredUserName);
+            }
+        } else{
+            qDebug() << "FAILED";
+            QMessageBox::warning(this, tr("FAILED!"), "An incorrect username or password was used.");
+            loginAttempts++;
+        }
+
+        if (loginAttempts == 5){
+            QSqlQuery updateQuery;
+            QString updateQueryStatement = QString("UPDATE login SET lockout = 1 WHERE username = '%1'").arg(enteredUserName);
+            loginAttempts = 0;
+        }
+    }
 }
 
 void Widget::on_loginScreenPageNestedWidgetPasswordResetButton_clicked()
@@ -1254,6 +1391,7 @@ void Widget::on_loginScreenPageNestedWidgetPasswordResetButton_clicked()
 
 QString Widget::generateHexString(int hexSize)
 {
+//    qDebug() << "in generateHexString";
     srand(QDateTime::currentMSecsSinceEpoch());
     QString hexString = "";
     QString hexCharacters = "123456789ABCDEF";
@@ -1261,6 +1399,269 @@ QString Widget::generateHexString(int hexSize)
          hexString += hexCharacters[rand() % hexCharacters.count()];
     }
     return hexString;
+}
+
+void Widget::loginCurrentUser(QString username)
+{
+    QSqlQuery extractUserInfoQuery;
+    QString extractUserInfoQueryStatement = QString("SELECT firstname, lastname, email, hiredate, phonenumber, permissions "
+                                                    "FROM users WHERE email = '%1'").arg(username);
+    if (extractUserInfoQuery.exec(extractUserInfoQueryStatement)){
+        QString loginUserFirstName;
+        QString loginUserLastName;
+        QString loginUserEmail;
+        QString loginUserHireDate;
+        QString loginUserPhoneNumber;
+        QString loginUserPermissions;
+        while(extractUserInfoQuery.next()){
+            loginUserFirstName = extractUserInfoQuery.value(0).toString();
+            loginUserLastName = extractUserInfoQuery.value(1).toString();
+            loginUserEmail = extractUserInfoQuery.value(2).toString();
+            loginUserHireDate = extractUserInfoQuery.value(3).toString();
+            loginUserPhoneNumber = extractUserInfoQuery.value(4).toString();
+            loginUserPermissions = extractUserInfoQuery.value(5).toString();
+        }
+
+
+        //create file
+        QString fileName = logsDirectory + "/tempUserInfoLog.txt";
+        QFile file(fileName);
+        if (file.open(QIODevice::ReadWrite)){
+            QTextStream inStream(&file);
+            inStream << loginUserFirstName << endl;
+            inStream << loginUserLastName << endl;
+            inStream << loginUserEmail << endl;
+            inStream << loginUserHireDate << endl;
+            inStream << loginUserPhoneNumber << endl;
+            inStream << loginUserPermissions << endl;
+        }
+        file.close();
+
+        loginUserFirstName = nullptr;
+        loginUserLastName = nullptr;
+        loginUserEmail = nullptr;
+        loginUserHireDate = nullptr;
+        loginUserPhoneNumber = nullptr;
+
+        loginUserPermissions = convertToBinary(loginUserPermissions);
+        activatePermissions(loginUserPermissions);
+//        qDebug() << "loginUserPermissions = " << loginUserPermissions;
+
+
+//SAVE FOR POPULATING THE USER INFO IN THE USER PROFILE VIEW
+//        if(file.open(QIODevice::ReadOnly)){
+//            QTextStream fromFile(&file);
+//            QString myFileText = fromFile.readAll();
+//            QStringList myText = myFileText.split("\n");
+
+//        }
+//        file.close();
+
+
+
+
+//        if (file.open(QIODevice::ReadOnly)){
+//            QTextStream in(&file);
+//            QString myFileText = in.readAll();
+//            qDebug() << myFileText;
+//            QStringList myText = myFileText.split("\n");
+//            ui->ContactSupportDialogCompanyNameLabel->setText(myText[0]);
+//            ui->ContactSupportDialogCompanyAddressLine1Label->setText(myText[1]);
+//            ui->ContactSupportDialogCompanyAddressLine2Label->setText(myText[2]);
+//            ui->ContactSupportDialogCompanyPhoneNumberLabel->setText(myText[3]);
+//        }else{
+//            qDebug() << "File currently does not exist";
+//        }
+    }
+}
+
+void Widget::activatePermissions(QString permissions)
+{
+    int devicesPermission = permissions[0].digitValue();//0
+    int devicesAddPermission = permissions[1].digitValue();//1
+    int devicesModifyPermission = permissions[2].digitValue();//2
+    int devicesRemovePermission = permissions[3].digitValue();//3
+    int adminPermission = permissions[4].digitValue();//4
+    int reportsPermission = permissions[5].digitValue();//5
+    int settingsPermission = permissions[6].digitValue();//6
+    int notificationsPermission = permissions[7].digitValue();//7
+    int networkPermission = permissions[8].digitValue();//8
+    int emailPermission = permissions[9].digitValue();//9
+
+//    qDebug() << "devicesPermission = " << devicesPermission;
+//    qDebug() << "devicesAddPermission = " << devicesAddPermission;
+//    qDebug() << "devicesModifyPermission = " << devicesModifyPermission;
+//    qDebug() << "devicesRemovePermission = " << devicesRemovePermission;
+//    qDebug() << "adminPermission = " << adminPermission;
+//    qDebug() << "reportsPermission = " << reportsPermission;
+//    qDebug() << "settingsPermission = " << settingsPermission;
+//    qDebug() << "notificationsPermission = " << notificationsPermission;
+//    qDebug() << "networkPermission = " << networkPermission;
+//    qDebug() << "emailPermission = " << emailPermission;
+
+    activateBasicConfigurations();
+
+    if (adminPermission == 1){
+        ui->logoutScreenPageNestedWidgetUserTypeLabel->setText("Admin");
+        ui->mainTabsWidget->setTabText(1, "Users");
+        activateAllPermissions();
+    } else{
+        ui->logoutScreenPageNestedWidgetUserTypeLabel->setText("User");
+        ui->mainTabsWidget->setTabText(1, "Profile");
+        disableAdminPermissions();
+        setDevicePermissions(devicesPermission, devicesAddPermission, devicesModifyPermission, devicesRemovePermission);
+        setSettingsPermissions(settingsPermission, notificationsPermission, networkPermission);
+        setReportsAndEmailPermission(reportsPermission, emailPermission);
+    }
+}
+
+void Widget::activateBasicConfigurations()
+{
+    ui->mainTabsWidget->setTabEnabled(1, true);
+    ui->loginScreenViewsStack->setCurrentIndex(1);
+    ui->UACScreenViewsStack->setCurrentIndex(0);
+    QString fileName = logsDirectory + "/tempUserInfoLog.txt";
+    QFile file(fileName);
+    QString profileFirstName;
+    QString profileLastName;
+    QString profilePhoneNumber;
+    QString profileEmail;
+    if (file.open(QIODevice::ReadOnly)){
+        QTextStream nameStream(&file);
+        QString myFileText = nameStream.readAll();
+        QStringList myText = myFileText.split("\n");
+        profileFirstName = myText[0];
+        profileLastName = myText[1];
+        profilePhoneNumber = myText[4];
+        profileEmail = myText[2];
+    }
+    file.close();
+    ui->logoutUserNameLabel->setText(profileFirstName + " " + profileLastName);
+    ui->UACuserViewScreenPageNestedWidgetUserFirstLastNameLabel->setText(profileFirstName + " " + profileLastName);
+    ui->UACuserViewScreenPageNestedWidgetUserPhoneNumberLineEdit->setText(profilePhoneNumber);
+    ui->UACuserViewScreenPageNestedWidgetUserEmailLineEdit->setText(profileEmail);
+}
+
+void Widget::activateAllPermissions()
+{
+    ui->UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton->setEnabled(true);
+
+    ui->mainTabsWidget->setTabEnabled(2, true);
+    ui->devicesTabAddButton->setEnabled(true);
+    ui->devicesTabUpdateButton->setEnabled(true);
+    ui->devicesTabDeleteButton->setEnabled(true);
+    ui->UACuserViewScreenPageNestedWidgetDevicesCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetAddCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetModifyCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetRemoveCheckBox->setChecked(true);
+
+    ui->mainTabsWidget->setTabEnabled(3, true);
+    ui->UACuserViewScreenPageNestedWidgetReportsCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetEmailCheckBox->setChecked(true);
+
+    ui->mainTabsWidget->setTabEnabled(4, true);
+    ui->settingsTabNestedWidgetnotificationsPushButton->setEnabled(true);
+    ui->settingsTabNestedWidgetnetworkPushButton->setEnabled(true);
+    ui->UACuserViewScreenPageNestedWidgetSettingsCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetNotificationsCheckBox->setChecked(true);
+    ui->UACuserViewScreenPageNestedWidgetNetworkCheckBox->setChecked(true);
+}
+
+void Widget::disableAdminPermissions()
+{
+    ui->UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton->setEnabled(false);
+}
+
+void Widget::setDevicePermissions(int device, int add, int modify, int remove)
+{
+    if (device == 1){
+        ui->mainTabsWidget->setTabEnabled(2, true);
+        ui->UACuserViewScreenPageNestedWidgetDevicesCheckBox->setChecked(true);
+
+        if (add == 1){
+            ui->devicesTabAddButton->setEnabled(true);
+            ui->UACuserViewScreenPageNestedWidgetAddCheckBox->setChecked(true);
+        } else if (add == 0){
+            ui->devicesTabAddButton->setEnabled(false);
+            ui->UACuserViewScreenPageNestedWidgetAddCheckBox->setChecked(false);
+        }
+
+        if (modify == 1){
+            ui->devicesTabUpdateButton->setEnabled(true);
+            ui->UACuserViewScreenPageNestedWidgetModifyCheckBox->setChecked(true);
+        } else if (modify == 0){
+            ui->devicesTabUpdateButton->setEnabled(false);
+            ui->UACuserViewScreenPageNestedWidgetModifyCheckBox->setChecked(false);
+        }
+
+        if (remove == 1){
+            ui->devicesTabDeleteButton->setEnabled(true);
+            ui->UACuserViewScreenPageNestedWidgetRemoveCheckBox->setChecked(true);
+        } else if (remove == 0){
+            ui->devicesTabDeleteButton->setEnabled(false);
+            ui->UACuserViewScreenPageNestedWidgetRemoveCheckBox->setChecked(false);
+        }
+
+    } else if (device == 0){
+        ui->mainTabsWidget->setTabEnabled(2, false);
+        ui->devicesTabAddButton->setEnabled(false);
+        ui->devicesTabUpdateButton->setEnabled(false);
+        ui->devicesTabDeleteButton->setEnabled(false);
+        ui->UACuserViewScreenPageNestedWidgetDevicesCheckBox->setChecked(false);
+        ui->UACuserViewScreenPageNestedWidgetAddCheckBox->setChecked(false);
+        ui->UACuserViewScreenPageNestedWidgetModifyCheckBox->setChecked(false);
+        ui->UACuserViewScreenPageNestedWidgetRemoveCheckBox->setChecked(false);
+    }
+
+}
+
+void Widget::setSettingsPermissions(int settings, int notifications, int network)
+{
+    if (settings == 1){
+        ui->mainTabsWidget->setTabEnabled(4, true);
+        ui->UACuserViewScreenPageNestedWidgetSettingsCheckBox->setChecked(true);
+
+        if (notifications == 1){
+            ui->settingsTabNestedWidgetnotificationsPushButton->setEnabled(true);
+            ui->UACuserViewScreenPageNestedWidgetNotificationsCheckBox->setChecked(true);
+        } else if (notifications == 0){
+            ui->settingsTabNestedWidgetnotificationsPushButton->setEnabled(false);
+            ui->UACuserViewScreenPageNestedWidgetNotificationsCheckBox->setChecked(false);
+        }
+
+        if (network == 1){
+            ui->settingsTabNestedWidgetnetworkPushButton->setEnabled(true);
+            ui->UACuserViewScreenPageNestedWidgetNetworkCheckBox->setChecked(true);
+        } else if (network == 0){
+            ui->settingsTabNestedWidgetnetworkPushButton->setEnabled(false);
+            ui->UACuserViewScreenPageNestedWidgetNetworkCheckBox->setChecked(false);
+        }
+
+    } else if (settings == 0){
+        ui->mainTabsWidget->setTabEnabled(4, false);
+        ui->settingsTabNestedWidgetnotificationsPushButton->setEnabled(false);
+        ui->settingsTabNestedWidgetnetworkPushButton->setEnabled(false);
+        ui->UACuserViewScreenPageNestedWidgetSettingsCheckBox->setChecked(false);
+        ui->UACuserViewScreenPageNestedWidgetNotificationsCheckBox->setChecked(false);
+        ui->UACuserViewScreenPageNestedWidgetNetworkCheckBox->setChecked(false);
+    }
+}
+
+void Widget::setReportsAndEmailPermission(int reports, int email)
+{
+    if (reports == 1){
+        ui->mainTabsWidget->setTabEnabled(3, true);
+        ui->UACuserViewScreenPageNestedWidgetReportsCheckBox->setChecked(true);
+    } else if (reports == 0){
+        ui->mainTabsWidget->setTabEnabled(3, false);
+        ui->UACuserViewScreenPageNestedWidgetReportsCheckBox->setChecked(false);
+    }
+
+    if (email == 1){
+        ui->UACuserViewScreenPageNestedWidgetEmailCheckBox->setChecked(true);
+    } else if (email == 0){
+        ui->UACuserViewScreenPageNestedWidgetEmailCheckBox->setChecked(false);
+    }
 }
 
 
@@ -1389,4 +1790,70 @@ void Widget::checkDevicesForInfo()
 void Widget::on_reportsTabNestedWidgetCaptureButton_clicked()
 {
     populateReportsTableWidget();
+}
+
+void Widget::on_UACadminViewScreenPageNestedWidgetMyProfileButton_clicked()
+{
+    ui->UACScreenViewsStack->setCurrentIndex(1);
+    ui->mainTabsWidget->setTabText(1, "    Profile    ");
+
+}
+
+void Widget::on_UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton_clicked()
+{
+    ui->UACScreenViewsStack->setCurrentIndex(0);
+    ui->mainTabsWidget->setTabText(1, "     Users     ");
+}
+
+void Widget::monitorDevicePermissions()
+{
+//    qDebug() << "in monitorDevicePermissions";
+    QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 1);
+    monitorDevicesCheckBox = widget->findChild<QCheckBox *>();
+    if (monitorDevicesCheckBox->isChecked()){
+        for (int i = 2; i < 5; i++){
+            QWidget *deviceWidget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
+            QCheckBox *deviceCheckBox = deviceWidget->findChild<QCheckBox *>();
+            deviceCheckBox->setCheckable(true);
+        }
+    } else if (!monitorDevicesCheckBox->isChecked()){
+        for (int i = 2; i < 5; i++){
+            QWidget *deviceWidget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
+            QCheckBox *deviceCheckBox = deviceWidget->findChild<QCheckBox *>();
+            deviceCheckBox->setCheckable(false);
+        }
+    }
+}
+
+void Widget::monitorSettingsPermissions()
+{
+//    qDebug() << "in monitorSettingsPermissions";
+    QWidget *widget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, 7);
+    monitorSettingsCheckBox = widget->findChild<QCheckBox *>();
+    if (monitorSettingsCheckBox->isChecked()){
+        for (int i = 8; i < 10; i++){
+            QWidget *settingsWidget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
+            QCheckBox *settingsCheckBox = settingsWidget->findChild<QCheckBox *>();
+            settingsCheckBox->setCheckable(true);
+        }
+    } else if (!monitorSettingsCheckBox->isChecked()){
+        for (int i = 8; i < 10; i++){
+            QWidget *settingsWidget = ui->UACTableWidget->cellWidget(monitorAdminIndexRow, i);
+            QCheckBox *settingsCheckBox = settingsWidget->findChild<QCheckBox *>();
+            settingsCheckBox->setCheckable(false);
+        }
+    }
+}
+
+void Widget::on_mainTabsWidget_tabBarClicked(int index)
+{
+//    qDebug() << "in mainTabsWidget";
+    if (index == 1){
+        populateUACTableWidget();
+    }
+}
+
+void Widget::on_logoutScreenPageNestedWidgetLogoutButton_clicked()
+{
+    setAllDefaultsOff();
 }

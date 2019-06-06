@@ -15,25 +15,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int port, int timeout )
 {    
-    qDebug() << "in Smtp()";
-    qDebug() << "user = " << user;
-    qDebug() << "pass = " << pass;
-    qDebug() << "host = " << host;
-    qDebug() << "port = " << port;
-    qDebug() << "timeout = " << timeout;
+//    qDebug() << "in Smtp()";
+//    qDebug() << "user = " << user;
+//    qDebug() << "pass = " << pass;
+//    qDebug() << "host = " << host;
+//    qDebug() << "port = " << port;
+//    qDebug() << "timeout = " << timeout;
     socket = new QSslSocket(this);
-    qDebug() << "socket = " << socket;
+//    qDebug() << "socket = " << socket;
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-    qDebug() << "readRead() connected";
+//    qDebug() << "readRead() connected";
     connect(socket, SIGNAL(connected()), this, SLOT(connected()));
-    qDebug() << "connected() connected";
+//    qDebug() << "connected() connected";
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this,SLOT(errorReceived(QAbstractSocket::SocketError)));
-    qDebug() << "SocketError connected";
+//    qDebug() << "SocketError connected";
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
-    qDebug() << "stateChanged() connected";
+//    qDebug() << "stateChanged() connected";
     connect(socket, SIGNAL(disconnected()), this,SLOT(disconnected()));
-    qDebug() << "disconnected() connected";
+//    qDebug() << "disconnected() connected";
 
 
     this->user = user;
@@ -43,36 +43,36 @@ Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int p
     this->port = port;
     this->timeout = timeout;
 
-    qDebug() << "end of Smtp()";
+//    qDebug() << "end of Smtp()";
 }
 
 void Smtp::sendMail(const QString &from, const QString &to, const QString &subject, const QString &body, QStringList files)
 {
-    qDebug() << "in sendMail()";
+//    qDebug() << "in sendMail()";
     message = "To: " + to + "\n";
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     message.append("From: " + from + "\n");
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     message.append("Subject: " + subject + "\n");
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
 
     //Let's intitiate multipart MIME with cutting boundary "frontier"
     message.append("MIME-Version: 1.0\n");
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     message.append("Content-Type: multipart/mixed; boundary=frontier\n\n");
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
 
 
 
     message.append( "--frontier\n" );
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     //message.append( "Content-Type: text/html\n\n" );  //Uncomment this for HTML formating, coment the line below
     message.append( "Content-Type: text/plain\n\n" );
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     message.append(body);
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
     message.append("\n\n");
-    qDebug() << "message = " << message;
+//    qDebug() << "message = " << message;
 
     if(!files.isEmpty())
     {
@@ -93,7 +93,7 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
                 message.append( "Content-Type: application/octet-stream\nContent-Disposition: attachment; filename="+ QFileInfo(file.fileName()).fileName() +";\nContent-Transfer-Encoding: base64\n\n" );
                 message.append(bytes.toBase64());
                 message.append("\n");
-                qDebug() << "after files attached";
+//                qDebug() << "after files attached";
             }
         }
     }
@@ -105,7 +105,7 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
 
     message.replace( QString::fromLatin1( "\n" ), QString::fromLatin1( "\r\n" ) );
     message.replace( QString::fromLatin1( "\r\n.\r\n" ),QString::fromLatin1( "\r\n..\r\n" ) );
-    qDebug() << "after message.replace()";
+//    qDebug() << "after message.replace()";
 
     this->from = from;
     qDebug() << "from = " << from;
@@ -123,7 +123,7 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
     t = new QTextStream( socket );
 
 
-    qDebug() << "end of sendMail()";
+//    qDebug() << "end of sendMail()";
 }
 
 bool Smtp::getSocketStatus()
