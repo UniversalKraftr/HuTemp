@@ -41,6 +41,7 @@ private slots:
 
     void on_ZonesDialogBoxLobbyCheckBox_stateChanged(int arg1);
 
+    void allCheckBoxesClicked();
 private:
     Ui::ZonesDialogBox *ui;
     QList<bool> checkBoxes;

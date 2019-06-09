@@ -16,8 +16,8 @@ public:
     explicit ReadingsDialogBox(QWidget *parent = nullptr);
     ~ReadingsDialogBox();
 
-    QList<bool> getCheckBoxes();
-    void setCheckBoxes(QList<bool>);
+    QList<int> getCheckBoxes();
+    void setCheckBoxes(QList<int>);
 
 private slots:
     void on_ReadingsDialogBoxButtons_clicked(QAbstractButton *button);
@@ -28,9 +28,11 @@ private slots:
 
     void on_ReadingsDialogBoxHumidityCheckBox_stateChanged(int arg1);
 
+    void allCheckBoxesClicked();
+
 private:
     Ui::ReadingsDialogBox *ui;
-    QList<bool> checkboxes;
+    QList<int> checkboxes;
 };
 
 #endif // READINGSDIALOGBOX_H

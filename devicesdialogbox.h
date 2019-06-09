@@ -40,6 +40,12 @@ private slots:
 
     void on_DevicesDialogBoxDataLogger8CheckBox_stateChanged(int arg1);
 
+    void allCheckBoxesClicked();
+
+    void on_DevicesDialogBoxDataLogger9CheckBox_stateChanged(int arg1);
+
+    void on_DevicesDialogBoxDataLogger10CheckBox_stateChanged(int arg1);
+
 private:
     Ui::DevicesDialogBox *ui;
     QList<bool> checkboxes;

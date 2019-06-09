@@ -19,6 +19,8 @@
 #include <QSqlDatabase>
 #include <QCryptographicHash>
 #include <QRandomGenerator64>
+#include <stdlib.h>
+
 
 #include "smtp.h"
 #include "addauserdialog.h"
@@ -26,6 +28,13 @@
 #include "additionalsettingsnotificationsdialog.h"
 
 
+#include "xlsxdocument.h"
+#include "xlsxchartsheet.h"
+#include "xlsxcellrange.h"
+#include "xlsxchart.h"
+#include "xlsxrichstring.h"
+#include "xlsxworkbook.h"
+using namespace QXlsx;
 
 
 namespace Ui {
@@ -77,10 +86,14 @@ private slots:
     void on_UACuserViewScreenPageNestedWidgetUserProfileToolToAdminViewButton_clicked();
     void on_mainTabsWidget_tabBarClicked(int index);
     void on_logoutScreenPageNestedWidgetLogoutButton_clicked();
+    void on_reportsTabNestedWidgetExportButton_clicked();
+    void on_settingsTabNestedWidgetnetworkPushButton_clicked();
+    void on_reportsTabNestedWidgetUpdateButton_clicked();
+    void on_mainTabsWidget_currentChanged(int index);
 
 private:
     Ui::Widget *ui;
-    QString vmDBIPAddress = "10.0.0.9";
+    QString vmDBIPAddress = "192.168.43.214";
     QString KEY = "*:2Q-S9AX||NkvVg<q&i";
     int loginAttempts = 0;
     QString u = QChar(0x00B3);
@@ -99,6 +112,7 @@ private:
     QFont selectedItemFont;
     QString logsDirectory;
     QString pdfDirectory;
+    QString reportsDirectory;
     QString newTempPassword;
     QString userFirstName;
     QString userLastName;
@@ -108,7 +122,7 @@ private:
     bool dbOpen;
     QList<bool> zonesCheckBoxes;
     QList<bool> devicesCheckBoxes;
-    QList<bool> readingsCheckBoxes;
+    QList<int> readingsCheckBoxes;
     int overallUserCount = 0;
     QStringList files;
     int rowCount = 0;
@@ -117,8 +131,10 @@ private:
     QString deviceMacAddress;
     QTableWidgetItem *currentDeviceTableWidgetItem = nullptr;
     QTableWidgetItem *previousDeviceTableWidgetItem = new QTableWidgetItem(nullptr);
+    QList<bool> reportsTabFilterStatuses {false, false, false};
 
 
+    void configureReportsDateByPeriods();
     void monitorDevicePermissions();
     void monitorSettingsPermissions();
     QString generateHexString(int);

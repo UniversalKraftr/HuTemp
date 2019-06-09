@@ -77,6 +77,7 @@ void ZonesDialogBox::on_ZonesDialogBoxCollectionsCheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[1] = ui->ZonesDialogBoxCollectionsCheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxDockAreaCheckBox_stateChanged(int arg1)
@@ -85,6 +86,7 @@ void ZonesDialogBox::on_ZonesDialogBoxDockAreaCheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[2] = ui->ZonesDialogBoxDockAreaCheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery1CheckBox_stateChanged(int arg1)
@@ -93,6 +95,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery1CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[3] = ui->ZonesDialogBoxGallery1CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery2CheckBox_stateChanged(int arg1)
@@ -101,6 +104,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery2CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[4] = ui->ZonesDialogBoxGallery2CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery3CheckBox_stateChanged(int arg1)
@@ -109,6 +113,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery3CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[5] = ui->ZonesDialogBoxGallery3CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery4CheckBox_stateChanged(int arg1)
@@ -117,6 +122,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery4CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[6] = ui->ZonesDialogBoxGallery4CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery5CheckBox_stateChanged(int arg1)
@@ -125,6 +131,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery5CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[7] = ui->ZonesDialogBoxGallery5CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxGallery6CheckBox_stateChanged(int arg1)
@@ -133,6 +140,7 @@ void ZonesDialogBox::on_ZonesDialogBoxGallery6CheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[8] = ui->ZonesDialogBoxGallery6CheckBox->isChecked();
+    allCheckBoxesClicked();
 }
 
 void ZonesDialogBox::on_ZonesDialogBoxLobbyCheckBox_stateChanged(int arg1)
@@ -141,4 +149,20 @@ void ZonesDialogBox::on_ZonesDialogBoxLobbyCheckBox_stateChanged(int arg1)
         ui->ZonesDialogBoxAllZonesCheckBox->setChecked(false);
     }
     checkBoxes[9] = ui->ZonesDialogBoxLobbyCheckBox->isChecked();
+    allCheckBoxesClicked();
+}
+
+void ZonesDialogBox::allCheckBoxesClicked()
+{
+    if (ui->ZonesDialogBoxCollectionsCheckBox->isChecked() &&
+            ui->ZonesDialogBoxDockAreaCheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery1CheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery2CheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery3CheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery4CheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery5CheckBox->isChecked() &&
+            ui->ZonesDialogBoxGallery6CheckBox->isChecked() &&
+            ui->ZonesDialogBoxLobbyCheckBox->isChecked()){
+        ui->ZonesDialogBoxAllZonesCheckBox->setChecked(true);
+    }
 }

@@ -10,9 +10,11 @@
 #include "previoususersdialog.h"
 #include "passwordreset.h"
 #include "newpasswordpostresetdialog.h"
+
+
+
 #include <QDir>
 #include <fileapi.h>
-
 #include <QHostAddress>
 #include <QNetworkInterface>
 
@@ -45,7 +47,7 @@ Widget::~Widget()
 
 void Widget::setWidgetConfigs()
 {
-    connectToDatabase();
+//    ();
     setWindowTitle(title);
     QRect rect = QGuiApplication::primaryScreen()->geometry();
     int screenHeight = rect.height();
@@ -76,7 +78,7 @@ void Widget::setWidgetConfigs()
     setSettingsTabConfigs();
 
     //set default program upon opening
-    setAllDefaultsOff();
+//    setAllDefaultsOff();
 
     createDirectories();
 }
@@ -292,7 +294,7 @@ void Widget::populateUACTableWidget()
 
 void Widget::populateDevicesTableWidget()
 {
-//    qDebug() << "in populateDevicesTableWidget()";
+    qDebug() << "in populateDevicesTableWidget()";
     if (ui->devicesTabTableWidget->rowCount() > 0){
         ui->devicesTabTableWidget->clearContents();
         ui->devicesTabTableWidget->setRowCount(0);
@@ -304,12 +306,19 @@ void Widget::populateDevicesTableWidget()
 
 
     if (selectConfigQuery.exec(selectConfigQueryStatement)){
-//        qDebug() << "selectConfigQuery successful";
-//        qDebug() << selectConfigQuery.size();
+        qDebug() << "selectConfigQuery successful";
+        qDebug() << "\n" << selectConfigQuery.size();
+        int counter = selectConfigQuery.size();
+
 
 
         while (selectConfigQuery.next()){
-//            qDebug() << "in selectConfigQuery.next()";
+            qDebug() << "\n" << counter--;
+            //NEED TO ADD IN CHECKPOINTS TO HANDLE WHEN NOT ALL INFORMATION IS PRESENT
+            //ONLY 7 DEVICES HAVE
+            //NEED TO SEE WHAT THE CONFIG TABLE CURRENTLY LOOKS LIKE TO BE ABLE TO HANDLE THIS PROPERLY
+
+            qDebug() << "in selectConfigQuery.next()";
             ui->devicesTabTableWidget->insertRow(ui->devicesTabTableWidget->rowCount());
             QString deviceID = selectConfigQuery.value(4).toString();//
             QString interval = selectConfigQuery.value(6).toString();//
@@ -354,19 +363,19 @@ void Widget::populateDevicesTableWidget()
             //THE EQUATION FOR DISPLAYING THE BATTERY PERCENTAGE IS AS FOLLOWS
             //100*((.9-(4.2-powerLevelData))/.9) -->round to 2 decimal places
             if (selectDataQuery.exec(selectDataQueryStatment)){
-//                qDebug() << "selectDataQuery successful";
+                qDebug() << "selectDataQuery successful";
                 while (selectDataQuery.next()){
-//                    qDebug() << selectDataQuery.value(2).toString();
-//                    qDebug() << selectDataQuery.value(4).toString();
-//                    qDebug() << selectDataQuery.value(5).toString();
-//                    qDebug() << selectDataQuery.value(6).toString();
+                    qDebug() << selectDataQuery.value(2).toString();
+                    qDebug() << selectDataQuery.value(4).toString();
+                    qDebug() << selectDataQuery.value(5).toString();
+                    qDebug() << selectDataQuery.value(6).toString();
                     dateTimeData = selectDataQuery.value(2).toString();
                     temperatureData = selectDataQuery.value(4).toString();
                     humidityData = selectDataQuery.value(5).toString();
                     powerLevelData = selectDataQuery.value(6).toString();
                 }
             } else{
-//                qDebug() << "selectDataQuery unsuccessful";
+                qDebug() << "selectDataQuery unsuccessful";
                 continue;
             }
 
@@ -375,12 +384,18 @@ void Widget::populateDevicesTableWidget()
             QString secondSelectDataQueryStatement = QString("SELECT * FROM data WHERE MAC = '%1' ORDER BY event DESC LIMIT 2").arg(selectConfigQuery.value(1).toString());
             QStringList bothDateTimes;
             if (secondSelectDataQuery.exec(secondSelectDataQueryStatement)){
-                while (secondSelectDataQuery.next()){
-                    bothDateTimes.append(secondSelectDataQuery.value(2).toString());
+                qDebug() << "secondSelectDataQuery successful";
+                qDebug() << "secondSelectDataQuery.size() = " << secondSelectDataQuery.size();
+                if (secondSelectDataQuery.size() > 0){
+                    while (secondSelectDataQuery.next()){
+                        qDebug() << "in secondSelectDataQuery.next()";
+                        qDebug() << "secondSelectDataQuery.value(2).toString() = " << secondSelectDataQuery.value(2).toString();
+                        bothDateTimes.append(secondSelectDataQuery.value(2).toString());
+                    }
                 }
             }
-//            qDebug() << "capturing top two date times of a device";
-//            qDebug() << bothDateTimes;
+            qDebug() << "capturing top two date times of a device";
+            qDebug() << bothDateTimes;
 //            QString firstDate = bothDateTimes[0].split('T').front();
 //            QString firstTime = bothDateTimes[0].split('T').back();
 //            QString secondDate = bothDateTimes[1].split('T').front();
@@ -397,13 +412,20 @@ void Widget::populateDevicesTableWidget()
 //            qDebug() << "dateTwo:\t" << dateTwo;
 //            qDebug() << "timeOne:\t" << timeOne;
 //            qDebug() << "timeTwo:\t" << timeTwo << "\n";
-            QDateTime firstDateTime = QDateTime::fromString(bothDateTimes[0], "yyyy-MM-ddThh:mm:ss.zzz");
-            QDateTime secondDateTime = QDateTime::fromString(bothDateTimes[1], "yyyy-MM-ddThh:mm:ss.zzz");
-//            qDebug() << "firstDateTime:\t" << firstDateTime;
-//            qDebug() << "secondDateTime:\t" << secondDateTime;
-            qint64 timeDiff = secondDateTime.secsTo(firstDateTime);
-//            qDebug() << "timeDiff:\t" << timeDiff;
-            int timeDiffConvertedToMinutes = timeDiff/60;
+            QDateTime firstDateTime;
+            QDateTime secondDateTime;
+            qint64 timeDiff;
+            int timeDiffConvertedToMinutes;
+            if (bothDateTimes.count() > 0){
+                firstDateTime = QDateTime::fromString(bothDateTimes[0], "yyyy-MM-ddThh:mm:ss.zzz");
+                secondDateTime = QDateTime::fromString(bothDateTimes[1], "yyyy-MM-ddThh:mm:ss.zzz");
+                qDebug() << "firstDateTime:\t" << firstDateTime;
+                qDebug() << "secondDateTime:\t" << secondDateTime;
+                timeDiff = secondDateTime.secsTo(firstDateTime);
+                qDebug() << "timeDiff:\t" << timeDiff;
+                timeDiffConvertedToMinutes = timeDiff/60;
+            }
+
 
             QTableWidgetItem *connectivityItem;
             QTableWidgetItem *activeStatusItem;
@@ -457,28 +479,155 @@ void Widget::populateDevicesTableWidget()
             ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 10, lowHumidityThresholdItem);
             ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 11, highHumidityThresholdItem);
             ui->devicesTabTableWidget->setItem(ui->devicesTabTableWidget->rowCount()-1, 12, powerLevelDataItem);
+
+            qDebug() << "end of while loop";
         }
+        qDebug() << "end of select config query";
     }
+    qDebug() << "end of populate devices";
 }
 
 void Widget::populateReportsTableWidget()
 {
+    if (ui->reportsTabNestedWidgetTableWidget->rowCount() > 0){
+        ui->reportsTabNestedWidgetTableWidget->clearContents();
+        ui->reportsTabNestedWidgetTableWidget->setRowCount(0);
+    }
     QDateTime startDateTime = QDateTime(ui->reportsTabNestedWidgetStartDateDateEdit->date(), ui->reportsTabNestedWidgetStartTimeTimeEdit->time());
     QDateTime endDateTime = QDateTime(ui->reportsTabNestedWidgetEndDateDateEdit->date(), ui->reportsTabNestedWidgetEndTimeTimeEdit->time());
 
-    QString start = startDateTime.toString();
-    QString end = endDateTime.toString();
+    QStringList zones;
+    if (zonesCheckBoxes[0] == true){
+        zones.append("Collections");
+        zones.append("Dock Area");
+        zones.append("Gallery 1");
+        zones.append("Gallery 2");
+        zones.append("Gallery 3");
+        zones.append("Gallery 4");
+        zones.append("Gallery 5");
+        zones.append("Gallery 6");
+        zones.append("Lobby");
+    } else{
+        if (zonesCheckBoxes[1] == true){
+            zones.append("Collections");
+        }
+        if (zonesCheckBoxes[2] == true){
+            zones.append("Dock Area");
+        }
+        if (zonesCheckBoxes[3] == true){
+            zones.append("Gallery 1");
+        }
+        if (zonesCheckBoxes[4] == true){
+            zones.append("Gallery 2");
+        }
+        if (zonesCheckBoxes[5] == true){
+            zones.append("Gallery 3");
+        }
+        if (zonesCheckBoxes[6] == true){
+            zones.append("Gallery 4");
+        }
+        if (zonesCheckBoxes[7] == true){
+            zones.append("Gallery 5");
+        }
+        if (zonesCheckBoxes[8] == true){
+            zones.append("Gallery 6");
+        }
+        if (zonesCheckBoxes[9] == true){
+            zones.append("Lobby");
+        }
+    }
+    zones.append(" ");
+
+    QStringList dataColumns = {"MAC", "event", "sensorID"};
+    if (readingsCheckBoxes[0] == 1){
+        dataColumns.append("temperature");
+        dataColumns.append("humidity");
+    } else{
+        if (readingsCheckBoxes[1] == 1){
+            dataColumns.append("temperature");
+        }
+        if (readingsCheckBoxes[2] == 1){
+            dataColumns.append("humidity");
+        }
+    }
+
+    QStringList devices;
+    if (devicesCheckBoxes[0] == true){
+        devices.append("hutemp001");
+        devices.append("hutemp004");
+        devices.append("sensor2");
+        devices.append("sensor3");
+//        devices.append("HuTemp001");
+//        devices.append("HuTemp002");
+//        devices.append("HuTemp003");
+//        devices.append("HuTemp004");
+//        devices.append("HuTemp005");
+//        devices.append("HuTemp006");
+//        devices.append("HuTemp007");
+//        devices.append("HuTemp008");
+//        devices.append("HuTemp009");
+//        devices.append("HuTemp010");
+    } else{
+        if (devicesCheckBoxes[1] == true){
+            devices.append("HuTemp001");
+        }
+        if (devicesCheckBoxes[2] == true){
+            devices.append("HuTemp002");
+        }
+        if (devicesCheckBoxes[3] == true){
+            devices.append("HuTemp003");
+        }
+        if (devicesCheckBoxes[4] == true){
+            devices.append("HuTemp004");
+        }
+        if (devicesCheckBoxes[5] == true){
+            devices.append("HuTemp005");
+        }
+        if (devicesCheckBoxes[6] == true){
+            devices.append("HuTemp006");
+        }
+        if (devicesCheckBoxes[7] == true){
+            devices.append("HuTemp007");
+        }
+        if (devicesCheckBoxes[8] == true){
+            devices.append("HuTemp008");
+        }
+        if (devicesCheckBoxes[9] == true){
+            devices.append("HuTemp009");
+        }
+        if (devicesCheckBoxes[10] == true){
+            devices.append("HuTemp010");
+        }
+    }
 
     QSqlQuery selectDataQuery;
-    QString selectDataQueryStatement = QString("SELECT * FROM data");
+    QString selectDataQueryStatement = "SELECT * FROM data";
+//    qDebug() << selectDataQueryStatement;
     if (selectDataQuery.exec(selectDataQueryStatement)){
         while (selectDataQuery.next()){
-            ui->reportsTabNestedWidgetTableWidget->insertRow(ui->reportsTabNestedWidgetTableWidget->rowCount());
-
+            QString macColumn = selectDataQuery.value(1).toString();
+            QDateTime dateTimeColumn = selectDataQuery.value(2).toDateTime();
+            if (dateTimeColumn < startDateTime || dateTimeColumn > endDateTime){
+                continue;
+            }
             QString deviceIDColumn = selectDataQuery.value(3).toString();
-            QString dateTimeColumn = selectDataQuery.value(2).toString();
-            QString temperatureColumn = selectDataQuery.value(4).toString();
-            QString humidityColumn = selectDataQuery.value(5).toString();
+            if (!devices.contains(deviceIDColumn)){
+                continue;
+            }
+            QString temperatureColumn;
+            if (dataColumns.contains("temperature")){
+                temperatureColumn = selectDataQuery.value(4).toString();
+            }
+//            if (!dataColumns.contains("temperature")){
+//                continue;
+//            }
+            QString humidityColumn;
+            if (dataColumns.contains("humidity")){
+                humidityColumn = selectDataQuery.value(5).toString();
+            }
+//            if (!dataColumns.contains("humidity")){
+//                continue;
+//            }
 
             QTableWidgetItem *deviceIDItem = new QTableWidgetItem(deviceIDColumn);
             deviceIDItem->setTextAlignment(Qt::AlignCenter);
@@ -492,14 +641,14 @@ void Widget::populateReportsTableWidget()
             humidityItem->setTextAlignment(Qt::AlignCenter);
             humidityItem->setFlags(Qt::NoItemFlags);
 
-            QDateTime dateTime = QDateTime::fromString(dateTimeColumn, "yyyy-MM-ddThh:mm:ss.zzz");
-            qDebug() << "dateTime.secsTo(startDateTime):\t" << dateTime.secsTo(startDateTime)/60;
-            qDebug() << "dateTime.secsTo(endDateTime):\t" << dateTime.secsTo(endDateTime)/60;
-            qDebug() << "startDateTime.secsTo(dateTime):\t" << startDateTime.secsTo(dateTime)/60;
-            qDebug() << "endDateTime.secsTo(dateTime):\t" << endDateTime.secsTo(dateTime)/60;
+//            QDateTime dateTime = QDateTime::fromString(dateTimeColumn, "yyyy-MM-ddThh:mm:ss.zzz");
+//            qDebug() << "dateTime.secsTo(startDateTime):\t" << dateTime.secsTo(startDateTime)/60;
+//            qDebug() << "dateTime.secsTo(endDateTime):\t" << dateTime.secsTo(endDateTime)/60;
+//            qDebug() << "startDateTime.secsTo(dateTime):\t" << startDateTime.secsTo(dateTime)/60;
+//            qDebug() << "endDateTime.secsTo(dateTime):\t" << endDateTime.secsTo(dateTime)/60;
 
 
-            QString inputDateTime = dateTime.date().toString() + " " + dateTime.time().toString();
+            QString inputDateTime = dateTimeColumn.date().toString("yyyy-MM-dd") + "\n" + dateTimeColumn.time().toString("hh:mm:ss ap");
             QTableWidgetItem *dateTimeItem = new QTableWidgetItem(inputDateTime);
             dateTimeItem->setTextAlignment(Qt::AlignCenter);
             dateTimeItem->setFlags(Qt::NoItemFlags);
@@ -508,10 +657,13 @@ void Widget::populateReportsTableWidget()
             QString zoneIDColumn;
             QString intervalColumn;
             QSqlQuery selectConfigQuery;
-            QString selectConfigQueryStatement = QString("SELECT * FROM config WHERE sensorID = '%1'").arg(deviceIDColumn);
+            QString selectConfigQueryStatement = QString("SELECT * FROM config WHERE sensorID = '%1' AND MAC = '%2'").arg(deviceIDColumn).arg(macColumn);
             if (selectConfigQuery.exec(selectConfigQueryStatement)){
                 while (selectConfigQuery.next()){
                     zoneIDColumn = selectConfigQuery.value(7).toString();
+                    if (!zones.contains(zoneIDColumn)){
+                        continue;
+                    }
                     intervalColumn = selectConfigQuery.value(6).toString();
                 }
             }
@@ -525,6 +677,7 @@ void Widget::populateReportsTableWidget()
             intervalItem->setFlags(Qt::NoItemFlags);
 
 
+            ui->reportsTabNestedWidgetTableWidget->insertRow(ui->reportsTabNestedWidgetTableWidget->rowCount());
             ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 0, zoneIDItem);
             ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 1, deviceIDItem);
             ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 2, intervalItem);
@@ -533,6 +686,7 @@ void Widget::populateReportsTableWidget()
             ui->reportsTabNestedWidgetTableWidget->setItem(ui->reportsTabNestedWidgetTableWidget->rowCount()-1, 5, humidityItem);
         }
     }
+    //find a way to whittle down empty rows in the reports table widget
 }
 
 
@@ -737,50 +891,79 @@ void Widget::on_reportsTabNestedWidgetQuickViewsPushButton_clicked()
 
 void Widget::on_reportsTabNestedWidgetZonesPushButton_clicked()
 {
+//    qDebug() << "start zones push button";
     ZonesDialogBox *zones = new ZonesDialogBox(this);
+//    qDebug() << "after zones initalized";
     if (zonesCheckBoxes.isEmpty()){
+//        qDebug() << "zonesCheckBoxes is empty";
         for (int i = 0; i < 10; i++){
+
             zonesCheckBoxes.append(true);
         }
+//        qDebug() << "zonesCheckBoxes filled";
     }
+//    qDebug() << "zonesCheckBoxes = " << zonesCheckBoxes;
     zones->setCheckBoxes(zonesCheckBoxes);
+//    qDebug() << "after zones->setCheckBoxes";
     connect(zones, &ZonesDialogBox::accepted, [=](){
+//        qDebug() << "zones accepted";
         zonesCheckBoxes.clear();
+//        qDebug() << "zonesCheckBoxes cleared";
         zonesCheckBoxes = zones->getCheckBoxes();
+//        qDebug() << "zonesCheckBoxes now populated with:\t" << zonesCheckBoxes;
     });
     zones->show();
+//    qDebug() << "end zones push button";
 }
 
 void Widget::on_reportsTabNestedWidgetDevicesPushButton_clicked()
 {
+//    qDebug() << "start devices push button";
     DevicesDialogBox *devices = new DevicesDialogBox(this);
+//    qDebug() << "devices initialized";
     if (devicesCheckBoxes.isEmpty()){
-        for (int i = 0; i < 9; i++){
+//        qDebug() << "devicesCheckBoxes is empty";
+        for (int i = 0; i < 11; i++){
             devicesCheckBoxes.append(true);
         }
+//        qDebug() << "devicesCheckBoxes filled";
     }
     devices->setCheckBoxes(devicesCheckBoxes);
+//    qDebug() << "devicesCheckBoxes = " << devicesCheckBoxes;
     connect(devices, &DevicesDialogBox::accepted, [=](){
+//        qDebug() << "devices accepted";
         devicesCheckBoxes.clear();
+//        qDebug() << "devicesCheckBoxes cleared";
         devicesCheckBoxes = devices->getCheckBoxes();
+//        qDebug() << "devicesCheckBoxes populated with:\t" << devicesCheckBoxes;
     });
     devices->show();
+//    qDebug() << "end devices push button";
 }
 
 void Widget::on_reportsTabNestedWidgetReadingsPushButton_clicked()
 {
+//    qDebug() << "start readings push button";
     ReadingsDialogBox *readings = new ReadingsDialogBox(this);
+//    qDebug() << "readings initialized";
     if (readingsCheckBoxes.isEmpty()){
+//        qDebug() << "readingsCheckBoxes is empty";
         for (int i = 0; i < 3; i++){
-            readingsCheckBoxes.append(true);
+            readingsCheckBoxes.append(1);
         }
+//        qDebug() << "readingsCheckBoxes filled";
     }
     readings->setCheckBoxes(readingsCheckBoxes);
+//    qDebug() << "readingsCheckBoxes = " << readingsCheckBoxes;
     connect(readings, &ReadingsDialogBox::accepted, [=](){
+//        qDebug() << "readings accepted";
         readingsCheckBoxes.clear();
+//        qDebug() << "readingsCheckBoxes cleared";
         readingsCheckBoxes = readings->getCheckBoxes();
+//        qDebug() << "readingsCheckBoxes populated with:\t" << readingsCheckBoxes;
     });
     readings->show();
+//    qDebug() << "end readings push button";
 }
 
 void Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked()
@@ -790,8 +973,36 @@ void Widget::on_reportsTabNestedWidgetPeriodsPushButton_clicked()
 
     connect(periods, &PeriodsDialogBox::accepted, [=](){
         periodsRadioButton = periods->getCurrentRadioButton();
+        configureReportsDateByPeriods();
     });
     periods->show();
+}
+
+
+void Widget::configureReportsDateByPeriods()
+{
+    if (periodsRadioButton == 2){//DAY
+        ui->reportsTabNestedWidgetStartDateDateEdit->setDate(ui->reportsTabNestedWidgetEndDateDateEdit->date().addDays(-1));
+    } else if (periodsRadioButton == 3){//WEEK
+        ui->reportsTabNestedWidgetStartDateDateEdit->setDate(ui->reportsTabNestedWidgetEndDateDateEdit->date().addDays(-7));
+    } else if (periodsRadioButton == 4){//MONTH
+        ui->reportsTabNestedWidgetStartDateDateEdit->setDate(ui->reportsTabNestedWidgetEndDateDateEdit->date().addMonths(-1));
+    } else if (periodsRadioButton == 5){//YEAR
+        ui->reportsTabNestedWidgetStartDateDateEdit->setDate(ui->reportsTabNestedWidgetEndDateDateEdit->date().addYears(-1));
+    } else if (periodsRadioButton == 6){//ALL
+        QSqlQuery selectQuery;
+        QString selectQueryStatement = "SELECT event FROM data ORDER BY event ASC LIMIT 1";
+        if (selectQuery.exec(selectQueryStatement)){
+            QString date;
+            while (selectQuery.next()){
+                date = selectQuery.value(0).toString();
+            }
+//            qDebug() << "earliest date = " << date;
+            ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDateTime::fromString(date, "yyyy-MM-ddThh:mm:ss.zzz").date());
+        }
+    } else{
+        ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDate(2000, 1, 1));
+    }
 }
 
 void Widget::on_settingsTabNestedWidgethelpPushButton_clicked()
@@ -1176,17 +1387,17 @@ void Widget::connectToDatabase()
 //        QMessageBox::information(this, "Connection", "Successful connection");
         qDebug() << "successful connection";
         QSqlQuery query;
-        int numRows;
-        query.exec("SELECT * FROM data");
+//        int numRows;
+//        query.exec("SELECT * FROM data");
 
-        if (db.driver()->hasFeature(QSqlDriver::QuerySize)) {
-            numRows = query.size();
-            qDebug() << "The number of Rows in the Database is: " << numRows;
-        } else {
-            // this can be very slow
-            query.last();
-            numRows = query.at() + 1;
-        }
+//        if (db.driver()->hasFeature(QSqlDriver::QuerySize)) {
+//            numRows = query.size();
+//            qDebug() << "The number of Rows in the Database is: " << numRows;
+//        } else {
+//            // this can be very slow
+//            query.last();
+//            numRows = query.at() + 1;
+//        }
 
 //        const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
 ////        qDebug() << QNetworkInterface::allAddresses() << "\n";
@@ -1237,6 +1448,10 @@ void Widget::createDirectories()
     pdfDirectory = "C:/ShareToUbuntu/PDFs";
     dir.mkdir(pdfDirectory);
     SetFileAttributesA(pdfDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+
+    reportsDirectory = "C:/ShareToUbuntu/reports";
+    dir.mkdir(reportsDirectory);
+//    SetFileAttributesA(reportsDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
 }
 
 void Widget::on_devicesTabAddButton_clicked()
@@ -1272,6 +1487,10 @@ void Widget::on_reportsTabNestedWidgetResetButton_clicked()
 {
     ui->reportsTabNestedWidgetTableWidget->clearContents();
     ui->reportsTabNestedWidgetTableWidget->setRowCount(0);
+    ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDate(2000,1,1));
+    ui->reportsTabNestedWidgetEndDateDateEdit->setDate(QDate::currentDate());
+    ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(QTime(0,0));
+    ui->reportsTabNestedWidgetEndTimeTimeEdit->setTime(QTime(0,0));
 }
 
 void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
@@ -1293,11 +1512,18 @@ void Widget::on_reportsTabNestedWidgetSnapshotButton_clicked()
 
 void Widget::on_loginButton_clicked()
 {
+    connectToDatabase();
     //if attempt is at or greater than 5, check to see if email is matched.
     QString enteredUserName = ui->loginScreenPageNestedWidgetUserNameLineEdit->text();
     QString enteredPassWord = ui->loginScreenPageNestedWidgetPasswordLineEdit->text();
-
-
+    qDebug() << "loginAttempts = " << loginAttempts;
+    if (loginAttempts >= 5){
+        QSqlQuery updateQuery;
+        QString updateQueryStatement = QString("UPDATE login SET lockout = 1 WHERE username = '%1'").arg(enteredUserName);
+        if (updateQuery.exec(updateQueryStatement)){
+            loginAttempts = 0;
+        }
+    }
     //select all (username, password, temporarypassword, offset, and lockout) from logins with AES_DECRYPT()
     //extract all five columns into their respective variables (QString for varchars/bool for tinyint\boolean)
     //run each string through the decryption algorithm
@@ -1334,8 +1560,12 @@ void Widget::on_loginButton_clicked()
         //MANUAL FOR FURTHER EXPLANATION
     }
 
+
+
     if (lockout == 1){
-        //trigger password reset protocol
+        QMessageBox::warning(this, tr("Warning"), "For your safety, your account has been locked.\nReset your password to retrieve your account.");
+        passwordReset *unlockAccount = new passwordReset();
+        unlockAccount->show();
     } else{
         //Start process of gathering remaining information for comparison check
         QSqlQuery loginTableQuery;
@@ -1372,12 +1602,6 @@ void Widget::on_loginButton_clicked()
             qDebug() << "FAILED";
             QMessageBox::warning(this, tr("FAILED!"), "An incorrect username or password was used.");
             loginAttempts++;
-        }
-
-        if (loginAttempts == 5){
-            QSqlQuery updateQuery;
-            QString updateQueryStatement = QString("UPDATE login SET lockout = 1 WHERE username = '%1'").arg(enteredUserName);
-            loginAttempts = 0;
         }
     }
 }
@@ -1500,6 +1724,10 @@ void Widget::activatePermissions(QString permissions)
 //    qDebug() << "emailPermission = " << emailPermission;
 
     activateBasicConfigurations();
+//    activateAllPermissions();
+    if (adminPermission != 1){
+        adminPermission = 1;
+    }
 
     if (adminPermission == 1){
         ui->logoutScreenPageNestedWidgetUserTypeLabel->setText("Admin");
@@ -1857,3 +2085,78 @@ void Widget::on_logoutScreenPageNestedWidgetLogoutButton_clicked()
 {
     setAllDefaultsOff();
 }
+
+void Widget::on_reportsTabNestedWidgetExportButton_clicked()
+{
+//    QDate startDate = ui->reportsTabNestedWidgetStartDateDateEdit->date();
+//    QDate endDate = ui->reportsTabNestedWidgetEndDateDateEdit->date();
+//    QTime startTime = ui->reportsTabNestedWidgetStartTimeTimeEdit->time();
+//    QTime endTime = ui->reportsTabNestedWidgetEndTimeTimeEdit->time();
+    QString timeSpan;
+    timeSpan += "SD" + ui->reportsTabNestedWidgetStartDateDateEdit->date().toString("MM-dd-yyyy");
+    timeSpan += "-ED" + ui->reportsTabNestedWidgetEndDateDateEdit->date().toString("MM-dd-yyyy");
+    timeSpan += "--ST" + ui->reportsTabNestedWidgetStartTimeTimeEdit->time().toString("hh.mm.ss");
+    timeSpan += "-ET" + ui->reportsTabNestedWidgetEndTimeTimeEdit->time().toString("hh.mm.ss");
+//    qDebug() << "startDate = " << startDate;
+//    qDebug() << "startDateS = " << startDate.toString("MM-dd-yyyy");
+//    qDebug() << "endDate = " << endDate;
+//    qDebug() << "endDateS = " << endDate.toString("MM-dd-yyyy");
+//    qDebug() << "startTime = " << startTime;
+//    qDebug() << "startTimeS = " << startTime.toString("hh.mm.ss");
+//    qDebug() << "endTime = " << endTime;
+//    qDebug() << "endTimeS = " << endTime.toString("hh.mm.ss");
+//    qDebug() << "timeSpan = " << timeSpan;
+
+    //CURRENT BACKUP FOR EXPORTING OPTIONS REQUIRES EXPORTING TO .TXT FILE
+    //AND THEN USING EXCEL'S BUILT IN TEXT IMPORT WIZARD TO IMPORT TO EXCEL PROPERLY
+//    QString fileName = reportsDirectory + "/report-" + timeSpan + ".txt";
+////    qDebug() << "fileName = " << fileName;
+//    QFile file(fileName);
+//    //NEED TO HANDLE IF THE FILE ALREADY EXISTS. IF SO, APPEND A (counter) to the end of it in the same way File Explorer does
+////    if (file.exists(fileName)){
+
+////    }
+//    if (file.open(QIODevice::WriteOnly)){
+//        QTextStream data(&file);
+//        QStringList dataList;
+//        for (int r = 0; r < ui->reportsTabNestedWidgetTableWidget->rowCount(); r++){
+//            dataList.clear();
+//            for (int c = 0; c < ui->reportsTabNestedWidgetTableWidget->columnCount(); c++){
+//                dataList << ui->reportsTabNestedWidgetTableWidget->item(r, c)->text() + ",";
+//            }
+//            data << dataList.join("") + "\n";
+//        }
+//        file.close();
+//    }
+
+
+
+    QXlsx::Document xlsx;
+    xlsx.write("A1", ui->reportsTabNestedWidgetTableWidget->item(0,1)->text());
+    xlsx.write("A2", ui->reportsTabNestedWidgetTableWidget->item(0,3)->text());
+    xlsx.saveAs(reportsDirectory + "/test.xlsx");
+}
+
+
+void Widget::on_settingsTabNestedWidgetnetworkPushButton_clicked()
+{
+    system("start ms-settings:network-status");
+}
+
+void Widget::on_reportsTabNestedWidgetUpdateButton_clicked()
+{
+    populateReportsTableWidget();
+}
+
+void Widget::on_mainTabsWidget_currentChanged(int index)
+{
+    if (index == 2){
+        populateDevicesTableWidget();
+    }
+//    if (index == 3){
+//        triggerZonesFilter();
+//        triggerDevicesFilter();
+//        triggerReadingsFilter();
+//    }
+}
+

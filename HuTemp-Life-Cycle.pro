@@ -4,7 +4,10 @@
 #
 #-------------------------------------------------
 
+
 QT       += core gui printsupport network sql
+
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,6 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 CONFIG += c++11
+
+
+# QXlsx code for Application Qt project
+QXLSX_PARENTPATH=./         # current QXlsx path is . (. means curret directory)
+QXLSX_HEADERPATH=./header/  # current QXlsx header path is ./header/
+QXLSX_SOURCEPATH=./source/  # current QXlsx source path is ./source/
+include(./QXlsx.pri)
 
 SOURCES += \
         main.cpp \
@@ -82,3 +92,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc
+
+SUBDIRS += \
+    QXlsx.pro
+
+DISTFILES += \
+    QXlsx.pri

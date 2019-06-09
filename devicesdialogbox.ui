@@ -51,7 +51,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger1CheckBox">
         <property name="text">
-         <string>Data Logger 1</string>
+         <string>HuTemp001</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -61,7 +61,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger2CheckBox">
         <property name="text">
-         <string>Data Logger 2</string>
+         <string>HuTemp002</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -71,7 +71,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger3CheckBox">
         <property name="text">
-         <string>Data Logger 3</string>
+         <string>HuTemp003</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -81,7 +81,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger4CheckBox">
         <property name="text">
-         <string>Data Logger 4</string>
+         <string>HuTemp004</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -91,7 +91,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger5CheckBox">
         <property name="text">
-         <string>Data Logger 5</string>
+         <string>HuTemp005</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -101,7 +101,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger6CheckBox">
         <property name="text">
-         <string>Data Logger 6</string>
+         <string>HuTemp006</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -111,7 +111,7 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger7CheckBox">
         <property name="text">
-         <string>Data Logger 7</string>
+         <string>HuTemp007</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -121,7 +121,27 @@
       <item>
        <widget class="QCheckBox" name="DevicesDialogBoxDataLogger8CheckBox">
         <property name="text">
-         <string>Data Logger 8</string>
+         <string>HuTemp008</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="DevicesDialogBoxDataLogger9CheckBox">
+        <property name="text">
+         <string>HuTemp009</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="DevicesDialogBoxDataLogger10CheckBox">
+        <property name="text">
+         <string>HuTemp010</string>
         </property>
         <property name="checked">
          <bool>true</bool>
