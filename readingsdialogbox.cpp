@@ -8,6 +8,7 @@ ReadingsDialogBox::ReadingsDialogBox(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Data Readings");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 }
 

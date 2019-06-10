@@ -4,6 +4,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTextDocument>
+#include <QFileDialog>
+#include <QDesktopServices>
 
 AdditionalAdminSettingsDialog::AdditionalAdminSettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -12,6 +14,7 @@ AdditionalAdminSettingsDialog::AdditionalAdminSettingsDialog(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Additional Administrator Settings");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
     extractFromLogFile();
     setAllDefaults();
@@ -56,7 +59,6 @@ void AdditionalAdminSettingsDialog::writeToLogFile()
         qDebug() << "failed to open";
     }
     file.close();
-
 }
 
 void AdditionalAdminSettingsDialog::extractFromLogFile()

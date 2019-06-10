@@ -17,6 +17,7 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Contact Support");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
     ui->ContactSupportDialogDetailedDescriptionLabel->setText("Please provide a detailed description.\nPlease include any actions attempted with User Manual.");
 
@@ -42,6 +43,22 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
             qDebug() << "File currently does not exist";
         }
         file.close();
+    }
+
+    QFile file2(widget->getLogFolder() + "/tempUserInfoLog.txt");
+    if (!file2.exists()){
+        qDebug() << "file2 does not exist";
+    } else{
+        if (file2.open(QIODevice::ReadOnly)){
+            QTextStream file2in(&file2);
+            QString myFile2Text = file2in.readAll();
+            QStringList myText2 = myFile2Text.split("\n");
+            qDebug() << myText2;
+            ui->ContactSupportDialogUserNameLabel->setText(myText2[0] + " " + myText2[1]);
+            ui->ContactSupportDialogUserEmailLabel->setText(myText2[2]);
+            ui->ContactSupportDialogUserTypeLabel->setText(myText2[6]);
+        }
+        file2.close();
     }
     connect(ui->ContactSupportDialogTextEdit, &QTextEdit::textChanged, this, &ContactSupportDialog::checkMinimumCharacterCount);
 }

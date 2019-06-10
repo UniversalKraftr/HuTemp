@@ -9,6 +9,7 @@ ZonesDialogBox::ZonesDialogBox(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Zones");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 }
 

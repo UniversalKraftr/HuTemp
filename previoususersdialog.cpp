@@ -11,6 +11,7 @@ PreviousUsersDialog::PreviousUsersDialog(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Previous Users");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
     populateListWidget();
 }

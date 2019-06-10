@@ -10,6 +10,7 @@ AdditionalSettingsNotificationsDialog::AdditionalSettingsNotificationsDialog(QWi
     ui->setupUi(this);
 
     setWindowTitle("Additional Settings & Notifications");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
     setAllDefaults();
 }

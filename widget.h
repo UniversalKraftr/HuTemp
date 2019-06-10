@@ -76,7 +76,7 @@ private slots:
     void on_reportsTabNestedWidgetResetButton_clicked();
     void on_reportsTabNestedWidgetSnapshotButton_clicked();
     void on_UACadminViewScreenPageNestedWidgetSaveButton_clicked();
-    void sendMail(QString, QString);
+    void sendMail(QString, QString, QString, QString);
     void mailSent(QString);
     void on_loginButton_clicked();
     void on_loginScreenPageNestedWidgetPasswordResetButton_clicked();
@@ -90,10 +90,16 @@ private slots:
     void on_settingsTabNestedWidgetnetworkPushButton_clicked();
     void on_reportsTabNestedWidgetUpdateButton_clicked();
     void on_mainTabsWidget_currentChanged(int index);
+    void on_loginScreenPageNestedWidgetPasswordRevealConcealPushButton_clicked();
+    void on_UACuserViewScreenPageNestedWidgetUpdateButton_clicked();
+    void on_UACuserViewScreenPageNestedWidgetHelpButton_clicked();
+    void on_UACadminViewScreenPageNestedWidgetHelpButton_clicked();
+    void on_devicesTabHelpButton_clicked();
+    void on_reportsTabHelpButton_clicked();
 
 private:
     Ui::Widget *ui;
-    QString vmDBIPAddress = "192.168.43.214";
+    QString vmDBIPAddress = "10.0.0.14";
     QString KEY = "*:2Q-S9AX||NkvVg<q&i";
     int loginAttempts = 0;
     QString u = QChar(0x00B3);
@@ -102,6 +108,7 @@ private:
     int monitorAdminIndexRow;
     int monitorAdminIndexColumn = 0;
     QTableWidgetItem *UACTableWidgetItem = new QTableWidgetItem(nullptr);
+    AddAUserDialog *addUser;
     QCheckBox *monitorAdminCheckBox;
     QCheckBox *monitorDevicesCheckBox;
     QCheckBox *monitorSettingsCheckBox;
@@ -120,6 +127,8 @@ private:
     QString userEmail;
     QString userType;
     bool dbOpen;
+    bool deviceModifyPermission;
+    bool deviceDeletePermission;
     QList<bool> zonesCheckBoxes;
     QList<bool> devicesCheckBoxes;
     QList<int> readingsCheckBoxes;
@@ -132,8 +141,12 @@ private:
     QTableWidgetItem *currentDeviceTableWidgetItem = nullptr;
     QTableWidgetItem *previousDeviceTableWidgetItem = new QTableWidgetItem(nullptr);
     QList<bool> reportsTabFilterStatuses {false, false, false};
+    QList<QString> messages;
 
 
+
+    bool checkFilters();
+    void activateExportAndUpdateButtons();
     void configureReportsDateByPeriods();
     void monitorDevicePermissions();
     void monitorSettingsPermissions();
@@ -147,7 +160,7 @@ private:
     void setSettingsPermissions(int, int, int);
     void setReportsAndEmailPermission(int, int);
     void addUserToLoginTable(QString);
-    void addUserToUserTable(AddAUserDialog *addUser);
+    void addUserToUserTable();
     void connectToDatabase();
     void extractAllCompanyInfo();
     void extractAllUserInfo();
@@ -179,6 +192,7 @@ private:
     void captureCellChange();
     void removeDevice();
     void checkDevicesForInfo();
+    void createNewTempPassword();
 
 };
 

@@ -29,7 +29,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="loginTab">
       <attribute name="title">
@@ -45,7 +45,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="loginScreenPage">
         <widget class="QWidget" name="loginScreenPageNestedWidget" native="true">
@@ -212,6 +212,35 @@
                         </property>
                        </widget>
                       </item>
+                      <item>
+                       <widget class="QPushButton" name="loginScreenPageNestedWidgetPasswordRevealConcealPushButton">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>40</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>40</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="images.qrc">
+                          <normaloff>:/icons/icons8-eye-30.png</normaloff>:/icons/icons8-eye-30.png</iconset>
+                        </property>
+                       </widget>
+                      </item>
                      </layout>
                     </item>
                    </layout>
@@ -351,6 +380,12 @@
                     </property>
                     <property name="text">
                      <string>    Login    </string>
+                    </property>
+                    <property name="autoDefault">
+                     <bool>false</bool>
+                    </property>
+                    <property name="default">
+                     <bool>false</bool>
                     </property>
                    </widget>
                   </item>
@@ -623,36 +658,6 @@
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
-            <item>
-             <property name="text">
-              <string>Test Item 1</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Test Item 2</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Test Item 3</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Test Item 4</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Test Item 5</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Test Item 6</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="2" column="1" colspan="2">
@@ -706,7 +711,7 @@
         </rect>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="UACadminViewScreenPage">
         <widget class="QWidget" name="UACadminViewScreenPageNestedWidget" native="true">
@@ -3614,6 +3619,8 @@ Contact Support</string>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -7,6 +7,8 @@ passwordReset::passwordReset(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::passwordReset)
 {
+    setWindowTitle("Passowrd Reset");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     ui->setupUi(this);
 }
 
@@ -21,7 +23,6 @@ void passwordReset::on_passwordResetButtonBox_clicked(QAbstractButton *button)
 
     if (resetButton == QDialogButtonBox::Ok){
         changePassword();
-
         accept();
     }
     if (resetButton == QDialogButtonBox::Cancel){
@@ -82,8 +83,9 @@ void passwordReset::changePassword()
         QString finalPassword = newPasswordEncrypted + offsetEncrypted;
         QString finalPasswordEncrypted = encrypt(finalPassword);
         QSqlQuery updateQuery;
-        QString updateQueryStatement = QString("UPDATE login SET password = AES_ENCRYPT('%1', '%2'), temporarypassword = 1 "
-                                               "WHERE username = '%3'").arg(finalPasswordEncrypted).arg(KEY).arg(username);
+        QString updateQueryStatement = QString("UPDATE login SET password = AES_ENCRYPT('%1', '%2'), offset = AES_ENCRYPT('%4', '%2'),"
+                                               " temporarypassword = 1, lockout = 0 WHERE username = '%3'")
+                .arg(finalPasswordEncrypted).arg(KEY).arg(username).arg(offsetEncrypted);
         if (updateQuery.exec(updateQueryStatement)){
             sendMail(username, newPassword);
         }

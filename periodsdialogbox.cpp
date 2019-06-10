@@ -8,6 +8,7 @@ PeriodsDialogBox::PeriodsDialogBox(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Time Periods");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 
     connect(ui->PeriodsDialogBoxNoneRadioButton, &QRadioButton::released, [=](){

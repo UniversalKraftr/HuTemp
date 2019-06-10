@@ -9,6 +9,7 @@ DevicesDialogBox::DevicesDialogBox(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Data Loggers");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 }
 

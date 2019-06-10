@@ -16,6 +16,7 @@ AddAUserDialog::AddAUserDialog(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Add A User");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 
     QStringList userContent = {"First Name", "Second Name", "000-000-0000", "someone@example.com"};

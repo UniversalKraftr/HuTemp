@@ -13,6 +13,7 @@ HelpDialog::HelpDialog(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Help");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 }
 
@@ -23,16 +24,9 @@ HelpDialog::~HelpDialog()
 
 void HelpDialog::on_HelpDialogUserManualButton_clicked()
 {
-    QMessageBox::information(this, tr("Folder Selection"), "Select the folder your PDF Reader is located in");
-    QString directory = QFileDialog::getExistingDirectory();
-    QMessageBox::information(this, "Application Selection", "Select your preferred PDF Reader");
-    QString filename = QFileDialog::getOpenFileName(
-                this,
-                tr("Select PDF Reader"),
-                directory,
-                "All Files (*.*);;Applications (*.exe)");
-
-    QDesktopServices::openUrl(QUrl("file:///" + filename, QUrl::TolerantMode));
+    QString myFileText = QCoreApplication::applicationDirPath()+"/Master User Manual2.pdf";
+//    qDebug() << myFileText;
+    QDesktopServices::openUrl(QUrl("file:///" + myFileText, QUrl::TolerantMode));
 }
 
 void HelpDialog::on_HelpDialogContactSupportButton_clicked()

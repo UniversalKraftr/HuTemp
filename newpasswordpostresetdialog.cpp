@@ -10,6 +10,7 @@ NewPasswordPostResetDialog::NewPasswordPostResetDialog(QString username, QWidget
 
     userName = username;
     setWindowTitle("Password Reset");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
     setTextSuggestions();
     setDefaults();
@@ -38,14 +39,23 @@ bool NewPasswordPostResetDialog::validatePassword()
 {
     QString newPassword = ui->NewPasswordPostResetDialogEnterNewPasswordLineEdit->text();
 
+    upper = 0;
+    lower = 0;
+    number = 0;
+    specialChar = 0;
+
     for (const auto &character: newPassword){
         if (character.isUpper()){
+            qDebug() << "upper";
             upper++;
         } else if (character.isLower()){
+            qDebug() << "lower";
             lower++;
         } else if (character.isDigit()){
+            qDebug() << "digit";
             number++;
         } else{
+            qDebug() << "special";
             specialChar++;
         }
     }
@@ -121,6 +131,7 @@ void NewPasswordPostResetDialog::on_NewPasswordPostResetDialogButtons_clicked(QA
         if (validatePassword() == true){
             if (validateReenteredPassword() == true){
                 if (updatePassword() == true){
+                    QMessageBox::information(this, tr("SUCCESS"), "Your password has been successfully reset\nYour account is restored");
                     accept();;
                 }else{
                     QMessageBox::warning(this, tr("ERROR"), "Your password cannot be changed at this time.");
@@ -132,7 +143,7 @@ void NewPasswordPostResetDialog::on_NewPasswordPostResetDialogButtons_clicked(QA
         } else{
             QMessageBox::warning(this, tr("ERROR"), "Your password must consist of at least:"
                                                     "\n - 2 uppercase letters\n - 2 lowercase letters"
-                                                    "\n - 1 number\n - 1 special character\n\nand be at least 8 characters long");
+                                                    "\n - 1 number\n - 1 special character\n\nand be 8 - 10 characters long");
             upper = 0;
             lower = 0;
             number = 0;

@@ -2,5 +2,8 @@
     <qresource prefix="/">
         <file>icons/icons8-eye-30.png</file>
         <file>icons/icons8-invisible-30.png</file>
+        <file>icons/logo_O9H_1.ico</file>
+        <file>icons/logo_O9H_2.ico</file>
+        <file>icons/team_logo_0Ar_icon.ico</file>
     </qresource>
 </RCC>

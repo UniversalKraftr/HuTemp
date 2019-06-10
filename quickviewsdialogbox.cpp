@@ -9,6 +9,7 @@ quickViewsDialogBox::quickViewsDialogBox(QWidget *parent) :
     ui->setupUi(this);
 
     setWindowTitle("Quick Views");
+    setWindowIcon(QIcon("://icons/logo_O9H_2.ico"));
     adjustSize();
 
 
