@@ -56,7 +56,7 @@ void AdditionalAdminSettingsDialog::writeToLogFile()
         stream << ui->AdditionalAdminSettingsDialogClosingTimeTimeEdit->time().toString() << endl;
     }
     else if (!file.open(QIODevice::ReadWrite)){
-        qDebug() << "failed to open";
+        //    qDebug() << "failed to open";
     }
     file.close();
 }
@@ -67,14 +67,14 @@ void AdditionalAdminSettingsDialog::extractFromLogFile()
     QString fileName = widget->getLogFolder() + "/CompanyInfo.txt";
     QFile file(fileName);
     if (!file.exists()){
-        qDebug() << "file does not exist";
+        //    qDebug() << "file does not exist";
     } else{
         if (file.open(QIODevice::ReadOnly)){
             QTextStream in(&file);
             QString myFileText = in.readAll();
-            qDebug() << myFileText;
+            //    qDebug() << myFileText;
             QStringList myText = myFileText.split("\n");
-            qDebug() << myText;
+            //    qDebug() << myText;
             ui->AdditionalAdminSettingsDialogCompanyNameLineEdit->setText(myText[0]);
             ui->AdditionalAdminSettingsDialogCompanyAddressLine1LineEdit->setText(myText[1]);
             ui->AdditionalAdminSettingsDialogCompanyAddressLine2LineEdit->setText(myText[2]);
@@ -86,7 +86,7 @@ void AdditionalAdminSettingsDialog::extractFromLogFile()
 
             file.close();
         } else{
-            qDebug() << "File currently does not exist";
+            //    qDebug() << "File currently does not exist";
         }
     }
 }

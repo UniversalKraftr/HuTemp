@@ -94,7 +94,7 @@ AddAUserDialog::AddAUserDialog(QWidget *parent) :
 
     tomorrow.setDate(year, month, day);
     ui->AddAUserDialogHireDateDateEdit->setDate(tomorrow);
-    setUserInfoRequirements(ui);
+    setUserInfoRequirements();
 
     customInfoMessageBox("Start", "Start with entering in the User's Name and Contact Information");
 }
@@ -248,7 +248,7 @@ void AddAUserDialog::on_AddAUserDialogButtonBox_clicked(QAbstractButton *button)
 }
 
 
-void AddAUserDialog::setUserInfoRequirements(Ui::AddAUserDialog *ui)
+void AddAUserDialog::setUserInfoRequirements()
 {
     QRegularExpression rxName("\\b[A-Z]*\\b", QRegularExpression::CaseInsensitiveOption);
     QRegularExpression rxPhone("\\b[0-9]{10}\\b", QRegularExpression::CaseInsensitiveOption);
@@ -268,7 +268,7 @@ void AddAUserDialog::setUserInfoRequirements(Ui::AddAUserDialog *ui)
     ui->AddAUserDialogFirstNameLineEdit->setFocus();
 }
 
-void AddAUserDialog::checkUserInfoInput(Ui::AddAUserDialog *ui)
+void AddAUserDialog::checkUserInfoInput()
 {
     if (!ui->AddAUserDialogFirstNameLineEdit->text().isEmpty() && !ui->AddAUserDialogLastNameLineEdit->text().isEmpty() &&
             !ui->AddAUserDialogPhoneNumberLineEdit->text().isEmpty() && !ui->AddAUserDialogEmailLineEdit->text().isEmpty() &&
@@ -304,7 +304,7 @@ void AddAUserDialog::checkUserInfoInput(Ui::AddAUserDialog *ui)
         if (validation == true){
             customInfoMessageBox("Permissions", "Moving on to the permissions for this user.");
 
-            getUserPermissions(ui);
+            getUserPermissions();
         }
     }
 
@@ -331,10 +331,10 @@ QString AddAUserDialog::customQuestionMessageBox(QString title, QString message)
     }
 }
 
-void AddAUserDialog::checkAllBoxes(Ui::AddAUserDialog *ui)
+void AddAUserDialog::checkAllBoxes()
 {
     if (ui->AddAUserDialogAdminCheckBox->isChecked()){
-        captureCheckBoxStates(ui);
+        captureCheckBoxStates();
         setDataLoggerPermission(true);
         setAddDevicePermission(true);
         setModifyDevicePermission(true);
@@ -357,7 +357,7 @@ void AddAUserDialog::checkAllBoxes(Ui::AddAUserDialog *ui)
     }
 }
 
-void AddAUserDialog::captureCheckBoxStates(Ui::AddAUserDialog *ui)
+void AddAUserDialog::captureCheckBoxStates()
 {
     if (!checkBoxStates.isEmpty()){
         checkBoxStates.clear();
@@ -375,7 +375,7 @@ void AddAUserDialog::captureCheckBoxStates(Ui::AddAUserDialog *ui)
 }
 
 
-void AddAUserDialog::setUserAdminPermissions(Ui::AddAUserDialog *ui, bool truth)
+void AddAUserDialog::setUserAdminPermissions(bool truth)
 {
     ui->AddAUserDialogAdminCheckBox->setChecked(truth);
     ui->AddAUserDialogDataLoggersCheckBox->setChecked(truth);
@@ -389,7 +389,7 @@ void AddAUserDialog::setUserAdminPermissions(Ui::AddAUserDialog *ui, bool truth)
     ui->AddAUserDialogReportsCheckBox->setChecked(truth);
 }
 
-void AddAUserDialog::setDefaultPermissions(Ui::AddAUserDialog *ui)
+void AddAUserDialog::setDefaultPermissions()
 {
     setUserAdminPermission(false);
     setDataLoggerPermission(true);
@@ -403,7 +403,7 @@ void AddAUserDialog::setDefaultPermissions(Ui::AddAUserDialog *ui)
     setReportsPermission(true);
 }
 
-void AddAUserDialog::setCustomPermissions(Ui::AddAUserDialog *ui)
+void AddAUserDialog::setCustomPermissions()
 {
     QStringList replies {"", "", "", "", "", "", "", "", ""};
     setUserAdminPermission(false);
@@ -483,20 +483,20 @@ void AddAUserDialog::setCustomPermissions(Ui::AddAUserDialog *ui)
 }
 
 
-void AddAUserDialog::getUserPermissions(Ui::AddAUserDialog *ui)
+void AddAUserDialog::getUserPermissions()
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, tr("Administrator Permission"), "Is this user an administrator", QMessageBox::Yes | QMessageBox::No);
     if (reply == QMessageBox::Yes){
-        setUserAdminPermissions(ui, true);
+        setUserAdminPermissions(true);
     } else if(reply == QMessageBox::No){
-        setUserAdminPermissions(ui, false);
+        setUserAdminPermissions(false);
         QMessageBox::StandardButton defaultSettings;
         defaultSettings = QMessageBox::question(this, tr("Default Settings"), "Do you wish to use the default settings?", QMessageBox::Yes | QMessageBox::No);
         if (defaultSettings == QMessageBox::Yes){
-            setDefaultPermissions(ui);
+            setDefaultPermissions();
         } else if (defaultSettings == QMessageBox::No){
-            setCustomPermissions(ui);
+            setCustomPermissions();
         }
 
     }
@@ -509,7 +509,7 @@ void AddAUserDialog::on_AddAUserDialogFirstNameLineEdit_textChanged(const QStrin
     } else if (ui->AddAUserDialogFirstNameLineEdit->hasAcceptableInput() && !ui->AddAUserDialogFirstNameLineEdit->text().isEmpty()) {
         ui->AddAUserDialogFirstNameLineEdit->setStyleSheet("QLineEdit {color : green;}");
     }
-    checkUserInfoInput(ui);
+    checkUserInfoInput();
 }
 
 void AddAUserDialog::on_AddAUserDialogLastNameLineEdit_textChanged(const QString &arg1)
@@ -519,7 +519,7 @@ void AddAUserDialog::on_AddAUserDialogLastNameLineEdit_textChanged(const QString
     } else if (ui->AddAUserDialogLastNameLineEdit->hasAcceptableInput() && !ui->AddAUserDialogLastNameLineEdit->text().isEmpty()){
         ui->AddAUserDialogLastNameLineEdit->setStyleSheet("QLineEdit {color : green;}");
     }
-    checkUserInfoInput(ui);
+    checkUserInfoInput();
 }
 
 void AddAUserDialog::on_AddAUserDialogPhoneNumberLineEdit_textChanged(const QString &arg1)
@@ -529,7 +529,7 @@ void AddAUserDialog::on_AddAUserDialogPhoneNumberLineEdit_textChanged(const QStr
     } else if (ui->AddAUserDialogPhoneNumberLineEdit->hasAcceptableInput() && !ui->AddAUserDialogPhoneNumberLineEdit->text().isEmpty()){
         ui->AddAUserDialogPhoneNumberLineEdit->setStyleSheet("QLineEdit {color : green;}");
     }
-    checkUserInfoInput(ui);
+    checkUserInfoInput();
 }
 
 void AddAUserDialog::on_AddAUserDialogEmailLineEdit_textChanged(const QString &arg1)
@@ -539,12 +539,12 @@ void AddAUserDialog::on_AddAUserDialogEmailLineEdit_textChanged(const QString &a
     } else if (ui->AddAUserDialogEmailLineEdit->hasAcceptableInput() && !ui->AddAUserDialogEmailLineEdit->text().isEmpty()){
         ui->AddAUserDialogEmailLineEdit->setStyleSheet("QLineEdit {color : green;}");
     }
-    checkUserInfoInput(ui);
+    checkUserInfoInput();
 }
 
 void AddAUserDialog::on_AddAUserDialogAdminCheckBox_stateChanged(int arg1)
 {
-    checkAllBoxes(ui);
+    checkAllBoxes();
 }
 
 void AddAUserDialog::on_AddAUserDialogDataLoggersCheckBox_stateChanged(int arg1)

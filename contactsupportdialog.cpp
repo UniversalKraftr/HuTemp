@@ -28,32 +28,32 @@ ContactSupportDialog::ContactSupportDialog(QWidget *parent) :
     ui->ContactSupportDialogUserTypeLabel->setText(widget->getUserType());
     QFile file(widget->getLogFolder() + "/CompanyInfo.txt");
     if (!file.exists()){
-        qDebug() << "file does not exist";
+        //    qDebug() << "file does not exist";
     } else{
         if (file.open(QIODevice::ReadOnly)){
             QTextStream in(&file);
             QString myFileText = in.readAll();
-            qDebug() << myFileText;
+            //    qDebug() << myFileText;
             QStringList myText = myFileText.split("\n");
             ui->ContactSupportDialogCompanyNameLabel->setText(myText[0]);
             ui->ContactSupportDialogCompanyAddressLine1Label->setText(myText[1]);
             ui->ContactSupportDialogCompanyAddressLine2Label->setText(myText[2]);
             ui->ContactSupportDialogCompanyPhoneNumberLabel->setText(myText[3]);
         }else{
-            qDebug() << "File currently does not exist";
+            //    qDebug() << "File currently does not exist";
         }
         file.close();
     }
 
     QFile file2(widget->getLogFolder() + "/tempUserInfoLog.txt");
     if (!file2.exists()){
-        qDebug() << "file2 does not exist";
+        //    qDebug() << "file2 does not exist";
     } else{
         if (file2.open(QIODevice::ReadOnly)){
             QTextStream file2in(&file2);
             QString myFile2Text = file2in.readAll();
             QStringList myText2 = myFile2Text.split("\n");
-            qDebug() << myText2;
+            //    qDebug() << myText2;
             ui->ContactSupportDialogUserNameLabel->setText(myText2[0] + " " + myText2[1]);
             ui->ContactSupportDialogUserEmailLabel->setText(myText2[2]);
             ui->ContactSupportDialogUserTypeLabel->setText(myText2[6]);
@@ -124,8 +124,8 @@ void ContactSupportDialog::writeToPDF()
     fileName = fileName.split(".").front();
     pdfFile.setOutputFileName(fileName + ".pdf");
     doc.print(&pdfFile);
-    qDebug() << fileName;
-    qDebug() << fileName + ".pdf";
+    //    qDebug() << fileName;
+    //    qDebug() << fileName + ".pdf";
     attachPDF(fileName + ".pdf");
 }
 
@@ -133,7 +133,7 @@ QString ContactSupportDialog::captureLogs()
 {
     QDir dir("C:/ShareToUbuntu/logs");
     QStringList files = dir.entryList(QDir::NoDotAndDotDot | QDir::Files);
-    qDebug() << files;
+    //    qDebug() << files;
     QString fileDetails = "";
 
     fileDetails.append("LOG FILES");
@@ -142,7 +142,7 @@ QString ContactSupportDialog::captureLogs()
 
 
     for (int i = 0; i < files.length(); i++){
-        qDebug() << files[i];
+        //    qDebug() << files[i];
         QFile file("C:/ShareToUbuntu/logs/" + files[i]);
         fileDetails.append("FILE NAME:\t" + files[i]);
         fileDetails.append("\n==========================================================\n");
@@ -210,16 +210,16 @@ void ContactSupportDialog::on_ContactSupportDialogButtonBox_clicked(QAbstractBut
 
 void ContactSupportDialog::sendMail()
 {
-//    qDebug() << "in sendMail";
+//    //    qDebug() << "in sendMail";
     //  SWITCH ME TO THE EMAIL ACCOUNT THAT BRANDON CREATED
     Smtp *smtp = new Smtp("hutemph3@gmail.com", "MnJhUy&^67", "smtp.gmail.com", 465);
     connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
 
     if(!files.isEmpty()){
-//        qDebug() << "!files.isEmpty()";
+//        //    qDebug() << "!files.isEmpty()";
         smtp->sendMail("hutemph3@gmail.com", "hutemph3@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)", files );
     } else{
-//        qDebug() << "files.isEmpty()";
+//        //    qDebug() << "files.isEmpty()";
         smtp->sendMail("hutemph3@gmail.com", "hutemph3@gmail.com" , ui->ContactSupportDialogCategoryComboBox->currentText(),"REVIEW ATTACHMENT(S)");
     }
 }

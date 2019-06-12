@@ -37,6 +37,7 @@ include(./QXlsx.pri)
 SOURCES += \
         main.cpp \
     passwordreset.cpp \
+    previousdevices.cpp \
     previoususersdialog.cpp \
     smtp.cpp \
         widget.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
 
 HEADERS += \
     passwordreset.h \
+    previousdevices.h \
     previoususersdialog.h \
     smtp.h \
         widget.h \
@@ -71,6 +73,7 @@ HEADERS += \
 
 FORMS += \
     passwordreset.ui \
+    previousdevices.ui \
     previoususersdialog.ui \
         widget.ui \
     quickviewsdialogbox.ui \

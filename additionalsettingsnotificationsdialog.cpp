@@ -29,11 +29,11 @@ void AdditionalSettingsNotificationsDialog::on_AdditionalSettingsNotificationsDi
 
     connect(adminSettings, &AdditionalAdminSettingsDialog::accepted, [=](){
 //        captureInfo(adminSettings);
-//        qDebug() << "additional settings & notifications layer";
-//        qDebug() << openCloseHoursMinutes;
-//        qDebug() << companyName;
-//        qDebug() << companyAddress;
-//        qDebug() << companyPhoneNumber;
+//        //    qDebug() << "additional settings & notifications layer";
+//        //    qDebug() << openCloseHoursMinutes;
+//        //    qDebug() << companyName;
+//        //    qDebug() << companyAddress;
+//        //    qDebug() << companyPhoneNumber;
     });
     adminSettings->show();
 }

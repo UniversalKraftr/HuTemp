@@ -99,7 +99,8 @@ private slots:
 
 private:
     Ui::Widget *ui;
-    QString vmDBIPAddress = "10.0.0.14";
+    QSqlDatabase db;
+    QString vmDBIPAddress = "10.93.60.68";
     QString KEY = "*:2Q-S9AX||NkvVg<q&i";
     int loginAttempts = 0;
     QString u = QChar(0x00B3);
@@ -162,8 +163,6 @@ private:
     void addUserToLoginTable(QString);
     void addUserToUserTable();
     void connectToDatabase();
-    void extractAllCompanyInfo();
-    void extractAllUserInfo();
     QString alphaNumGenerator();
     void createDirectories();
     void toggleAdminUACCheckBoxStatuses();

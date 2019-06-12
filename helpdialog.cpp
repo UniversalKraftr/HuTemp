@@ -25,7 +25,7 @@ HelpDialog::~HelpDialog()
 void HelpDialog::on_HelpDialogUserManualButton_clicked()
 {
     QString myFileText = QCoreApplication::applicationDirPath()+"/Master User Manual2.pdf";
-//    qDebug() << myFileText;
+//    //    qDebug() << myFileText;
     QDesktopServices::openUrl(QUrl("file:///" + myFileText, QUrl::TolerantMode));
 }
 

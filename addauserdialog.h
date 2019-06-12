@@ -38,12 +38,12 @@ public:
     void setEmailPermission(bool truth);
 
     QStringList getUserInfo() const;
-    void checkAllBoxes(Ui::AddAUserDialog *ui);
+    void checkAllBoxes();
 
-    void setUserAdminPermissions(Ui::AddAUserDialog *ui, bool truth);
-    void setDefaultPermissions(Ui::AddAUserDialog *ui);
-    void setCustomPermissions(Ui::AddAUserDialog *ui);
-    void getUserPermissions(Ui::AddAUserDialog *ui);
+    void setUserAdminPermissions(bool truth);
+    void setDefaultPermissions();
+    void setCustomPermissions();
+    void getUserPermissions();
 
 private slots:
     void on_AddAUserDialogButtonBox_clicked(QAbstractButton *button);
@@ -65,12 +65,12 @@ private slots:
 private:
     Ui::AddAUserDialog *ui;
     QMap<QString, bool> checkBoxStates;
-    void adminEasyGuide(Ui::AddAUserDialog *ui);
-    void setUserInfoRequirements(Ui::AddAUserDialog *ui);
-    void checkUserInfoInput(Ui::AddAUserDialog *ui);
+    void adminEasyGuide();
+    void setUserInfoRequirements();
+    void checkUserInfoInput();
     void customInfoMessageBox(QString title, QString message);
     QString customQuestionMessageBox(QString title, QString message);
-    void captureCheckBoxStates(Ui::AddAUserDialog *ui);
+    void captureCheckBoxStates();
 
 
 

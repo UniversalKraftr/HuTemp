@@ -46,16 +46,16 @@ bool NewPasswordPostResetDialog::validatePassword()
 
     for (const auto &character: newPassword){
         if (character.isUpper()){
-            qDebug() << "upper";
+            //    qDebug() << "upper";
             upper++;
         } else if (character.isLower()){
-            qDebug() << "lower";
+            //    qDebug() << "lower";
             lower++;
         } else if (character.isDigit()){
-            qDebug() << "digit";
+            //    qDebug() << "digit";
             number++;
         } else{
-            qDebug() << "special";
+            //    qDebug() << "special";
             specialChar++;
         }
     }
@@ -119,7 +119,7 @@ QString NewPasswordPostResetDialog::generateOffset(QString password)
 
         offsetFill.append(character);
     }
-    qDebug() << "offsetFill:\t" << offsetFill;
+    //    qDebug() << "offsetFill:\t" << offsetFill;
     return offsetFill;
 }
 

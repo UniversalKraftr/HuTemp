@@ -32,7 +32,7 @@ void passwordReset::on_passwordResetButtonBox_clicked(QAbstractButton *button)
 
 void passwordReset::sendMail(QString userEmail, QString newPassword)
 {
-    //    qDebug() << "in sendMail";
+    //    //    qDebug() << "in sendMail";
         Smtp *smtp = new Smtp("hutemph3@gmail.com", "MnJhUy&^67", "smtp.gmail.com", 465);
         connect(smtp, SIGNAL(status(QString)), this, SLOT(mailSent(QString)));
         QString subjectLine = "HuTemp - Password Reset -->(DO NOT REPLY TO THIS EMAIL)";
@@ -44,10 +44,10 @@ void passwordReset::sendMail(QString userEmail, QString newPassword)
         message += "\nDO NOT REPLY TO THIS EMAIL";
 
         if(!files.isEmpty()){
-    //        qDebug() << "!files.isEmpty()";
+    //        //    qDebug() << "!files.isEmpty()";
             smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message, files );
         } else{
-    //        qDebug() << "files.isEmpty()";
+    //        //    qDebug() << "files.isEmpty()";
             smtp->sendMail("hutempcs@gmail.com", userEmail , subjectLine, message);
         }
 
@@ -103,7 +103,7 @@ QString passwordReset::encrypt(QString input)
 
 QString passwordReset::generateOffset(QString password)
 {
-    qDebug() << "in generateOffset";
+    //    qDebug() << "in generateOffset";
 
     int length = 64 - password.length();
 
@@ -116,6 +116,6 @@ QString passwordReset::generateOffset(QString password)
 
         offsetFill.append(character);
     }
-    qDebug() << "offsetFill:\t" << offsetFill;
+    //    qDebug() << "offsetFill:\t" << offsetFill;
     return offsetFill;
 }

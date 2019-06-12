@@ -15,25 +15,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int port, int timeout )
 {    
-//    qDebug() << "in Smtp()";
-//    qDebug() << "user = " << user;
-//    qDebug() << "pass = " << pass;
-//    qDebug() << "host = " << host;
-//    qDebug() << "port = " << port;
-//    qDebug() << "timeout = " << timeout;
+//    //    qDebug() << "in Smtp()";
+//    //    qDebug() << "user = " << user;
+//    //    qDebug() << "pass = " << pass;
+//    //    qDebug() << "host = " << host;
+//    //    qDebug() << "port = " << port;
+//    //    qDebug() << "timeout = " << timeout;
     socket = new QSslSocket(this);
-//    qDebug() << "socket = " << socket;
+//    //    qDebug() << "socket = " << socket;
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
-//    qDebug() << "readRead() connected";
+//    //    qDebug() << "readRead() connected";
     connect(socket, SIGNAL(connected()), this, SLOT(connected()));
-//    qDebug() << "connected() connected";
+//    //    qDebug() << "connected() connected";
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), this,SLOT(errorReceived(QAbstractSocket::SocketError)));
-//    qDebug() << "SocketError connected";
+//    //    qDebug() << "SocketError connected";
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState)));
-//    qDebug() << "stateChanged() connected";
+//    //    qDebug() << "stateChanged() connected";
     connect(socket, SIGNAL(disconnected()), this,SLOT(disconnected()));
-//    qDebug() << "disconnected() connected";
+//    //    qDebug() << "disconnected() connected";
 
 
     this->user = user;
@@ -43,40 +43,40 @@ Smtp::Smtp( const QString &user, const QString &pass, const QString &host, int p
     this->port = port;
     this->timeout = timeout;
 
-//    qDebug() << "end of Smtp()";
+//    //    qDebug() << "end of Smtp()";
 }
 
 void Smtp::sendMail(const QString &from, const QString &to, const QString &subject, const QString &body, QStringList files)
 {
-//    qDebug() << "in sendMail()";
+//    //    qDebug() << "in sendMail()";
     message = "To: " + to + "\n";
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     message.append("From: " + from + "\n");
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     message.append("Subject: " + subject + "\n");
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
 
     //Let's intitiate multipart MIME with cutting boundary "frontier"
     message.append("MIME-Version: 1.0\n");
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     message.append("Content-Type: multipart/mixed; boundary=frontier\n\n");
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
 
 
 
     message.append( "--frontier\n" );
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     //message.append( "Content-Type: text/html\n\n" );  //Uncomment this for HTML formating, coment the line below
     message.append( "Content-Type: text/plain\n\n" );
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     message.append(body);
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
     message.append("\n\n");
-//    qDebug() << "message = " << message;
+//    //    qDebug() << "message = " << message;
 
     if(!files.isEmpty())
     {
-        qDebug() << "Files to be sent: " << files.size();
+        //    qDebug() << "Files to be sent: " << files.size();
         foreach(QString filePath, files)
         {
             QFile file(filePath);
@@ -93,37 +93,37 @@ void Smtp::sendMail(const QString &from, const QString &to, const QString &subje
                 message.append( "Content-Type: application/octet-stream\nContent-Disposition: attachment; filename="+ QFileInfo(file.fileName()).fileName() +";\nContent-Transfer-Encoding: base64\n\n" );
                 message.append(bytes.toBase64());
                 message.append("\n");
-//                qDebug() << "after files attached";
+//                //    qDebug() << "after files attached";
             }
         }
     }
     else{
-        qDebug() << "No attachments found";
+        //    qDebug() << "No attachments found";
     }
 
     message.append( "--frontier--\n" );
 
     message.replace( QString::fromLatin1( "\n" ), QString::fromLatin1( "\r\n" ) );
     message.replace( QString::fromLatin1( "\r\n.\r\n" ),QString::fromLatin1( "\r\n..\r\n" ) );
-//    qDebug() << "after message.replace()";
+//    //    qDebug() << "after message.replace()";
 
     this->from = from;
-    qDebug() << "from = " << from;
+    //    qDebug() << "from = " << from;
     rcpt = to;
     state = Init;
     socket->connectToHostEncrypted(host, port); //"smtp.gmail.com" and 465 for gmail TLS
     if (!socket->waitForConnected(timeout)) {
-         qDebug() << socket->errorString();
+         //    qDebug() << socket->errorString();
          socketStatus = false;
     } else{
-        qDebug() << "socket is true";
+        //    qDebug() << "socket is true";
         socketStatus = true;
     }
 
     t = new QTextStream( socket );
 
 
-//    qDebug() << "end of sendMail()";
+//    //    qDebug() << "end of sendMail()";
 }
 
 bool Smtp::getSocketStatus()
@@ -139,30 +139,30 @@ Smtp::~Smtp()
 void Smtp::stateChanged(QAbstractSocket::SocketState socketState)
 {
 
-    qDebug() <<"stateChanged " << socketState;
+    //    qDebug() <<"stateChanged " << socketState;
 }
 
 void Smtp::errorReceived(QAbstractSocket::SocketError socketError)
 {
-    qDebug() << "error " <<socketError;
+    //    qDebug() << "error " <<socketError;
 }
 
 void Smtp::disconnected()
 {
 
-    qDebug() <<"disconneted";
-    qDebug() << "error "  << socket->errorString();
+    //    qDebug() <<"disconneted";
+    //    qDebug() << "error "  << socket->errorString();
 }
 
 void Smtp::connected()
 {    
-    qDebug() << "Connected ";
+    //    qDebug() << "Connected ";
 }
 
 void Smtp::readyRead()
 {
 
-     qDebug() <<"readyRead";
+     //    qDebug() <<"readyRead";
     // SMTP is line-oriented
 
     QString responseLine;
@@ -175,8 +175,8 @@ void Smtp::readyRead()
 
     responseLine.truncate( 3 );
 
-    qDebug() << "Server response code:" <<  responseLine;
-    qDebug() << "Server response: " << response;
+    //    qDebug() << "Server response code:" <<  responseLine;
+    //    qDebug() << "Server response: " << response;
 
     if ( state == Init && responseLine == "220" )
     {
@@ -190,7 +190,7 @@ void Smtp::readyRead()
     /*else if (state == Tls && responseLine == "250")
     {
         // Trying AUTH
-        qDebug() << "STarting Tls";
+        //    qDebug() << "STarting Tls";
         *t << "STARTTLS" << "\r\n";
         t->flush();
         state = HandShake;
@@ -200,7 +200,7 @@ void Smtp::readyRead()
         socket->startClientEncryption();
         if(!socket->waitForEncrypted(timeout))
         {
-            qDebug() << socket->errorString();
+            //    qDebug() << socket->errorString();
             state = Close;
         }
 
@@ -214,7 +214,7 @@ void Smtp::readyRead()
     else if (state == Auth && responseLine == "250")
     {
         // Trying AUTH
-        qDebug() << "Auth";
+        //    qDebug() << "Auth";
         *t << "AUTH LOGIN" << "\r\n";
         t->flush();
         state = User;
@@ -222,7 +222,7 @@ void Smtp::readyRead()
     else if (state == User && responseLine == "334")
     {
         //Trying User        
-        qDebug() << "Username";
+        //    qDebug() << "Username";
         //GMAIL is using XOAUTH2 protocol, which basically means that password and username has to be sent in base64 coding
         //https://developers.google.com/gmail/xoauth2_protocol
         *t << QByteArray().append(user).toBase64()  << "\r\n";
@@ -233,7 +233,7 @@ void Smtp::readyRead()
     else if (state == Pass && responseLine == "334")
     {
         //Trying pass
-        qDebug() << "Pass";
+        //    qDebug() << "Pass";
         *t << QByteArray().append(pass).toBase64() << "\r\n";
         t->flush();
 
@@ -244,7 +244,7 @@ void Smtp::readyRead()
         // HELO response was okay (well, it has to be)
 
         //Apperantly for Google it is mandatory to have MAIL FROM and RCPT email formated the following way -> <email@gmail.com>
-        qDebug() << "MAIL FROM:<" << from << ">";
+        //    qDebug() << "MAIL FROM:<" << from << ">";
         *t << "MAIL FROM:<" << from << ">\r\n";
         t->flush();
         state = Rcpt;
