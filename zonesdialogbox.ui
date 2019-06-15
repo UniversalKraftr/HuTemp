@@ -45,7 +45,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxCollectionsCheckBox">
         <property name="text">
-         <string>Collections</string>
+         <string>Zone 1</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -55,7 +55,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxDockAreaCheckBox">
         <property name="text">
-         <string>Dock Area</string>
+         <string>Zone 2</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -65,7 +65,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery1CheckBox">
         <property name="text">
-         <string>Gallery 1</string>
+         <string>Zone 3</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -75,7 +75,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery2CheckBox">
         <property name="text">
-         <string>Gallery 2</string>
+         <string>Zone 4</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -85,7 +85,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery3CheckBox">
         <property name="text">
-         <string>Gallery 3</string>
+         <string>Zone 5</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -95,7 +95,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery4CheckBox">
         <property name="text">
-         <string>Gallery 4</string>
+         <string>Zone 6</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -105,7 +105,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery5CheckBox">
         <property name="text">
-         <string>Gallery 5</string>
+         <string>Zone 7</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -115,7 +115,7 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxGallery6CheckBox">
         <property name="text">
-         <string>Gallery 6</string>
+         <string>Zone 8</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -125,7 +125,17 @@
       <item>
        <widget class="QCheckBox" name="ZonesDialogBoxLobbyCheckBox">
         <property name="text">
-         <string>Lobby</string>
+         <string>Zone 9</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="ZonesDialogBoxZone10CheckBox">
+        <property name="text">
+         <string>Zone 10</string>
         </property>
         <property name="checked">
          <bool>true</bool>

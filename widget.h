@@ -100,7 +100,7 @@ private slots:
 private:
     Ui::Widget *ui;
     QSqlDatabase db;
-    QString vmDBIPAddress = "10.93.60.68";
+    QString vmDBIPAddress = "10.1.1.195";
     QString KEY = "*:2Q-S9AX||NkvVg<q&i";
     int loginAttempts = 0;
     QString u = QChar(0x00B3);

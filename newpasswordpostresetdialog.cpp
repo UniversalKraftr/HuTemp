@@ -84,7 +84,9 @@ bool NewPasswordPostResetDialog::updatePassword()
 
 
     QSqlQuery updateQuery;
-    QString updateQueryStatement = QString("UPDATE login SET password = AES_ENCRYPT('%1', '%2'), temporarypassword = 0, lockout = 0 WHERE username = '%3'").arg(finalPasswordEncrypted).arg(KEY).arg(userName);
+    QString updateQueryStatement = QString("UPDATE login SET password = AES_ENCRYPT('%1', '%2'), offset = AES_ENCRYPT('%4', '%2'), "
+                                           "temporarypassword = 0, lockout = 0 WHERE username = '%3'")
+            .arg(finalPasswordEncrypted).arg(KEY).arg(userName).arg(offsetEncrypted);
     if (updateQuery.exec(updateQueryStatement)){
         return true;
     } else{

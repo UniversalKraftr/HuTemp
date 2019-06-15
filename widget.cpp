@@ -11,6 +11,7 @@
 #include "passwordreset.h"
 #include "newpasswordpostresetdialog.h"
 #include "previousdevices.h"
+#include <QSizePolicy>
 
 
 
@@ -63,10 +64,12 @@ void Widget::setWidgetConfigs()
     int screenHeight = rect.height();
     int screenWidth = rect.width();
 
-    //set widget to 80% of screen size
+//    //set widget to 80% of screen size
     int widgetHeight = qCeil(screenHeight*.80);
     int widgetWidth = qCeil(screenWidth*.80);
-    setFixedSize(widgetWidth, widgetHeight);
+    setMinimumSize(widgetWidth, widgetHeight);
+//    setFixedSize(widgetWidth, widgetHeight);
+//    adjustSize();
 
 
     //set tab widget and tabs geometries
@@ -103,7 +106,8 @@ void Widget::setTabWidgetConfigs(int widgetWidth, int widgetHeight)
     ui->reportsTab->setFixedSize(qCeil(widgetWidth*.99), qCeil(widgetHeight*.98));
     ui->settingsTab->setFixedSize(qCeil(widgetWidth*.99), qCeil(widgetHeight*.98));
 //    ui->tabWidget->setFixedSize(qCeil(widgetWidth*.99), qCeil(widgetHeight*.98));
-
+//    ui->mainTabsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+//    ui->loginTab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
 void Widget::setLoginTabConfigs()
@@ -169,13 +173,16 @@ void Widget::setUACTabConfigs()
     //set UACScreenViewsStack to UACTab size
     int UACTabWidth = ui->UACTab->width();
     int UACTabHeight = ui->UACTab->height();
-    ui->UACScreenViewsStack->setFixedSize(qCeil(UACTabWidth*.99), qCeil(UACTabHeight*.98));
-    ui->UACadminViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
-    ui->UACuserViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+    ui->UACScreenViewsStack->setFixedSize(qCeil(UACTabWidth*.97), qCeil(UACTabHeight*.96));
+//    ui->UACadminViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), ui->UACScreenViewsStack->height());
+//    ui->UACuserViewScreenPageNestedWidget->setFixedSize(ui->UACScreenViewsStack->width(), qCeil(ui->UACScreenViewsStack->height()*.98));
     for(int i = 0; i < ui->UACTableWidget->columnCount(); i++){
         ui->UACTableWidget->setColumnWidth(i, 120);
     }
     ui->UACTableWidget->setAlternatingRowColors(true);
+//    int UACViewsStackWidth = ui->UACScreenViewsStack->width();
+//    int UACViewsStackHeight = ui->UACScreenViewsStack->height();
+//    ui->UACTableWidget->setFixedSize(qCeil(UACViewsStackWidth*.98), qCeil(UACViewsStackHeight*.97));
     ui->UACadminViewScreenPageNestedWidgetEditButton->setEnabled(false);
     ui->UACadminViewScreenPageNestedWidgetSaveButton->setEnabled(false);
     populateUACTableWidget();
@@ -186,7 +193,7 @@ void Widget::setDevicesTabConfigs()
     ui->devicesTabNestedWidget->setFixedSize(ui->devicesTab->width(), ui->devicesTab->height());
     for(int i = 0; i < ui->devicesTabTableWidget->columnCount(); i++){
 //            qDebug() << "column width = " << ui->devicesTabTableWidget->columnWidth(i);
-        ui->devicesTabTableWidget->setColumnWidth(i, 120);
+        ui->devicesTabTableWidget->setColumnWidth(i, 180);
     }
     ui->devicesTabTableWidget->horizontalHeaderItem(0)->setText("Zone\nID");
     ui->devicesTabTableWidget->horizontalHeaderItem(1)->setText("Device\nID");
@@ -287,7 +294,7 @@ void Widget::populateUACTableWidget()
 
                 QString firstName = getUserTableQuery.value(1).toString();
                 QString lastName = getUserTableQuery.value(2).toString();
-                if (firstName == "HuTemp" && lastName == "H^3_ADMIN"){
+                if (firstName == "HuTemp" && lastName == "ADMIN"){
                     continue;
                 }
                 QTableWidgetItem *userName = new QTableWidgetItem(firstName + " " + lastName);
@@ -569,47 +576,74 @@ void Widget::populateReportsTableWidget()
         ui->reportsTabNestedWidgetTableWidget->clearContents();
         ui->reportsTabNestedWidgetTableWidget->setRowCount(0);
     }
+//    "SELECT event FROM data ORDER BY event ASC LIMIT 1"
+    QSqlQuery earliestDayTimeQuery;
+    QString earliestDayTimeQueryStatement = "SELECT event FROM data ORDER BY event ASC LIMIT 1";
+    QDateTime earliestDayTime;
+    if (earliestDayTimeQuery.exec(earliestDayTimeQueryStatement)){
+        while (earliestDayTimeQuery.next()){
+            earliestDayTime = earliestDayTimeQuery.value(0).toDateTime();
+        }
+    }
+    QString earliestData = QString("The earliest data available is %1").arg(earliestDayTime.toString("MM-dd-yyyy hh:mm:ss"));
+
+    if (ui->reportsTabNestedWidgetStartDateDateEdit->date() < earliestDayTime.date()){
+        QMessageBox::warning(this, tr("Warning"), earliestData);
+        ui->reportsTabNestedWidgetStartDateDateEdit->date() = earliestDayTime.date();
+    }
+
+    if (ui->reportsTabNestedWidgetEndDateDateEdit->date() == ui->reportsTabNestedWidgetStartDateDateEdit->date() &&
+            ui->reportsTabNestedWidgetStartTimeTimeEdit->time() < earliestDayTime.time()){
+        QMessageBox::warning(this, tr("Warning"), earliestData);
+        ui->reportsTabNestedWidgetEndDateDateEdit->date() = earliestDayTime.date().addDays(1);
+        ui->reportsTabNestedWidgetStartTimeTimeEdit->time() = earliestDayTime.time();
+    }
+
     QDateTime startDateTime = QDateTime(ui->reportsTabNestedWidgetStartDateDateEdit->date(), ui->reportsTabNestedWidgetStartTimeTimeEdit->time());
     QDateTime endDateTime = QDateTime(ui->reportsTabNestedWidgetEndDateDateEdit->date(), ui->reportsTabNestedWidgetEndTimeTimeEdit->time());
 
     QStringList zones;
     if (zonesCheckBoxes[0] == true){
-        zones.append("Collections");
-        zones.append("Dock Area");
-        zones.append("Gallery 1");
-        zones.append("Gallery 2");
-        zones.append("Gallery 3");
-        zones.append("Gallery 4");
-        zones.append("Gallery 5");
-        zones.append("Gallery 6");
-        zones.append("Lobby");
+        zones.append("Zone 1");
+        zones.append("Zone 2");
+        zones.append("Zone 3");
+        zones.append("Zone 4");
+        zones.append("Zone 5");
+        zones.append("Zone 6");
+        zones.append("Zone 7");
+        zones.append("Zone 8");
+        zones.append("Zone 9");
+        zones.append("Zone 10");
     } else{
         if (zonesCheckBoxes[1] == true){
-            zones.append("Collections");
+            zones.append("Zone 1");
         }
         if (zonesCheckBoxes[2] == true){
-            zones.append("Dock Area");
+            zones.append("Zone 2");
         }
         if (zonesCheckBoxes[3] == true){
-            zones.append("Gallery 1");
+            zones.append("Zone 3");
         }
         if (zonesCheckBoxes[4] == true){
-            zones.append("Gallery 2");
+            zones.append("Zone 4");
         }
         if (zonesCheckBoxes[5] == true){
-            zones.append("Gallery 3");
+            zones.append("Zone 5");
         }
         if (zonesCheckBoxes[6] == true){
-            zones.append("Gallery 4");
+            zones.append("Zone 6");
         }
         if (zonesCheckBoxes[7] == true){
-            zones.append("Gallery 5");
+            zones.append("Zone 7");
         }
         if (zonesCheckBoxes[8] == true){
-            zones.append("Gallery 6");
+            zones.append("Zone 8");
         }
         if (zonesCheckBoxes[9] == true){
-            zones.append("Lobby");
+            zones.append("Zone 9");
+        }
+        if (zonesCheckBoxes[10] == true){
+            zones.append("Zone 10");
         }
     }
     zones.append(" ");
@@ -629,20 +663,20 @@ void Widget::populateReportsTableWidget()
 
     QStringList devices;
     if (devicesCheckBoxes[0] == true){
-        devices.append("hutemp001");
-        devices.append("hutemp004");
-        devices.append("sensor2");
-        devices.append("sensor3");
-//        devices.append("HuTemp001");
-//        devices.append("HuTemp002");
-//        devices.append("HuTemp003");
-//        devices.append("HuTemp004");
-//        devices.append("HuTemp005");
-//        devices.append("HuTemp006");
-//        devices.append("HuTemp007");
-//        devices.append("HuTemp008");
-//        devices.append("HuTemp009");
-//        devices.append("HuTemp010");
+//        devices.append("hutemp001");
+//        devices.append("hutemp004");
+//        devices.append("sensor2");
+//        devices.append("sensor3");
+        devices.append("HuTemp001");
+        devices.append("HuTemp002");
+        devices.append("HuTemp003");
+        devices.append("HuTemp004");
+        devices.append("HuTemp005");
+        devices.append("HuTemp006");
+        devices.append("HuTemp007");
+        devices.append("HuTemp008");
+        devices.append("HuTemp009");
+        devices.append("HuTemp010");
     } else{
         if (devicesCheckBoxes[1] == true){
             devices.append("HuTemp001");
@@ -1091,12 +1125,13 @@ void Widget::configureReportsDateByPeriods()
         QSqlQuery selectQuery;
         QString selectQueryStatement = "SELECT event FROM data ORDER BY event ASC LIMIT 1";
         if (selectQuery.exec(selectQueryStatement)){
-            QString date;
+            QString dateTime;
             while (selectQuery.next()){
-                date = selectQuery.value(0).toString();
+                dateTime = selectQuery.value(0).toString();
             }
 //                qDebug() << "earliest date = " << date;
-            ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDateTime::fromString(date, "yyyy-MM-ddThh:mm:ss.zzz").date());
+            ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDateTime::fromString(dateTime, "yyyy-MM-ddThh:mm:ss.zzz").date());
+            ui->reportsTabNestedWidgetStartTimeTimeEdit->setTime(QDateTime::fromString(dateTime, "hh:mm:ss").time());
         }
     } else{
         ui->reportsTabNestedWidgetStartDateDateEdit->setDate(QDate(2000, 1, 1));
@@ -1547,8 +1582,11 @@ QString Widget::alphaNumGenerator()
 
 void Widget::createDirectories()
 {
-    logsDirectory = "C:/ShareToUbuntu/logs";
+    QString mainDirectory = "C:/ShareToUbuntu";
     QDir dir;
+    dir.mkdir(mainDirectory);
+
+    logsDirectory = "C:/ShareToUbuntu/logs";
     dir.mkdir(logsDirectory);
     SetFileAttributesA(logsDirectory.toStdString().c_str(), FILE_ATTRIBUTE_HIDDEN);
 
@@ -1703,12 +1741,32 @@ void Widget::on_loginButton_clicked()
                 QMessageBox::warning(this, tr("ERROR"), "Connection to database failed. Please try again shortly.");
             }
 
+
+//            QString newPassword = ui->NewPasswordPostResetDialogEnterNewPasswordLineEdit->text();
+//            QString offset = generateOffset(newPassword);
+//            QString offsetEncrypted = encrypt(offset);
+//            QString newPasswordEncrypted = encrypt(newPassword);
+//            QString finalPassword = newPasswordEncrypted + offsetEncrypted;
+//            QString finalPasswordEncrypted = encrypt(finalPassword);
+
+            qDebug() << "password = " << password;
+            qDebug() << "\noffset = " << offset;
             QString offsetDecrypted = decrypt(offset);
+            qDebug() << "\noffsetDecrypted = " << offsetDecrypted;
+            qDebug() << "\noffsetReencrypted = " << encrypt(offsetDecrypted);
             QString passwordDecrypted = decrypt(password);
+            qDebug() << "\npasswordDecrypted = " << passwordDecrypted;
+            qDebug() << "\nOffset In Password:\t" << passwordDecrypted.contains(offset);
+            qDebug() << "\nenteredPassword:\t" << enteredPassWord;
+            qDebug() << "\nenteredPasswordEncrypted = " << encrypt(enteredPassWord);
+            qDebug() << "\nenteredPasswordEncrypted + offsetReencrypted = " << encrypt(enteredPassWord) + encrypt(offsetDecrypted);
+
+
             QString passwordSplit = passwordDecrypted.replace(offset, "");
+            qDebug() << "\npasswordSplit = " << passwordSplit;
             QString finalPassword = decrypt(passwordSplit);
-    //            qDebug() << "enteredPassWord = " << enteredPassWord;
-    //            qDebug() << "finalPassword = " << finalPassword;
+                qDebug() << "\nenteredPassWord = " << enteredPassWord;
+                qDebug() << "\nfinalPassword = " << finalPassword;
 
             if (enteredPassWord == finalPassword){
     //                qDebug() << "SUCCESS!!!";
@@ -2307,8 +2365,8 @@ void Widget::on_reportsTabNestedWidgetExportButton_clicked()
         }
     }
 //    xlsx.write("A1", ui->reportsTabNestedWidgetTableWidget->item(0,1)->text());
-    xlsx.saveAs(fileName);
-    if (xlsx.save()){
+    ;
+    if (xlsx.saveAs(fileName)){
         QMessageBox::information(this, tr("Success"), "Your reports has successfully been generated! Locate it in your ShareToUbuntu folder.");
         ui->reportsTabNestedWidgetTableWidget->clearContents();
         ui->reportsTabNestedWidgetTableWidget->setRowCount(0);
